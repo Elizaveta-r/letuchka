@@ -93,7 +93,6 @@ $color-border: #e5e7eb;
 }
 
 .employeeGrid {
-  // Контейнер для списка сотрудников
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -117,7 +116,7 @@ $color-border: #e5e7eb;
 .nameEmp {
   font-weight: 600;
   color: $color-text-dark;
-  flex-grow: 1; // Занимает большую часть пространства
+  flex-grow: 1;
   text-align: left;
   cursor: pointer;
 }
@@ -125,7 +124,7 @@ $color-border: #e5e7eb;
 .postEmp {
   font-size: 0.9rem;
   color: $color-text-light;
-  width: 200px; // Фиксированная ширина для должности
+  width: 200px;
   text-align: left;
   padding-right: 20px;
 }

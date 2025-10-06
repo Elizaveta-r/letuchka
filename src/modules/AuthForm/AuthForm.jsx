@@ -56,6 +56,8 @@ export const AuthForm = () => {
       if (!password) {
         toast.error("Введите пароль");
         return;
+      } else {
+        navigate("/");
       }
     }
   }, [step, email, password, emailError, dispatch, navigate]);
