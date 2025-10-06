@@ -1,0 +1,62 @@
+$color-primary: #16a34a;
+$color-accent-start: #22c55e;
+$color-accent-end: #06b6d4;
+$color-text-dark: #1f2937;
+$color-text-light: #6b7280;
+$color-border: #e5e7eb;
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 10px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.formItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: $color-text-dark;
+  text-align: left;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid $color-border;
+}
+
+.buttonCancel {
+  box-shadow: none;
+  background: transparent;
+  color: $color-text-dark;
+  border: 1px solid $color-border;
+
+  &:hover {
+    box-shadow: none;
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+    color: $color-text-dark;
+  }
+}

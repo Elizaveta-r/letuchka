@@ -1,0 +1,18 @@
+.container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+  text-align: center;
+  margin: 0;
+
+  @media screen and (max-width: 767px) {
+    font-size: var(--font-size-h3);
+  }
+}

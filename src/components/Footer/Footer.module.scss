@@ -1,0 +1,138 @@
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  padding: 30px 40px;
+}
+
+.infoContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  justify-content: space-between;
+  padding: 0 25px;
+  gap: 113px;
+
+  @media screen and (max-width: 1439px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px;
+  }
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+}
+
+.sections,
+.contacts,
+.address,
+.social {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  & p {
+    color: #000;
+    font-family: Rubik;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.2px;
+  }
+}
+
+.sectionWrapper,
+.contactsWrapper,
+.addressWrapper,
+.socialWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  color: #666;
+  font-family: Rubik;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.contactsWrapper,
+.sectionWrapper {
+  & a {
+    width: max-content;
+    text-decoration: none;
+    color: #666;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease-in;
+
+    &:hover {
+      border-bottom: 1px solid #666;
+    }
+  }
+}
+
+.socialWrapper {
+  & a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    width: max-content;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease-in;
+
+    &:hover {
+      color: #000;
+    }
+  }
+}
+
+.copyrightContainer {
+  border-top: 1px solid #ebebeb;
+  padding-top: 25px;
+  display: flex;
+  align-items: flex-end;
+  gap: 165px;
+  color: #666;
+  font-family: Rubik;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  @media screen and (max-width: 1439px) {
+    gap: 50px;
+  }
+
+  @media screen and (max-width: 767px) {
+    gap: 25px;
+  }
+
+  @media screen and (max-width: 425px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  & a {
+    width: max-content;
+    text-decoration: none;
+    color: #666;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease-in;
+
+    &:hover {
+      border-bottom: 1px solid #666;
+    }
+  }
+}

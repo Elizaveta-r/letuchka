@@ -1,0 +1,122 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  padding: 14px 1.25rem;
+  transition: all 0.2s ease;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .label {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #b4b4b4;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    background: transparent;
+
+    @media screen and (max-width: 1023px) {
+      font-size: 14px;
+    }
+  }
+
+  .input {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-size: 16px;
+    color: #111;
+
+    &::placeholder {
+      color: transparent;
+    }
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      box-shadow: 0 0 0 1000px #fff inset !important;
+      -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+      -webkit-text-fill-color: #111 !important;
+      transition: background-color 9999s ease-out 0s;
+    }
+
+    &:-moz-autofill {
+      box-shadow: 0 0 0 1000px #fff inset !important;
+      -moz-box-shadow: 0 0 0 1000px #fff inset !important;
+      -moz-text-fill-color: #111 !important;
+    }
+  }
+
+  &.filled {
+    .label {
+      top: 0px;
+      left: 24px;
+      font-size: 1rem;
+      color: #b4b4b4;
+      background: #fff;
+      padding: 0 6px;
+      @media screen and (max-width: 1023px) {
+        font-size: 14px;
+      }
+    }
+  }
+
+  &.focused {
+    border-color: var(--color-primary);
+
+    .label {
+      top: 0px;
+      left: 24px;
+      font-size: 1rem;
+      color: var(--color-primary);
+      background: #fff;
+      padding: 0 6px;
+
+      @media screen and (max-width: 1023px) {
+        font-size: 14px;
+      }
+    }
+  }
+
+  &.error {
+    border-color: var(--color-danger);
+
+    .label {
+      top: 0px;
+      left: 24px;
+      font-size: 1rem;
+      color: var(--color-danger);
+      background: #fff;
+      padding: 0 6px;
+
+      @media screen and (max-width: 1023px) {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 18px;
+
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-danger);
+}

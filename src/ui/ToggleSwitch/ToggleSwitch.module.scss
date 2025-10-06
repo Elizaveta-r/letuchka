@@ -1,0 +1,89 @@
+$color-primary: #16a34a;
+$color-accent-start: #22c55e;
+$color-accent-end: #06b6d4;
+$color-text-dark: #1f2937;
+$color-border: #e5e7eb;
+$color-bg-light: #f9fafb;
+$color-slider-off: #ccc; /* Цвет ползунка OFF */
+$color-dot: #ffffff; /* Цвет "точки" */
+
+.switchContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.switchLabel {
+  font-size: 0.95rem;
+  color: $color-text-dark;
+  font-weight: 500;
+}
+
+/* --- ОСНОВНОЙ КОНТЕЙНЕР СВИТЧЕРА --- */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px; /* Ширина */
+  height: 24px; /* Высота */
+  cursor: pointer;
+}
+
+.switchInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* --- ПОЛЗУНОК (Slider) --- */
+.slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  // ⚠️ Ключевое изменение: Используем background-image (градиент) для состояния OFF
+  background-image: linear-gradient(
+    90deg,
+    $color-slider-off,
+    $color-slider-off
+  );
+
+  border-radius: 34px;
+  transition: all 0.4s;
+
+  // Убираем background-color, чтобы не конфликтовал с background-image
+  // background-color: $color-slider-off;
+}
+
+/* Точка/кнопка */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: $color-dot;
+  border-radius: 50%;
+  transition: all 0.4s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* --- СОСТОЯНИЕ ON (АКТИВНО) --- */
+
+/* Фон ползунка ON: Градиент */
+.slider.checked {
+  // Теперь браузер плавно анимирует переход между двумя background-image
+  background-image: linear-gradient(
+    90deg,
+    $color-accent-start,
+    $color-accent-end
+  );
+  box-shadow: 0 0 4px rgba($color-primary, 0.5);
+}
+
+/* Перемещение точки ON */
+.slider.checked:before {
+  transform: translateX(20px);
+}

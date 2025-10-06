@@ -1,0 +1,28 @@
+import styles from "./EmployeeRowHeader.module.scss";
+
+export default function EmployeeRowHeader() {
+  return (
+    <div className={`${styles.dataItem} ${styles.headerRow}`}>
+      <div className={styles.nameCell}>
+        <div className={`${styles.avatar} ${styles.empty}`}></div>
+        <p className={styles.nameEmp}>ФИО</p>
+      </div>
+
+      <p className={styles.positionCol}>ДОЛЖНОСТЬ</p>
+
+      <p className={styles.roleCol}>РОЛЬ</p>
+
+      <p className={styles.department}>ОТДЕЛ</p>
+
+      <div className={`${styles.statusIndicator}`}>
+        <p className={styles.status}>НА РАБОТЕ</p>
+      </div>
+
+      <div className={styles.actions}>
+        <div className={`${styles.trash} ${styles.empty}`}></div>
+        <div className={`${styles.trash} ${styles.empty}`}></div>
+        <div className={`${styles.edit} ${styles.empty}`}></div>
+      </div>
+    </div>
+  );
+}

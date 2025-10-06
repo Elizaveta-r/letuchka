@@ -1,0 +1,65 @@
+/* Переменные */
+$color-primary: #16a34a; // Основной зеленый
+$color-text-dark: #1f2937;
+$color-text-light: #6b7280;
+$color-border: #e5e7eb; // Светлая граница
+$color-shadow-light: rgba(0, 0, 0, 0.05);
+$color-shadow-focus: rgba(
+  22,
+  163,
+  74,
+  0.3
+); // Тень для фокуса на основе $color-primary
+
+.input {
+  // Базовые стили для "воздушного" вида
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: $color-text-dark;
+  background-color: #ffffff;
+
+  // Ключевые стили для внешнего вида
+  border: 1px solid $color-border;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px $color-shadow-light; // Легкая тень
+  outline: none; // Убираем стандартный синий/черный outline
+
+  // Плавные переходы для всех эффектов
+  transition: border-color 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+
+  // Стиль плейсхолдера
+  &::placeholder {
+    color: $color-text-light;
+    opacity: 0.8;
+  }
+
+  /* --- Эффект при наведении (Hover) --- */
+  &:hover {
+    // Делаем границу немного темнее и тень чуть заметнее
+    border-color: darken($color-border, 5%);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  /* --- Эффект при фокусе (Focus) --- */
+  &:focus {
+    // Граница становится акцентного цвета
+    border-color: $color-primary;
+
+    // Тень, имитирующая "свечение", используя $color-primary
+    box-shadow: 0 0 0 3px lighten($color-primary, 35%),
+      // Внутренняя (более светлая) тень
+      0 1px 3px rgba(0, 0, 0, 0.1); // Основная тень
+  }
+
+  /* Стиль для инпутов с ошибкой (пример) */
+  &.is-error {
+    border-color: #ef4444; // Красный цвет
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3), 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+  }
+}

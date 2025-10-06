@@ -1,0 +1,11 @@
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 8px;
+}

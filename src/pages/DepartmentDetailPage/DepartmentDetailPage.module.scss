@@ -1,0 +1,192 @@
+/* Переменные, использующие ваши основные цвета */
+$color-primary: #16a34a;
+$color-accent-start: #22c55e;
+$color-accent-end: #06b6d4;
+
+/* Цвета для текста и фона */
+$color-text-dark: #1f2937;
+$color-text-light: #6b7280;
+$color-background: #f9fafb;
+$color-border: #e5e7eb;
+
+.pageContent {
+  min-height: 100vh;
+}
+
+.content {
+  max-width: 900px;
+  margin-top: 24px;
+}
+
+.desc {
+  font-size: 1.1rem;
+  color: $color-text-light;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid $color-border;
+  text-align: left;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $color-text-dark;
+  margin-bottom: 20px;
+  // Небольшая зеленая линия для акцента
+  border-left: 4px solid $color-primary;
+  padding-left: 12px;
+  text-align: left;
+}
+
+/* -------------------------------------- */
+/* Секция Деталей (Details) */
+/* -------------------------------------- */
+
+.details {
+  margin-bottom: 40px;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.gridItem {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.headerCards {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.label {
+  font-size: 0.85rem;
+  color: $color-text-light;
+  margin-bottom: 4px;
+  margin: 0;
+}
+
+.time {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: $color-primary;
+}
+
+/* -------------------------------------- */
+/* Секция Сотрудников (Employees) */
+/* -------------------------------------- */
+
+.employees {
+  margin-bottom: 40px;
+}
+
+.employeeGrid {
+  // Контейнер для списка сотрудников
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dataItem {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: background-color 0.2s;
+  gap: 8px;
+
+  &:hover {
+    background-color: #fcfdfe;
+  }
+}
+
+.nameEmp {
+  font-weight: 600;
+  color: $color-text-dark;
+  flex-grow: 1; // Занимает большую часть пространства
+  text-align: left;
+  cursor: pointer;
+}
+
+.postEmp {
+  font-size: 0.9rem;
+  color: $color-text-light;
+  width: 200px; // Фиксированная ширина для должности
+  text-align: left;
+  padding-right: 20px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.trash,
+.contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.contact {
+  color: $color-primary;
+  border: 1px solid $color-primary;
+
+  &:hover {
+    background-color: $color-primary;
+    color: #ffffff;
+  }
+}
+
+.trash {
+  color: #ef4444; // Красный цвет для удаления
+  border: 1px solid #ef4444;
+
+  &:hover {
+    background-color: #ef4444;
+    color: #ffffff;
+  }
+}
+
+// Стили для иконок Lucide внутри кнопок
+.trash svg,
+.edit svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2; // Толщина линии для Lucide
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffffff;
+  flex-shrink: 0;
+
+  background: linear-gradient(45deg, $color-accent-start, $color-accent-end);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}

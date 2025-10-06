@@ -1,0 +1,147 @@
+/* Основные переменные */
+$color-primary: #16a34a;
+$color-accent-start: #22c55e;
+$color-accent-end: #06b6d4;
+
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  max-width: 350px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.headerAccent {
+  height: 4px;
+  background: linear-gradient(
+    135deg,
+    $color-accent-start 0%,
+    $color-accent-end 100%
+  );
+}
+
+.content {
+  padding: 24px;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 24px;
+  line-height: 1.4;
+  min-height: 40px;
+}
+
+.dataGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 16px;
+}
+
+.dataItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  // Уберем min-width: 0; чтобы избежать конфликтов
+}
+
+.checkInTime,
+.employeeCount,
+.checkOutTime {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon {
+  // Стили для иконок Lucide
+  color: $color-primary;
+  margin-bottom: 4px;
+  // font-size: 1rem; // Lucide использует атрибут size, но цвет задаем здесь
+}
+
+.dataLabel {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dataValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.checkIn {
+  color: $color-primary;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.buttonPrimary,
+.buttonSecondary {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.buttonPrimary {
+  flex-grow: 1;
+  background: linear-gradient(
+    135deg,
+    $color-accent-start 0%,
+    $color-accent-end 100%
+  );
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+
+  &:hover {
+    opacity: 0.9;
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+  }
+}
+
+.buttonSecondary {
+  display: inline-flex; // Чтобы иконка и текст были на одной линии
+  align-items: center;
+  gap: 6px; // Отступ между текстом и иконкой
+  background-color: #f9fafb;
+  color: $color-primary;
+  border: 1px solid #e5e7eb;
+
+  &:hover {
+    background-color: #f3f4f6;
+    border-color: $color-primary;
+  }
+
+  // Убрали отдельный селектор для svg, используем gap
+}
