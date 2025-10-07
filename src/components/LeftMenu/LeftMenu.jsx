@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./LeftMenu.module.scss";
 import {
   AlarmClockCheck,
+  Briefcase,
   Building2,
   CreditCard,
   IdCardLanyard,
@@ -12,6 +13,7 @@ const renderItemsData = [
   { name: "Задачи", path: "/tasks", icon: <AlarmClockCheck size={18} /> },
   { name: "Отделы", path: "/departments", icon: <Building2 size={18} /> },
   { name: "Сотрудники", path: "/employees", icon: <IdCardLanyard size={18} /> },
+  { name: "Должности", path: "/positions", icon: <Briefcase size={18} /> },
 ];
 
 export const LeftMenu = () => {

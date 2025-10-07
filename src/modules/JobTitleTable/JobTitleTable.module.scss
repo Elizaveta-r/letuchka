@@ -1,0 +1,183 @@
+$color-primary: #16a34a;
+$color-accent-start: #22c55e;
+$color-accent-end: #06b6d4;
+$color-text-dark: #1f2937;
+$color-text-light: #6b7280;
+$color-border: #e5e7eb;
+$color-bg-light: #f9fafb;
+$color-delete-red: #ef4444;
+
+/* --- ЗАГОЛОВОК И КНОПКА ДОБАВЛЕНИЯ --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid $color-border;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: $color-text-dark;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+
+  // Акцентный градиент для кнопки
+  background-image: linear-gradient(
+    90deg,
+    $color-accent-start,
+    $color-accent-end
+  );
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 10px rgba($color-accent-start, 0.3);
+
+  &:hover {
+    opacity: 0.9;
+    box-shadow: 0 6px 15px rgba($color-accent-start, 0.4);
+  }
+}
+
+/* --- СТИЛИ ТАБЛИЦЫ --- */
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.jobTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px; /* Отступ между строками для "воздушности" */
+}
+
+/* Заголовки */
+thead th {
+  text-align: center;
+  color: $color-text-light;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0 15px 15px 15px;
+  // Тонкая линия под заголовком
+  border-bottom: 1px solid lighten($color-border, 5%);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.actionsHeader {
+  text-align: center !important;
+}
+
+/* Ячейки */
+tbody td {
+  background-color: $color-bg-light;
+  padding: 15px;
+  color: $color-text-dark;
+  font-size: 0.95rem;
+  font-weight: 500;
+  vertical-align: middle;
+
+  // Скругление углов для строк
+  &:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  &:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+}
+
+tr {
+  transition: all 0.2s;
+  &:hover td {
+    background-color: lighten($color-bg-light, 2%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.jobName {
+  font-weight: 600;
+  color: $color-text-dark;
+}
+
+.jobDescription {
+  color: $color-text-light;
+  font-style: italic;
+  max-width: 350px;
+}
+
+/* Ячейка с количеством сотрудников */
+.employeeCell {
+  color: $color-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  .userIcon {
+    color: $color-primary;
+  }
+}
+
+/* --- КНОПКИ ДЕЙСТВИЙ (как в вашем стиле) --- */
+.actionsCell {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+}
+
+.editButton {
+  color: $color-primary;
+  border: 1px solid $color-primary;
+
+  &:hover {
+    background-color: $color-primary;
+    color: #ffffff;
+  }
+}
+
+.deleteButton {
+  color: #ef4444;
+  border: 1px solid #ef4444;
+
+  &:hover {
+    background-color: #ef4444;
+    color: #ffffff;
+  }
+}
+
+.noData {
+  text-align: center;
+  font-style: italic;
+  color: $color-text-light;
+  padding: 40px !important;
+  background-color: #ffffff !important;
+  border-radius: 8px;
+  margin-top: 20px;
+  box-shadow: none !important;
+}

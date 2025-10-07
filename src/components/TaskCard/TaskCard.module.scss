@@ -46,7 +46,7 @@ $color-success: #22c55e;
 .headerContent {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .taskTitle {
@@ -56,6 +56,21 @@ $color-success: #22c55e;
   line-height: 1.4;
   letter-spacing: -0.02em;
   flex: 1;
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+  border-bottom: 1px solid transparent;
+  line-height: 100%;
+
+  &:hover {
+    border-bottom: 1px solid #22c55e;
+  }
+
+  &.full {
+    cursor: default;
+    &:hover {
+      border-bottom: 1px solid transparent;
+    }
+  }
 }
 
 .positionBadge {

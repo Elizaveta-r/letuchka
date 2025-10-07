@@ -23,13 +23,14 @@ export const Header = () => {
 
   const handleLogOut = async () => {
     console.log("handleLogOut");
+    navigate("/auth", { replace: true });
   };
 
   const handleSignIn = () => {
     navigate("/auth", { replace: true });
   };
 
-  const handleGoHome = () => navigate("/n8n/marketplace");
+  const handleGoHome = () => navigate("/");
   const handleGoToSettings = () => navigate("/settings");
 
   return (

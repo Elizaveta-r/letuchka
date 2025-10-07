@@ -7,31 +7,36 @@ import {
   Bell,
   Pencil,
   Trash,
+  Building2,
 } from "lucide-react";
 import styles from "./TaskCard.module.scss";
 import { useState } from "react";
 import DeleteConfirmationModal from "../../modules/DeleteConfirmationModal/DeleteConfirmationModal";
 import UpdateTaskModal from "../../modules/UpdateTaskModal/UpdateTaskModal";
+import { truncateText } from "../../utils/methods/truncateText";
+import { useNavigate } from "react-router-dom";
 
-export const TaskCard = ({ task }) => {
+export const TaskCard = ({ task, isFull }) => {
+  const navigate = useNavigate();
+
   const [visibleDeleteModal, setVisibleDeleteModal] = useState(false);
   const [visibleUpdateModal, setVisibleUpdateModal] = useState(false);
 
   // Определяем бейджи для фото
-  const photoBadge = task.photo_mandatory
+  const photoBadge = task?.photo_mandatory
     ? styles.badgeMandatory
-    : task.photo_required
+    : task?.photo_required
     ? styles.badgeRequired
     : styles.badgeInfo;
-  const photoText = task.photo_mandatory
+  const photoText = task?.photo_mandatory
     ? "Фото (ОБЯЗАТЕЛЬНО)"
-    : task.photo_required
+    : task?.photo_required
     ? "Фото (Требуется)"
     : "Без фото";
-  const PhotoIcon = task.photo_mandatory ? Zap : Camera;
+  const PhotoIcon = task?.photo_mandatory ? Zap : Camera;
 
   // Определяем бейдж для уведомлений
-  const notifyBadge = task.notify_on_overdue
+  const notifyBadge = task?.notify_on_overdue
     ? styles.badgeAlert
     : styles.badgeMuted;
 
@@ -43,12 +48,14 @@ export const TaskCard = ({ task }) => {
     setVisibleUpdateModal(true);
   };
 
+  const handleGoToDetails = () => navigate(`${task?.id}`);
+
   return (
     <div className={styles.taskCard}>
       <DeleteConfirmationModal
         isOpen={visibleDeleteModal}
         onClose={() => setVisibleDeleteModal(false)}
-        message={<Message taskName={task.task_title} />}
+        message={<Message taskName={task?.task_title} />}
         buttonTitle="Удалить задачу"
         buttonIcon={<XCircle size={20} />}
       />
@@ -60,8 +67,13 @@ export const TaskCard = ({ task }) => {
       {/* 1. ЗАГОЛОВОК И ДЕДЛАЙН */}
       <div className={styles.header}>
         <div className={styles.headerContent}>
-          <h3 className={styles.taskTitle}>{task.task_title}</h3>
-          <div className={styles.positionBadge}>{task.position_title}</div>
+          <h3
+            className={`${styles.taskTitle} ${isFull ? styles.full : ""}`}
+            onClick={isFull ? () => {} : handleGoToDetails}
+          >
+            {isFull ? task?.task_title : truncateText(task?.task_title, 28)}
+          </h3>
+          <div className={styles.positionBadge}>{task?.position_title}</div>
         </div>
 
         <div className={styles.headerActionsContainer}>
@@ -87,7 +99,7 @@ export const TaskCard = ({ task }) => {
         <div className={`${styles.badge} ${notifyBadge}`}>
           <Bell size={14} />{" "}
           <span>
-            {task.notify_on_overdue
+            {task?.notify_on_overdue
               ? "Уведомление при просрочке"
               : "Без уведомлений"}
           </span>
@@ -96,12 +108,12 @@ export const TaskCard = ({ task }) => {
         {/* 2.3. Бейдж отчета */}
         <div
           className={`${styles.badge} ${
-            task.include_in_report ? styles.badgePrimary : styles.badgeMuted
+            task?.include_in_report ? styles.badgePrimary : styles.badgeMuted
           }`}
         >
           <CheckSquare size={14} />{" "}
           <span>
-            {task.include_in_report ? "В итоговом отчете" : "Вне отчета"}
+            {task?.include_in_report ? "В итоговом отчете" : "Вне отчета"}
           </span>
         </div>
       </div>
@@ -113,21 +125,30 @@ export const TaskCard = ({ task }) => {
           <span className={styles.label}>
             <Clock size={16} /> Время начала:
           </span>
-          <span className={styles.value}>{task.task_time}</span>
+          <span className={styles.value}>{task?.task_time}</span>
         </div>
         <div className={styles.detailItem}>
           <span className={styles.label}>
             <Clock size={16} /> Дедлайн:
           </span>
-          <span className={styles.valueAccent}>{task.deadline}</span>
+          <span className={styles.valueAccent}>{task?.deadline}</span>
         </div>
 
         {/* Тип подтверждения (2-й ряд) */}
-        <div className={styles.detailItemFullWidth}>
+        <div className={styles.detailItem}>
           <span className={styles.label}>
             <CheckSquare size={16} /> Тип подтверждения:
           </span>
-          <span className={styles.value}>{task.acceptance_type}</span>
+          <span className={styles.value}>{task?.acceptance_type}</span>
+        </div>
+
+        <div className={styles.detailItem}>
+          <span className={styles.label}>
+            <Building2 size={16} /> Отдел:
+          </span>
+          <span className={styles.value}>
+            {task?.department ? task?.department : "-"}
+          </span>
         </div>
       </div>
 
@@ -135,7 +156,11 @@ export const TaskCard = ({ task }) => {
       <div className={styles.criteriaSection}>
         <p className={styles.criteriaTitle}>Критерий приемки:</p>
         <p className={styles.criteriaText}>
-          {task.acceptance_criteria ? task.acceptance_criteria : "Отсутствует"}
+          {task?.acceptance_criteria
+            ? isFull
+              ? task?.acceptance_criteria
+              : truncateText(task?.acceptance_criteria, 50)
+            : "Отсутствует"}
         </p>
       </div>
     </div>

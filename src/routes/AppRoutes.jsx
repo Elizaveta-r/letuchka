@@ -14,6 +14,8 @@ import DepartmentsPage from "../pages/DepartmentsPage/DepartmentsPage";
 import DepartmentDetailPage from "../pages/DepartmentDetailPage/DepartmentDetailPage";
 import EmployeeDetailPage from "../pages/EmployeeDetailPage/EmployeeDetailPage";
 import TasksPage from "../pages/TasksPage/TasksPage";
+import PositionsPage from "../pages/PositionsPage/PositionsPage";
+import TasksDetailsPage from "../pages/TasksDetailsPage/TasksDetailsPage";
 
 export default function AppRoutes() {
   const location = useLocation();
@@ -95,7 +97,19 @@ export default function AppRoutes() {
           index: true,
           element: <TasksPage />,
         },
+        {
+          path: ":id",
+          element: <TasksDetailsPage />,
+        },
       ],
+    },
+    {
+      path: "/positions",
+      element: (
+        <PageLayout>
+          <PositionsPage />
+        </PageLayout>
+      ),
     },
     {
       path: "/*",

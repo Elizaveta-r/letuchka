@@ -19,6 +19,11 @@ const confirmationTypes = [
   { value: "checkbox", label: "Чекбокс" },
 ];
 
+const departments = [
+  { value: "kitchen", label: "Кухня" },
+  { value: "admin", label: "Администрирование" },
+];
+
 export default function UpdateTaskModal({ isOpen, handleClose, isNew, task }) {
   const [position, setPosition] = React.useState("");
   const [name, setName] = React.useState(task?.task_title || "");
@@ -34,6 +39,7 @@ export default function UpdateTaskModal({ isOpen, handleClose, isNew, task }) {
   const [description, setDescription] = React.useState(
     task?.acceptance_criteria || ""
   );
+  const [department, setDepartment] = React.useState("");
 
   const onClose = () => {
     handleClose();
@@ -72,6 +78,16 @@ export default function UpdateTaskModal({ isOpen, handleClose, isNew, task }) {
         >
           <div className={styles.container}>
             <div className={styles.form}>
+              <div className={styles.section}>
+                <p className={styles.label}>Отдел</p>
+                <CustomSelect
+                  placeholder="Выберите отдел"
+                  isSearchable
+                  options={departments}
+                  value={department}
+                  onChange={setDepartment}
+                />
+              </div>
               <div className={styles.section}>
                 <p className={styles.label}>Должности</p>
                 <CustomSelect
@@ -122,22 +138,26 @@ export default function UpdateTaskModal({ isOpen, handleClose, isNew, task }) {
 
               <div className={styles.switchers}>
                 <ToggleSwitch
+                  labelStyle={styles.switcherLabel}
                   label="Уведомить о просрочке"
                   checked={isNotification}
                   onChange={() => setIsNotification(!isNotification)}
                 />
                 <ToggleSwitch
+                  labelStyle={styles.switcherLabel}
                   label="Требуется фото"
                   checked={isPhotoRequired}
                   onChange={() => setIsPhotoRequired(!isPhotoRequired)}
                 />
                 <ToggleSwitch
+                  labelStyle={styles.switcherLabel}
                   label="В итоговый отчет"
                   checked={isReport}
                   onChange={() => setIsReport(!isReport)}
                 />
 
                 <ToggleSwitch
+                  labelStyle={styles.switcherLabel}
                   label="Фото обязательно"
                   checked={isPhotoMandatory}
                   onChange={() => setIsPhotoMandatory(!isPhotoMandatory)}

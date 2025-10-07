@@ -1,12 +1,12 @@
-import styles from "./TasksPage.module.scss";
+import React from "react";
+import styles from "./TasksDetailsPage.module.scss";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import { useParams } from "react-router-dom";
 import { TaskCard } from "../../components/TaskCard/TaskCard";
-import { useState } from "react";
-import UpdateTaskModal from "../../modules/UpdateTaskModal/UpdateTaskModal";
 
 const tasks = [
   {
-    id: 1,
+    id: "1",
     position_title: "Повар",
     task_title: "Прием рабочего места в начале смены",
     task_time: "9:30:00",
@@ -19,7 +19,7 @@ const tasks = [
     acceptance_criteria: "Рабочее место должно быть чистым",
   },
   {
-    id: 2,
+    id: "2",
     position_title: "Повар",
     task_title: "Комментарии приемки рабочего места от прошлой смены",
     task_time: "08:00",
@@ -33,7 +33,7 @@ const tasks = [
     department: "Кухня",
   },
   {
-    id: 3,
+    id: "3",
     position_title: "Повар",
     task_title: "Выслать информацию о списаниях в чат ",
     task_time: "10:30:00",
@@ -47,7 +47,7 @@ const tasks = [
     department: "Кухня",
   },
   {
-    id: 4,
+    id: "4",
     position_title: "Администратор",
     task_title:
       "Наличие наклеек на крышках от крафт боксов и плоских для запеченных ",
@@ -62,28 +62,18 @@ const tasks = [
     department: "Кухня",
   },
 ];
-export default function TasksPage() {
-  const [visibleCreateModal, setVisibleCreateModal] = useState(false);
 
-  const openCreateModal = () => {
-    setVisibleCreateModal(true);
-  };
-  const closeCreateModal = () => {
-    setVisibleCreateModal(false);
-  };
+export default function TasksDetailsPage() {
+  const params = useParams();
+  const taskId = params.id;
+
+  const task = tasks.find((task) => task.id === taskId);
+
   return (
     <div className={styles.container}>
-      <PageTitle title={"Задачи"} hasButton onClick={openCreateModal} />
-      <UpdateTaskModal
-        isNew={true}
-        isOpen={visibleCreateModal}
-        handleClose={closeCreateModal}
-      />
-      <div className={styles.tasksContainer}>
-        {tasks.map((task, index) => (
-          <TaskCard key={index} task={task} />
-        ))}
-      </div>
+      <PageTitle title={"Детали задачи"} />
+
+      <TaskCard task={task} isFull />
     </div>
   );
 }

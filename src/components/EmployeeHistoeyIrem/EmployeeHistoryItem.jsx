@@ -69,13 +69,23 @@ export default function EmployeeHistoryItem({ item, onPhotoClick }) {
         </div>
       </div>
 
-      {/* 4. Кнопка просмотра фото */}
-      <button
-        className={styles.photoLink}
-        onClick={() => onPhotoClick(item.photo_url)}
-      >
-        {item.photo_url ? "Фотоотчет" : "Нет фото"}
-      </button>
+      {/* 4. Предпросмотр фотоотчета */}
+      {item.photo_url ? (
+        <div
+          className={styles.photoContainer}
+          onClick={() => onPhotoClick(item.photo_url)}
+        >
+          <img
+            src={item.photo_url}
+            alt="Фотоотчет сотрудника"
+            className={styles.photo}
+          />
+        </div>
+      ) : (
+        <div className={`${styles.photoContainer} ${styles.empty}`}>
+          <p>Нет фото</p>
+        </div>
+      )}
     </div>
   );
 }
