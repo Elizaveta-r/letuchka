@@ -1,3 +1,259 @@
-.container {
+$color-primary: #16a34a;
+$color-accent-start: #22c55e;
+$color-accent-end: #06b6d4;
+$color-text-dark: #1f2937;
+$color-text-light: #6b7280;
+$color-border: #e5e7eb;
+$color-bg-light: #f9fafb;
+
+.dashboardPage {
   display: flex;
+  flex-direction: column;
+  gap: 25px;
+  min-height: 100vh;
+}
+
+/* --- 1. KPI СВОДКА (4 КАРТОЧКИ) --- */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.kpiCard {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  .iconWrapper {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 50%;
+    opacity: 0.8;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .kpiValue {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .kpiTitle {
+    font-size: 0.9rem;
+    color: $color-text-light;
+    margin-top: 5px;
+  }
+}
+
+/* Цвета для KPI */
+.green {
+  .kpiValue {
+    color: $color-primary;
+  }
+}
+.red {
+  .kpiValue {
+    color: #dc2626;
+  }
+  .iconWrapper {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+}
+.yellow {
+  .kpiValue {
+    color: #d97706;
+  }
+  .iconWrapper {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+}
+.blue {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+
+  .kpiValue {
+    color: #2563eb;
+  }
+  .kpiTitle {
+    align-self: flex-start;
+  }
+  .content {
+    align-items: flex-start;
+  }
+}
+
+/* Прогресс-бар для сотрудников */
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background-color: $color-bg-light;
+  border-radius: 4px;
+  margin-top: 15px;
+  overflow: hidden;
+
+  .progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, $color-accent-start, $color-accent-end);
+    transition: width 0.5s ease-out;
+  }
+}
+
+/* --- 2. ОСНОВНОЙ КОНТЕНТ (2 КОЛОНКИ) --- */
+.mainContentGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* 66% и 33% */
+  gap: 20px;
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $color-text-dark;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid $color-border;
+}
+
+.problemTasksSection {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.alertIcon {
+  color: #dc2626;
+}
+
+/* Стилизация таблицы проблемных задач */
+.tasksTable {
+  display: grid;
+  grid-template-columns: 1.4fr 1.3fr 1.1fr 1fr;
+  gap: 8px;
+  font-size: 0.95rem;
+  text-align: center;
+
+  .headerRow {
+    font-weight: 600;
+    color: $color-text-light;
+    padding-bottom: 10px;
+    border-bottom: 1px solid $color-border;
+  }
+
+  .taskRow {
+    display: contents; // Строки будут наследовать сетку родителя
+    padding: 12px 0;
+    border-bottom: 1px solid lighten($color-border, 5%);
+
+    & > span {
+      padding: 10px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .taskName,
+    .employeeName {
+      cursor: pointer;
+
+      text-decoration: underline transparent;
+      text-decoration-thickness: 1.5px;
+      transition: text-decoration-color 0.3s ease-in-out;
+
+      &:hover {
+        text-decoration-color: #22c55e;
+      }
+    }
+  }
+
+  .statusCell,
+  .timeCell {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 4px 8px;
+    line-height: 1;
+    gap: 4px;
+  }
+
+  .fail {
+    color: #b91c1c;
+    background-color: #fee2e2;
+  }
+  .late {
+    color: #d97706;
+    background-color: #fef3c7;
+  }
+}
+
+/* --- ПРАВЫЙ БЛОК: Аналитика и Ссылки --- */
+.analyticsCard,
+.linksCard {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.chartContainer {
+  width: 100%;
+  height: 220px; /* Фиксированная высота для ResponsiveContainer */
+  padding-top: 10px;
+}
+
+/* Быстрые ссылки */
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.quickLink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: $color-bg-light;
+  border-radius: 8px;
+  color: $color-text-dark;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: lighten($color-bg-light, 2%);
+    color: $color-primary;
+  }
 }

@@ -12,11 +12,13 @@ import { useState } from "react";
 import EditEmployeeModal from "../EditEmployeeModal/EditEmployeeModal";
 import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmationModal";
 import { getInitials } from "../../utils/methods/getInitials";
+import EmployeeContactModal from "../EmployeeContactModal/EmployeeContactModal";
 
 export default function EmployeeDetailsCard({ employee }) {
   const [visibleConfirmDeleteModal, setVisibleConfirmDeleteModal] =
     useState(false);
   const [visibleEditModal, setVisibleEditModal] = useState(false);
+  const [visibleContactModal, setVisibleContactModal] = useState(false);
 
   const initials = getInitials(employee.name);
   const statusText = employee.checkedIn ? "На работе c 9:00" : "Нет на работе";
@@ -37,6 +39,22 @@ export default function EmployeeDetailsCard({ employee }) {
     setVisibleEditModal(false);
   };
 
+  const handleOpenContactModal = () => {
+    setVisibleContactModal(true);
+  };
+
+  const handleCloseContactModal = () => {
+    setVisibleContactModal(false);
+  };
+
+  const mockEmployee = {
+    name: employee.name,
+    email: "employee.email@example.com",
+    phone: "+79788888888",
+    telegramId: employee.telegramId,
+    telegramName: employee.telegramName,
+  };
+
   return (
     <div className={styles.profileSummary}>
       <EditEmployeeModal
@@ -48,6 +66,11 @@ export default function EmployeeDetailsCard({ employee }) {
         isOpen={visibleConfirmDeleteModal}
         onClose={handleCloseConfirmDeleteModal}
         message={<MessageDelete employeeName={employee.name} />}
+      />
+      <EmployeeContactModal
+        isOpen={visibleContactModal}
+        onClose={handleCloseContactModal}
+        employee={mockEmployee}
       />
       {/* Аватар и Должность */}
       <div className={styles.profileHeader}>
@@ -93,35 +116,18 @@ export default function EmployeeDetailsCard({ employee }) {
           </div>
           <div className={styles.valueContainer}>
             <span className={styles.label}>
-              {employee.department?.length > 1 ? "Отделы:" : "Отдел:"}
+              {employee.department?.length > 1
+                ? "Подразделения:"
+                : "Подразделение:"}
             </span>
             <span className={styles.value}>{employee.department}</span>
-          </div>
-        </div>
-
-        <div className={styles.dataItem}>
-          <div className={styles.icon}>
-            <TelegramIcon size={18} fill={"#16a34a"} />
-          </div>
-          <div className={styles.valueContainer}>
-            <span className={styles.label}>Telegram ID:</span>
-            <span className={styles.value}>{employee.telegramId}</span>
-          </div>
-        </div>
-        <div className={styles.dataItem}>
-          <div className={styles.icon}>
-            <TelegramIcon size={18} fill={"#16a34a"} />
-          </div>
-          <div className={styles.valueContainer}>
-            <span className={styles.label}>Имя пользователя:</span>
-            <span className={styles.value}>{employee.telegramName}</span>
           </div>
         </div>
       </div>
 
       {/* Кнопки действий */}
       <div className={styles.actions}>
-        <button className={styles.editButton} onClick={handleOpenEditModal}>
+        <button className={styles.editButton} onClick={handleOpenContactModal}>
           <Contact size={18} /> Контактные данные
         </button>
         <button className={styles.editButton} onClick={handleOpenEditModal}>

@@ -131,9 +131,9 @@ $color-accent-end: #06b6d4;
 }
 
 .buttonSecondary {
-  display: inline-flex; // Чтобы иконка и текст были на одной линии
+  display: inline-flex;
   align-items: center;
-  gap: 6px; // Отступ между текстом и иконкой
+  gap: 6px;
   background-color: #f9fafb;
   color: $color-primary;
   border: 1px solid #e5e7eb;
@@ -142,6 +142,4 @@ $color-accent-end: #06b6d4;
     background-color: #f3f4f6;
     border-color: $color-primary;
   }
-
-  // Убрали отдельный селектор для svg, используем gap
 }

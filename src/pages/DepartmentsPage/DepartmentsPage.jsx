@@ -16,7 +16,7 @@ export default function DepartmentsPage() {
   return (
     <div className={styles.pageContent}>
       <PageTitle
-        title="Ваши отделы"
+        title="Ваши подразделения"
         hasButton
         onClick={() => setVisibleCreateModal(true)}
       />

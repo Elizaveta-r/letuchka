@@ -67,12 +67,13 @@ export const TaskCard = ({ task, isFull }) => {
       {/* 1. ЗАГОЛОВОК И ДЕДЛАЙН */}
       <div className={styles.header}>
         <div className={styles.headerContent}>
-          <h3
+          <div
             className={`${styles.taskTitle} ${isFull ? styles.full : ""}`}
             onClick={isFull ? () => {} : handleGoToDetails}
           >
-            {isFull ? task?.task_title : truncateText(task?.task_title, 28)}
-          </h3>
+            {task?.task_title}
+          </div>
+
           <div className={styles.positionBadge}>{task?.position_title}</div>
         </div>
 
@@ -144,7 +145,7 @@ export const TaskCard = ({ task, isFull }) => {
 
         <div className={styles.detailItem}>
           <span className={styles.label}>
-            <Building2 size={16} /> Отдел:
+            <Building2 size={16} /> Подразделение:
           </span>
           <span className={styles.value}>
             {task?.department ? task?.department : "-"}

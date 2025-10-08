@@ -1,0 +1,71 @@
+$color-primary: #16a34a;
+$color-text: #1f2937;
+$color-muted: #6b7280;
+$color-border: #e5e7eb;
+$color-success: #10b981;
+$color-text-dark: #1f2937;
+$color-text-light: #6b7280;
+$color-shadow-light: rgba(0, 0, 0, 0.05);
+$color-shadow-focus: rgba(22, 163, 74, 0.3);
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1f2937;
+  text-align: left;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  width: 100%;
+  box-sizing: border-box;
+
+  border: 1px solid $color-border;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px $color-shadow-light;
+  outline: none;
+
+  transition: border-color 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+
+  &:hover {
+    border-color: darken($color-border, 5%);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  &:focus-within {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px lighten($color-primary, 35%),
+      0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.icon {
+  color: $color-muted;
+  margin-left: 12px;
+  .inputWrapper:focus-within & {
+    color: $color-primary;
+  }
+}
+
+.input {
+  flex-grow: 1;
+
+  padding: 12px 16px 12px 10px;
+
+  font-size: 1rem;
+  line-height: 1.5;
+  color: $color-text-dark;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  &::placeholder {
+    color: $color-text-light;
+    opacity: 0.8;
+  }
+}

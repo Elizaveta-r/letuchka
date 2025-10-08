@@ -12,7 +12,7 @@ export default function EmployeeRowHeader() {
 
       <p className={styles.roleCol}>РОЛЬ</p>
 
-      <p className={styles.department}>ОТДЕЛ</p>
+      <p className={styles.department}>ПОДРАЗДЕЛЕНИЕ</p>
 
       <div className={`${styles.statusIndicator}`}>
         <p className={styles.status}>НА РАБОТЕ</p>

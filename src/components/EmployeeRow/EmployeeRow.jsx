@@ -9,6 +9,7 @@ export default function EmployeeRow({
   department,
   checkedIn,
   onShowDetails,
+  onShowContacts,
   onDelete,
   onEdit,
 }) {
@@ -38,7 +39,7 @@ export default function EmployeeRow({
       </div>
 
       <div className={styles.actions}>
-        <div className={styles.edit} onClick={onEdit}>
+        <div className={styles.edit} onClick={onShowContacts}>
           <Contact size={16} />
         </div>
         <div className={styles.trash} onClick={onDelete}>

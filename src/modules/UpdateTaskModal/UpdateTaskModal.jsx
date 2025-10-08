@@ -79,9 +79,9 @@ export default function UpdateTaskModal({ isOpen, handleClose, isNew, task }) {
           <div className={styles.container}>
             <div className={styles.form}>
               <div className={styles.section}>
-                <p className={styles.label}>Отдел</p>
+                <p className={styles.label}>Подразделение</p>
                 <CustomSelect
-                  placeholder="Выберите отдел"
+                  placeholder="Выберите подразделение"
                   isSearchable
                   options={departments}
                   value={department}

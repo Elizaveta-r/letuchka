@@ -14,6 +14,9 @@ $color-alert: #eab308;
 $color-muted: #6b7280;
 $color-success: #22c55e;
 
+// Для текста
+$line-height: 1.4;
+
 // ===== КАРТОЧКА =====
 .taskCard {
   background: $color-bg-card;
@@ -53,22 +56,35 @@ $color-success: #22c55e;
   font-size: 1.4rem;
   font-weight: 700;
   color: $color-text-dark;
-  line-height: 1.4;
+  line-height: $line-height;
   letter-spacing: -0.02em;
-  flex: 1;
+
+  height: calc(2 * 1.4rem * $line-height);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  max-height: calc(2 * 1.4rem * $line-height);
+
   cursor: pointer;
-  transition: all 0.3s ease-in;
-  border-bottom: 1px solid transparent;
-  line-height: 100%;
+
+  text-decoration: underline transparent;
+  text-decoration-thickness: 1.5px;
+  transition: text-decoration-color 0.3s ease-in-out;
 
   &:hover {
-    border-bottom: 1px solid #22c55e;
+    text-decoration-color: #22c55e;
   }
 
   &.full {
     cursor: default;
+    height: max-content;
+    line-height: 100%;
+    line-clamp: unset;
+
     &:hover {
-      border-bottom: 1px solid transparent;
+      text-decoration-color: transparent;
     }
   }
 }

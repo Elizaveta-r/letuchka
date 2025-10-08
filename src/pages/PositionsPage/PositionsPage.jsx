@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import JobTitleTable from "../../modules/JobTitleTable/JobTitleTable";
 import styles from "./PositionsPage.module.scss";
 import DeleteConfirmationModal from "../../modules/DeleteConfirmationModal/DeleteConfirmationModal";
 import EditPositionModal from "../../modules/EditPositionModal/EditPositionModal";
 import { Briefcase, PackageMinus } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 const positions = [
   {
@@ -38,9 +39,20 @@ const positions = [
 ];
 
 export default function PositionsPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const action = searchParams.get("action");
+
+  console.log(action); // Выведет: "create"
   const [visibleModal, setVisibleCreateModal] = useState(false);
   const [isConfirmationOpen, setConfirmationOpen] = React.useState(false);
   const [selectedPosition, setSelectedPosition] = React.useState(null);
+
+  useEffect(() => {
+    if (action === "create") {
+      handleOpenCreateModal();
+    }
+  }, [action]);
 
   const handleOpenCreateModal = (id) => {
     if (id) {
@@ -52,6 +64,7 @@ export default function PositionsPage() {
 
   const handleCloseCreateModal = () => {
     setVisibleCreateModal(false);
+    setSearchParams({});
     setSelectedPosition(null);
   };
 

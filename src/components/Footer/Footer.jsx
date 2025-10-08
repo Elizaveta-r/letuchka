@@ -1,18 +1,16 @@
 import { Link } from "react-router-dom";
 import styles from "./Footer.module.scss";
-import { TelegramIcon } from "../../assets/icons/TelegramIcon";
-import { useSelector } from "react-redux";
-import { selectIsLoggedIn } from "../../store/slices/userSlice";
+import Logo from "../Logo/Logo";
 
 export const Footer = () => {
-  const isLoggedIn = useSelector(selectIsLoggedIn);
-
   const year = new Date().getFullYear();
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.logo}>{/* <Logo /> */}</div>
-      <div className={styles.infoContainer}>
+      <div className={styles.logo}>
+        <Logo />
+      </div>
+      {/* <div className={styles.infoContainer}>
         <div className={styles.sections}>
           <p>Разделы</p>
           {isLoggedIn ? (
@@ -62,13 +60,9 @@ export const Footer = () => {
               <TelegramIcon size={15} fill={"#666666"} />
               <span>Telegram</span>
             </a>
-            {/* <a href="">
-              <VkIcon size={15} fill={"#666666"} />
-              <span>Вконтакте</span>
-            </a> */}
           </div>
         </div>
-      </div>
+      </div> */}
       <div className={styles.copyrightContainer}>
         <div className={styles.links}>
           <Link to="/terms-of-use">Условия использования</Link>

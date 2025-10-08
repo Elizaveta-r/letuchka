@@ -6,6 +6,7 @@ import EmployeeRow from "../../components/EmployeeRow/EmployeeRow";
 import EmployeeRowHeader from "../../modules/EmployeeRowHeader/EmployeeRowHeader";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmationModal from "../../modules/DeleteConfirmationModal/DeleteConfirmationModal";
+import EmployeeContactModal from "../../modules/EmployeeContactModal/EmployeeContactModal";
 
 export default function EmployeePage() {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ export default function EmployeePage() {
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
   const [visibleConfirmDeleteModal, setVisibleConfirmDeleteModal] =
     useState(false);
+  const [visibleContactModal, setVisibleContactModal] = useState(false);
 
   const handleOpenNewEmployeeModal = () => {
     setIsNewEmployee(true);
@@ -42,7 +44,24 @@ export default function EmployeePage() {
     setVisibleConfirmDeleteModal(false);
   };
 
+  const handleOpenContactModal = (employee) => {
+    setEditedEmployee(employee);
+    setVisibleContactModal(true);
+  };
+
+  const handleCloseContactModal = () => {
+    setVisibleContactModal(false);
+  };
+
   const handleDetails = (id) => navigate(`${id}`);
+
+  const mockEmployee = {
+    name: editedEmployee?.name,
+    email: "employee.email@example.com",
+    phone: "+79788888888",
+    telegramId: editedEmployee?.telegramId,
+    telegramName: editedEmployee?.telegramName,
+  };
 
   return (
     <div className={styles.pageContent}>
@@ -64,6 +83,12 @@ export default function EmployeePage() {
         message={<MessageDelete employeeName={editedEmployee?.name} />}
       />
 
+      <EmployeeContactModal
+        isOpen={visibleContactModal}
+        onClose={handleCloseContactModal}
+        employee={mockEmployee}
+      />
+
       <div className={styles.content}>
         <EmployeeRowHeader />
 
@@ -73,6 +98,7 @@ export default function EmployeePage() {
             key={employee.id}
             {...employee}
             onShowDetails={() => handleDetails(employee.id)}
+            onShowContacts={() => handleOpenContactModal(employee)}
             onEdit={() => handleOpenEmployeeModal(employee)}
             onDelete={() => handleOpenConfirmDeleteModal(employee)}
           />

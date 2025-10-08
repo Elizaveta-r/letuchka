@@ -15,7 +15,8 @@ const formatDateTime = (isoString) => {
 
 export default function EmployeeHistoryItem({ item, onPhotoClick }) {
   const isDoneLate = item.status === "done_late";
-  const isFailed = item.status === "failed";
+  const isFailed = item.status === "overdue";
+  const isPhotoRequired = item.is_photo_required;
 
   let Icon = CheckCircle;
   let statusClass = styles.done;
@@ -32,7 +33,11 @@ export default function EmployeeHistoryItem({ item, onPhotoClick }) {
   const date = formatDateTime(item.date);
 
   return (
-    <div className={`${styles.historyItem} ${statusClass}`}>
+    <div
+      className={`${styles.historyItem} ${
+        isPhotoRequired ? styles.photo : ""
+      } ${statusClass}`}
+    >
       {/* 1. Визуальная метка статуса */}
       <div className={styles.statusIcon}>
         <Icon size={20} />
@@ -56,36 +61,38 @@ export default function EmployeeHistoryItem({ item, onPhotoClick }) {
             </p>
           )}
 
-          {item.ai_feedback === "OK" ? (
-            <p className={`${styles.aiFeedback} ${styles.aiSuccess}`}>
-              <CheckCircle size={14} /> AI Анализ: Успешно
-            </p>
-          ) : (
-            <p className={`${styles.aiFeedback} ${styles.aiFail}`}>
-              <AlertTriangle size={14} /> AI Анализ: Неудача ({item.ai_feedback}
-              )
-            </p>
-          )}
+          {isPhotoRequired &&
+            (item.ai_feedback === "OK" ? (
+              <p className={`${styles.aiFeedback} ${styles.aiSuccess}`}>
+                <CheckCircle size={14} /> AI Анализ: Успешно
+              </p>
+            ) : (
+              <p className={`${styles.aiFeedback} ${styles.aiFail}`}>
+                <AlertTriangle size={14} /> AI Анализ: Неудача (
+                {item.ai_feedback})
+              </p>
+            ))}
         </div>
       </div>
 
       {/* 4. Предпросмотр фотоотчета */}
-      {item.photo_url ? (
-        <div
-          className={styles.photoContainer}
-          onClick={() => onPhotoClick(item.photo_url)}
-        >
-          <img
-            src={item.photo_url}
-            alt="Фотоотчет сотрудника"
-            className={styles.photo}
-          />
-        </div>
-      ) : (
-        <div className={`${styles.photoContainer} ${styles.empty}`}>
-          <p>Нет фото</p>
-        </div>
-      )}
+      {isPhotoRequired &&
+        (item.photo_url ? (
+          <div
+            className={styles.photoContainer}
+            onClick={() => onPhotoClick(item.photo_url)}
+          >
+            <img
+              src={item.photo_url}
+              alt="Фотоотчет сотрудника"
+              className={styles.photo}
+            />
+          </div>
+        ) : (
+          <div className={`${styles.photoContainer} ${styles.empty}`}>
+            <p>Нет фото</p>
+          </div>
+        ))}
     </div>
   );
 }

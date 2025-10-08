@@ -2,7 +2,7 @@ import { useLocation, useRoutes } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
 import { PageLayout } from "../layout/PageLayout/PageLayout";
-import { HomePage } from "../pages/HomePage/HomePage";
+import HomePage from "../pages/HomePage/HomePage";
 import { AuthLayout } from "../layout/AuthLayout/AuthLayout";
 import { AuthPage } from "../pages/AuthPage/AuthPage";
 import { RegPage } from "../pages/RegPage/RegPage";
@@ -16,6 +16,7 @@ import EmployeeDetailPage from "../pages/EmployeeDetailPage/EmployeeDetailPage";
 import TasksPage from "../pages/TasksPage/TasksPage";
 import PositionsPage from "../pages/PositionsPage/PositionsPage";
 import TasksDetailsPage from "../pages/TasksDetailsPage/TasksDetailsPage";
+import ReportsPage from "../pages/ReportsPage/ReportsPage";
 
 export default function AppRoutes() {
   const location = useLocation();
@@ -102,6 +103,14 @@ export default function AppRoutes() {
           element: <TasksDetailsPage />,
         },
       ],
+    },
+    {
+      path: "/reports",
+      element: (
+        <PageLayout>
+          <ReportsPage />
+        </PageLayout>
+      ),
     },
     {
       path: "/positions",

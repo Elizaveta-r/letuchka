@@ -8,4 +8,8 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
+
+  @media screen and (min-width: 1920px) {
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+  }
 }

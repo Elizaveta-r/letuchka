@@ -1,0 +1,152 @@
+$color-primary: #16a34a; // Зеленый
+$color-primary-dark: #15803d;
+$color-error: #dc2626; // Красный
+$color-border: #e5e7eb;
+$color-text-dark: #1f2937;
+$color-text-muted: #6b7280;
+
+.modalContent {
+  display: flex;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $color-text-dark;
+  }
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: $color-text-muted;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.2s;
+
+  &:hover {
+    color: $color-error;
+  }
+}
+
+.balanceInfo {
+  background: #f3f4f6;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  text-align: center;
+
+  p {
+    margin: 0;
+    color: $color-text-muted;
+  }
+}
+
+.currentBalance {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: $color-text-dark;
+  margin-top: 5px !important;
+}
+
+/* --- Секция быстрого выбора --- */
+.quickSelect {
+  margin-bottom: 25px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+button {
+  font-family: "Nunito";
+}
+
+.quickButton {
+  padding: 8px 12px;
+  background-color: #e5e7eb;
+  color: $color-text-dark;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: $color-primary;
+    color: #ffffff;
+    border-color: $color-primary;
+  }
+}
+
+/* --- Инпут суммы --- */
+
+.inputGroup {
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  font-size: 0.9rem;
+  color: $color-text-dark;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.inputError {
+  border-color: $color-error !important;
+}
+
+.error {
+  color: $color-error;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+/* --- Кнопка отправки --- */
+
+.submitButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background-color: $color-primary;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover:not(:disabled) {
+    background-color: $color-primary-dark;
+  }
+
+  &:disabled {
+    background-color: #a3a3a3;
+    cursor: not-allowed;
+  }
+}
+
+.paymentNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: $color-text-muted;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed $color-border;
+}

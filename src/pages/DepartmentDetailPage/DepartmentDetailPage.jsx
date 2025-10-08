@@ -6,22 +6,35 @@ import DeleteConfirmationModal from "../../modules/DeleteConfirmationModal/Delet
 import Hint from "../../ui/Hint/Hint";
 import { getInitials } from "../../utils/methods/getInitials";
 import { useNavigate } from "react-router-dom";
+import EmployeeContactModal from "../../modules/EmployeeContactModal/EmployeeContactModal";
 
 const employees = [
   {
     id: 1,
     name: "Иван Иванов",
     position: "Frontend разработчик",
+    telegramId: 6455897008,
+    telegramName: "@ivan_fe",
+    phone: "+7 (123) 456-78-90",
+    email: "2EYHb@example.com",
   },
   {
     id: 2,
     name: "Петр Петров",
     position: "Frontend разработчик",
+    telegramId: 6455897008,
+    telegramName: "@petr_fe",
+    phone: "+7 (123) 456-78-90",
+    email: "2EYHb@example.com",
   },
   {
     id: 3,
     name: "Сидор Сидоров",
     position: "Frontend разработчик",
+    telegramId: 6455897008,
+    telegramName: "@sidor_fe",
+    phone: "+7 (123) 456-78-90",
+    email: "2EYHb@example.com",
   },
 ];
 export default function DepartmentDetailPage() {
@@ -30,6 +43,7 @@ export default function DepartmentDetailPage() {
   const [visibleConfirmDeleteModal, setVisibleConfirmDeleteModal] =
     useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [visibleContactModal, setVisibleContactModal] = useState(false);
 
   const handleOpenConfirmDeleteModal = (employee) => {
     setVisibleConfirmDeleteModal(true);
@@ -41,17 +55,40 @@ export default function DepartmentDetailPage() {
     setSelectedEmployee(null);
   };
 
+  const handleOpenContactModal = (employee) => {
+    setSelectedEmployee(employee);
+    setVisibleContactModal(true);
+  };
+
+  const handleCloseContactModal = () => {
+    setVisibleContactModal(false);
+  };
+
+  const mockEmployee = {
+    name: selectedEmployee?.name,
+    email: selectedEmployee?.email,
+    phone: selectedEmployee?.phone,
+    telegramId: selectedEmployee?.telegramId,
+    telegramName: selectedEmployee?.telegramName,
+  };
+
   const handleGetDetails = (id) => navigate(`/employees/${id}`);
 
   return (
     <div className={styles.pageContent}>
-      <PageTitle title="Отдел разработки (Frontend)" />
+      <PageTitle title="Подразделение разработки (Frontend)" />
 
       <DeleteConfirmationModal
         isOpen={visibleConfirmDeleteModal}
         onClose={handleCloseConfirmDeleteModal}
         employeeName={selectedEmployee?.name}
         message={<MessageDelete employeeName={selectedEmployee?.name} />}
+      />
+
+      <EmployeeContactModal
+        isOpen={visibleContactModal}
+        onClose={handleCloseContactModal}
+        employee={mockEmployee}
       />
       <div className={styles.content}>
         <p className={styles.desc}>
@@ -94,6 +131,7 @@ export default function DepartmentDetailPage() {
                 name={emp.name}
                 post={emp.position}
                 id={emp.id}
+                onShowContacts={() => handleOpenContactModal(emp)}
                 onGetDetails={() => handleGetDetails(emp.id)}
                 onDelete={() => handleOpenConfirmDeleteModal(emp)}
               />
@@ -110,6 +148,7 @@ export default function DepartmentDetailPage() {
                 name={emp.name}
                 post={emp.position}
                 id={emp.id}
+                onShowContacts={() => handleOpenContactModal(emp)}
                 onGetDetails={() => handleGetDetails(emp.id)}
                 onDelete={() => handleOpenConfirmDeleteModal(emp)}
               />
@@ -121,7 +160,13 @@ export default function DepartmentDetailPage() {
   );
 }
 
-const EmployeeRow = ({ name, post, onDelete, onGetDetails }) => {
+const EmployeeRow = ({
+  name,
+  post,
+  onDelete,
+  onShowContacts,
+  onGetDetails,
+}) => {
   const initials = getInitials(name);
   return (
     <div className={styles.dataItem}>
@@ -132,7 +177,7 @@ const EmployeeRow = ({ name, post, onDelete, onGetDetails }) => {
       <p className={styles.postEmp}>{post}</p>
       <div className={styles.actions}>
         <Hint hintContent="Посмотреть контактные данные" hasIcon={false}>
-          <div className={styles.contact} onClick={onDelete}>
+          <div className={styles.contact} onClick={onShowContacts}>
             <Contact size={16} />
           </div>
         </Hint>

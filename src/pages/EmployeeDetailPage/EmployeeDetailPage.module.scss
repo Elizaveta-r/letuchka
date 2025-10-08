@@ -298,6 +298,10 @@ $color-status-failed: #ef4444;
     box-shadow: none !important;
     border-radius: 8px;
   }
+
+  :global(.rdrDateRangeWrapper .rdrDateDisplayWrapper) {
+    display: none;
+  }
 }
 
 .applyFilterButton {

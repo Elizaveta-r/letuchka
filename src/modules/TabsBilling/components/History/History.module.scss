@@ -1,0 +1,181 @@
+// .history {
+//   padding: 40px 60px;
+//   @media screen and (max-width: 1023px) {
+//     padding: 10px 15px;
+//   }
+// }
+
+// .scrollWrapper {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 16px;
+//   max-height: 66vh;
+//   overflow: auto;
+// }
+
+// .item {
+//   display: grid;
+//   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+//   gap: 16px;
+//   font-size: 14px;
+//   color: #282828;
+//   font-weight: 500;
+// }
+
+// .loader {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 16px;
+// }
+
+// .loaderItem {
+//   height: 21px;
+// }
+
+// .loadMore {
+//   cursor: pointer;
+//   font-size: 14px;
+//   color: #92400e;
+//   font-weight: 500;
+//   width: max-content;
+
+//   &:hover {
+//     text-decoration: underline;
+//   }
+//   // #fbbf24, #fb7185)
+// }
+/* --- Цветовая палитра --- */
+$color-text: #1f2937;
+$color-muted: #6b7280;
+$color-border: #e5e7eb;
+$color-income: #16a34a;
+$color-outcome: #dc2626;
+$color-bg-hover: #f9fafb;
+$color-shadow: rgba(0, 0, 0, 0.04);
+
+.history {
+  height: 100%;
+}
+
+.scrollWrapper {
+  height: 100%;
+  overflow-y: auto;
+  padding: 0 12px 0 0;
+
+  /* Кастомный скроллбар */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-border;
+    border-radius: 3px;
+
+    &:hover {
+      background: #d1d5db;
+    }
+  }
+}
+
+/* --- Стили для отдельного элемента истории --- */
+.item {
+  display: grid;
+  grid-template-columns: 140px 1fr auto;
+  gap: 20px;
+  align-items: center;
+  padding: 18px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: $color-bg-hover;
+    border-color: $color-border;
+    box-shadow: 0 2px 6px $color-shadow;
+  }
+
+  /* Дата */
+  & > div:nth-child(1) {
+    font-size: 0.85rem;
+    color: $color-muted;
+    font-weight: 500;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: $color-border;
+      flex-shrink: 0;
+    }
+  }
+
+  /* Описание */
+  & > div:nth-child(2) {
+    font-weight: 500;
+    color: $color-text;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.95rem;
+  }
+
+  /* Сумма */
+  & > div:nth-child(3) {
+    font-weight: 700;
+    text-align: right;
+    font-size: 1.05rem;
+    min-width: 100px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+}
+
+/* --- Стили для сумм income/outcome --- */
+/* Эти стили будут работать, если добавить data-атрибут в JSX */
+.item[data-operation="income"] > div:nth-child(3) {
+  color: $color-income;
+  background: #dcfce7;
+}
+
+.item[data-operation="outcome"] > div:nth-child(3) {
+  color: $color-outcome;
+  background: #fee2e2;
+}
+
+/* --- Стиль для "Нет истории" --- */
+.noHistory {
+  padding: 40px 20px;
+  text-align: center;
+  color: $color-muted;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+/* --- Адаптивность --- */
+@media screen and (max-width: 768px) {
+  .item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 16px;
+
+    & > div:nth-child(1) {
+      font-size: 0.8rem;
+    }
+
+    & > div:nth-child(3) {
+      text-align: left;
+      justify-self: start;
+    }
+  }
+}

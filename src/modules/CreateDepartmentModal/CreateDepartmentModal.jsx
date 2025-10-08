@@ -27,7 +27,7 @@ export default function CreateDepartmentModal({ isOpen, onClose, onConfirm }) {
 
   const handleConfirm = () => {
     if (!formData.name || !formData.description) {
-      toast.error("Пожалуйста, заполните название и описание отдела.");
+      toast.error("Пожалуйста, заполните название и описание подразделения.");
       return;
     }
 
@@ -45,12 +45,16 @@ export default function CreateDepartmentModal({ isOpen, onClose, onConfirm }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <Modal isOpen={isOpen} onClose={onClose} title="Создание нового отдела">
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          title="Создание нового подразделения"
+        >
           <div className={styles.formContent}>
             {/* 1. Название и Описание */}
             <div className={styles.section}>
               <label className={styles.label} htmlFor="name">
-                Название отдела
+                Название подразделения
               </label>
               <CustomInput
                 id="name"
@@ -79,10 +83,10 @@ export default function CreateDepartmentModal({ isOpen, onClose, onConfirm }) {
               />
             </div>
 
-            {/* 3. Описание отдела */}
+            {/* 3. Описание подразделения */}
             <div className={styles.section}>
               <label className={styles.label} htmlFor="description">
-                Описание отдела
+                Описание подразделения
               </label>
               <CustomTextArea
                 id="description"
@@ -139,7 +143,7 @@ export default function CreateDepartmentModal({ isOpen, onClose, onConfirm }) {
               Отмена
             </button>
             <button className={styles.buttonConfirm} onClick={handleConfirm}>
-              Создать отдел
+              Создать подразделение
             </button>
           </div>
         </Modal>

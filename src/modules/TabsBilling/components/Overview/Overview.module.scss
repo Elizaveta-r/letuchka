@@ -1,0 +1,152 @@
+$color-primary: #16a34a;
+$color-primary-light: #dcfce7;
+$color-text: #1f2937;
+$color-muted: #6b7280;
+$color-border: #e5e7eb;
+$color-bg-light: #f9fafb;
+$color-shadow: rgba(0, 0, 0, 0.04);
+
+.content {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.03);
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $color-text;
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid $color-border;
+  background: $color-bg-light;
+}
+
+.balanceWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* --- Секция баланса с градиентом --- */
+.balance {
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: $color-text;
+  letter-spacing: -1.5px;
+  padding: 32px 28px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+  border-bottom: 1px solid $color-border;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, $color-primary 0%, #22c55e 100%);
+  }
+}
+
+/* --- Секция деталей (Тариф) --- */
+.detailsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 24px 28px;
+  background: #ffffff;
+}
+
+.detailItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: $color-bg-light;
+  border-radius: 10px;
+  border: 1px solid $color-border;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #ffffff;
+    box-shadow: 0 2px 8px $color-shadow;
+  }
+}
+
+.iconTariff,
+.iconDate {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.iconTariff {
+  background: $color-primary-light;
+  color: $color-primary;
+}
+
+.iconDate {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.detailLabel {
+  color: $color-muted;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detailValue {
+  color: $color-text;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-top: 2px;
+}
+
+/* --- Подсказка статуса --- */
+.statusTip {
+  font-size: 0.85rem;
+  color: $color-muted;
+  line-height: 1.6;
+  padding: 20px 28px 24px;
+  background: $color-bg-light;
+  border-top: 1px solid $color-border;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &::before {
+    content: "ℹ️";
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+}
+
+/* --- Адаптивность --- */
+@media screen and (max-width: 768px) {
+  .detailsContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .balance {
+    font-size: 2.5rem;
+    padding: 24px 20px;
+  }
+
+  .title,
+  .detailsContainer,
+  .statusTip {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}

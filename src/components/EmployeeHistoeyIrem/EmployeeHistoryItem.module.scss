@@ -13,12 +13,16 @@ $color-status-failed: #ef4444;
 
 .historyItem {
   display: grid;
-  grid-template-columns: 30px 1fr 120px;
+  grid-template-columns: 30px 1fr;
   gap: 15px;
   padding: 15px;
   border-radius: 8px;
   transition: background-color 0.2s;
   border: 1px solid $color-border;
+
+  &.photo {
+    grid-template-columns: 30px 1fr 120px;
+  }
 
   &:hover {
     background-color: $color-bg-light;
