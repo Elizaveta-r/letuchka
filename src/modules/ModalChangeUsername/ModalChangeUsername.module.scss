@@ -1,0 +1,41 @@
+$color-border: #e5e7eb;
+$color-text-dark: #1f2937;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 10px;
+}
+
+.formItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: $color-text-dark;
+  text-align: left;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid $color-border;
+}
+
+.saveButton {
+  border-radius: 8px;
+  width: max-content;
+  padding: 6.5px 12px;
+  font-size: 14px;
+  min-width: 98.63px;
+  min-height: 37px;
+}

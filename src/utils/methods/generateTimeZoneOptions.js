@@ -28,3 +28,37 @@ export const timeZoneOptions = [
   { value: "Asia/Magadan", label: "UTC+11:00 (Магадан, Сахалин)" },
   { value: "Asia/Kamchatka", label: "UTC+12:00 (Камчатка, Анадырь)" },
 ];
+
+/**
+ * Ищет форматированное имя часового пояса (label) по его значению (value)
+ * и удаляет всё, что находится в скобках.
+ * * @param {string} timeZoneValue - Значение часового пояса, полученное с сервера.
+ * @returns {string} Упрощенное имя (например, "UTC+12:00 (Камчатка") или пустая строка.
+ */
+export const getFormattedTimeZoneLabel = (timeZoneValue) => {
+  if (!timeZoneValue) {
+    return "";
+  }
+
+  const foundOption = timeZoneOptions.find(
+    (option) => option.value === timeZoneValue
+  );
+
+  if (!foundOption) {
+    return "";
+  }
+
+  const fullLabel = foundOption.label;
+
+  // 1. Находим индекс первой открывающейся скобки
+  const bracketIndex = fullLabel.indexOf("(");
+
+  // 2. Если скобка не найдена, возвращаем полный лейбл
+  if (bracketIndex === -1) {
+    return fullLabel;
+  }
+
+  // 3. Извлекаем подстроку до скобки и удаляем пробел перед ней
+  // Например: "UTC+12:00 " (обрезаем по bracketIndex)
+  return fullLabel.slice(0, bracketIndex).trim();
+};

@@ -6,7 +6,27 @@ import { AnimatePresence } from "motion/react";
 import Modal from "../../ui/Modal/Modal";
 import { Button } from "../../ui/Button/Button";
 
+const transformContacts = (contactsArray) => {
+  if (!Array.isArray(contactsArray)) {
+    return {};
+  }
+
+  return contactsArray.reduce((acc, contact) => {
+    let key = contact.type;
+    if (key.includes("_")) {
+      key = key.replace(/_(\w)/g, (match, p1) => p1.toUpperCase());
+    }
+
+    acc[key] = contact.value;
+    return acc;
+  }, {});
+};
+
 export default function EmployeeContactModal({ isOpen, onClose, employee }) {
+  const fullName = `${employee?.surname} ${employee?.firstname} ${employee?.patronymic}`;
+
+  const contacts = employee?.contacts;
+
   const [input, setInput] = useState({
     email: "",
     phone: "",
@@ -15,15 +35,24 @@ export default function EmployeeContactModal({ isOpen, onClose, employee }) {
   });
 
   useEffect(() => {
-    if (employee) {
+    if (contacts) {
+      const transformed = transformContacts(contacts);
       setInput({
-        email: employee?.email || "",
-        phone: employee?.phone || "",
-        telegramName: employee?.telegramName || "",
-        telegramId: employee?.telegramId || "",
+        email: transformed.email || "",
+        phone: transformed.phone || "",
+
+        telegramName: transformed.telegramName || "",
+        telegramId: transformed.telegramId || "",
+      });
+    } else {
+      setInput({
+        email: "",
+        phone: "",
+        telegramName: "",
+        telegramId: "",
       });
     }
-  }, [employee]);
+  }, [contacts]);
 
   const handleChangeInput = (e) => {
     setInput({
@@ -33,12 +62,14 @@ export default function EmployeeContactModal({ isOpen, onClose, employee }) {
   };
 
   const handleCancel = () => {
+    const transformed = transformContacts(contacts);
     onClose();
     setInput({
-      email: "",
-      phone: "",
-      telegramName: "",
-      telegramId: "",
+      email: transformed.email || "",
+      phone: transformed.phone || "",
+
+      telegramName: transformed.telegramName || "",
+      telegramId: transformed.telegramId || "",
     });
   };
 
@@ -52,7 +83,7 @@ export default function EmployeeContactModal({ isOpen, onClose, employee }) {
         <Modal
           isOpen={isOpen}
           onClose={onClose}
-          title={`Контактные данные сотрудника ${employee.name}`}
+          title={`Контактные данные сотрудника ${fullName}`}
         >
           <div className={styles.content}>
             <div className={styles.form}>

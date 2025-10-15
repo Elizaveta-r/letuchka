@@ -1,0 +1,54 @@
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px;
+  height: fit-content;
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+
+  transition: all 0.3s ease-in;
+
+  &:hover {
+    background-color: #f3f4f6;
+    color: #000;
+  }
+
+  &.active {
+    background-color: #131313;
+    color: white;
+
+    .navIcon {
+      color: white;
+    }
+  }
+}
+
+.navIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #999;
+  transition: color 0.15s ease;
+}

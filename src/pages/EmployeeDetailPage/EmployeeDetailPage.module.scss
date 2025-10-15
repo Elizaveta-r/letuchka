@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $color-primary: #16a34a;
 $color-accent-start: #22c55e;
 $color-accent-end: #06b6d4;
@@ -191,7 +193,7 @@ $color-status-failed: #ef4444;
   background-color: $color-primary;
   color: #ffffff;
   &:hover {
-    background-color: darken($color-primary, 5%);
+    background-color: color.adjust($color-primary, $lightness: -5%);
   }
 }
 .deleteButton {
@@ -260,7 +262,7 @@ $color-status-failed: #ef4444;
   transition: all 0.2s;
 
   &:hover {
-    background-color: lighten($color-primary, 40%);
+    background-color: color.adjust($color-primary, $lightness: 40%);
   }
 }
 

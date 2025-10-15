@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $color-primary: #16a34a;
 $color-accent-start: #22c55e;
 $color-accent-end: #0088cc;
@@ -115,7 +117,7 @@ $color-status-failed: #ef4444;
 
 .aiSuccess {
   color: $color-status-done;
-  background-color: lighten($color-status-done, 30%);
+  background-color: color.adjust($color-status-done, $lightness: 30%);
 
   svg {
     color: $color-status-done;
@@ -124,7 +126,7 @@ $color-status-failed: #ef4444;
 
 .aiFail {
   color: $color-status-failed;
-  background-color: lighten($color-status-failed, 25%);
+  background-color: color.adjust($color-status-failed, $lightness: 25%);
 
   svg {
     color: $color-status-failed;

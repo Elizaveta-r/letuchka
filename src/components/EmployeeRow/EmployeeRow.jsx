@@ -1,19 +1,52 @@
 import { Contact, Pencil, Trash } from "lucide-react";
 import styles from "./EmployeeRow.module.scss";
 import { getInitials } from "../../utils/methods/getInitials";
+import { useSelector } from "react-redux";
 
 export default function EmployeeRow({
-  name,
-  position,
+  id,
+  departments,
+  firstname,
+  patronymic,
+  surname,
+  positions,
   role,
-  department,
+
   checkedIn,
   onShowDetails,
   onShowContacts,
   onDelete,
   onEdit,
 }) {
-  const initials = getInitials(name);
+  const allDepartments = useSelector(
+    (state) => state?.departments?.departments
+  );
+  const allPositions = useSelector((state) => state?.positions?.positions);
+
+  const employeeDepartmentIdsSet = new Set(departments.map((dep) => dep.id));
+  const employeePositionIdsSet = new Set(positions.map((pos) => pos.id));
+
+  const getRoleName = () => {
+    switch (role) {
+      case "employee":
+        return "Сотрудник";
+      case "head":
+        return "Руководитель";
+      default:
+        return "";
+    }
+  };
+
+  const departmentsForEmployee = allDepartments.filter((department) =>
+    employeeDepartmentIdsSet.has(department.id)
+  );
+
+  const positionsForEmployee = allPositions.filter((position) =>
+    employeePositionIdsSet.has(position.id)
+  );
+
+  const fullName = `${surname} ${firstname} ${patronymic}`;
+  const initials = getInitials(fullName);
 
   return (
     <div className={styles.dataItem}>
@@ -23,14 +56,30 @@ export default function EmployeeRow({
         style={{ cursor: "pointer" }}
       >
         <div className={styles.avatar}>{initials}</div>
-        <p className={styles.nameEmp}>{name}</p>
+        <p className={styles.nameEmp}>{fullName}</p>
       </div>
 
-      <p className={styles.positionCol}>{position}</p>
+      <div>
+        {positionsForEmployee.map((position, index) => {
+          return (
+            <p key={`position-${index}`} className={styles.positionCol}>
+              {position.name}
+            </p>
+          );
+        })}
+      </div>
 
-      <p className={styles.roleCol}>{role}</p>
+      <p className={styles.roleCol}>{getRoleName()}</p>
 
-      <p className={styles.department}>{department}</p>
+      <div>
+        {departmentsForEmployee.map((department, index) => {
+          return (
+            <p key={`department-${index}`} className={styles.department}>
+              {department.name}
+            </p>
+          );
+        })}
+      </div>
 
       <div className={styles.statusIndicator}>
         <div

@@ -15,6 +15,8 @@ import { EyeSlashIcon } from "../../assets/icons/EyeSlashIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import PasswordIcon from "../../components/PasswordIcon/PasswordIcon";
+import { signUp } from "../../utils/api/actions/user";
+import { getEmailName } from "../../utils/methods/getEmailName copy";
 
 export const RegForm = ({ step, setStep }) => {
   const dispatch = useDispatch();
@@ -64,11 +66,16 @@ export const RegForm = ({ step, setStep }) => {
     }
 
     if (!passwordError && password) {
-      console.log(email, password);
+      dispatch(
+        signUp(setLoading, navigate, {
+          email,
+          password,
+          userName: getEmailName(email),
+        })
+      );
     } else {
       toast.error("Введите пароль");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     step,
     email,

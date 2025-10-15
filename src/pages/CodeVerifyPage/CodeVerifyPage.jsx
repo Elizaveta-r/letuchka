@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import CodeInput from "../../ui/CodeInput/CodeInput";
 import styles from "./CodeVerifyPage.module.scss";
 import { Button } from "../../ui/Button/Button";
+import { codeVerify } from "../../utils/api/actions/user";
 
 const RESEND_COOLDOWN = 60;
 const LS_KEY = "resend_code_available_at";
@@ -42,7 +43,7 @@ export const CodeVerifyPage = () => {
   };
 
   const handleCodeComplete = (completeCode) => {
-    console.log({ email, code: completeCode });
+    dispatch(codeVerify(navigate, { email, code: completeCode }, setSuccess));
   };
 
   const handleCodeChange = (newCode) => {

@@ -16,6 +16,9 @@ $color-border: #e5e7eb;
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
+  overflow: scroll;
+  max-height: 60vh;
+  padding-right: 15px;
 }
 
 .formRow {

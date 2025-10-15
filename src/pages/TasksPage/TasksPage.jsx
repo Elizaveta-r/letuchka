@@ -1,86 +1,108 @@
 import styles from "./TasksPage.module.scss";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { TaskCard } from "../../components/TaskCard/TaskCard";
-import { useState } from "react";
-import UpdateTaskModal from "../../modules/UpdateTaskModal/UpdateTaskModal";
+import { useEffect, useMemo } from "react";
+import { getTasksList } from "../../utils/api/actions/tasks";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { resetDraftTask, setIsEdit } from "../../store/slices/tasksSlice";
+import { TaskFilter } from "../../modules/TaskFilter/TaskFilter";
 
-const tasks = [
-  {
-    id: 1,
-    position_title: "Повар",
-    task_title: "Прием рабочего места в начале смены",
-    task_time: "9:30:00",
-    deadline: "10:00:00",
-    photo_required: true,
-    photo_mandatory: true,
-    notify_on_overdue: true,
-    include_in_report: true,
-    acceptance_type: "Фото", // Пример
-    acceptance_criteria: "Рабочее место должно быть чистым",
-  },
-  {
-    id: 2,
-    position_title: "Повар",
-    task_title: "Комментарии приемки рабочего места от прошлой смены",
-    task_time: "08:00",
-    deadline: "09:00",
-    photo_required: false,
-    photo_mandatory: false,
-    notify_on_overdue: true,
-    include_in_report: true,
-    acceptance_type: "Текст", // Пример
-    acceptance_criteria: "",
-    department: "Кухня",
-  },
-  {
-    id: 3,
-    position_title: "Повар",
-    task_title: "Выслать информацию о списаниях в чат ",
-    task_time: "10:30:00",
-    deadline: "11:00:00",
-    photo_required: false,
-    photo_mandatory: false,
-    notify_on_overdue: true,
-    include_in_report: true,
-    acceptance_type: "чекбокс", // Пример
-    acceptance_criteria: "",
-    department: "Кухня",
-  },
-  {
-    id: 4,
-    position_title: "Администратор",
-    task_title:
-      "Наличие наклеек на крышках от крафт боксов и плоских для запеченных ",
-    task_time: "10:15:00",
-    deadline: "11:00:00",
-    photo_required: false,
-    photo_mandatory: false,
-    notify_on_overdue: true,
-    include_in_report: true,
-    acceptance_type: "чекбокс", // Пример
-    acceptance_criteria: "",
-    department: "Кухня",
-  },
-];
 export default function TasksPage() {
-  const [visibleCreateModal, setVisibleCreateModal] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const openCreateModal = () => {
-    setVisibleCreateModal(true);
+  const {
+    taskFilters,
+    data: tasks,
+    sort,
+  } = useSelector((state) => state?.tasks);
+
+  const { searchText, department_id, position_id } = taskFilters;
+
+  const filteredTasks = useMemo(() => {
+    if (!tasks) return [];
+
+    const normalizedSearchText = searchText ? searchText.toLowerCase() : null;
+
+    return tasks.filter((task) => {
+      console.log(task.positions.map((p) => p.name).join(" "));
+      const matchesSearch = normalizedSearchText
+        ? [
+            task.name,
+            task.accept_condition,
+            task.positions.map((p) => p.name).join(" "),
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase()
+            .includes(normalizedSearchText)
+        : true;
+
+      const matchesDepartment = department_id
+        ? task.department_id === department_id.value
+        : true;
+
+      const matchesPosition = position_id
+        ? task.positions.some((p) => p.id === position_id.value)
+        : true;
+
+      return matchesSearch && matchesDepartment && matchesPosition;
+    });
+  }, [tasks, searchText, department_id, position_id]);
+
+  const sortedTasks = useMemo(() => {
+    if (filteredTasks.length === 0) return [];
+
+    // Создаем копию уже отфильтрованного массива для сортировки
+    const sortableTasks = [...filteredTasks];
+    const { key, order } = sort;
+
+    // ... (функция compare остается без изменений) ...
+    const compare = (a, b) => {
+      let valA, valB;
+
+      if (key === "name") {
+        valA = a.name.toLowerCase();
+        valB = b.name.toLowerCase();
+      } else if (key === "start_time") {
+        // Извлекаем HH:mm для сравнения
+        const getTimePart = (fullTime) =>
+          fullTime?.split(" ")[1]?.substring(0, 5) || "00:00";
+        valA = getTimePart(a.start_time);
+        valB = getTimePart(b.start_time);
+      } else {
+        return 0;
+      }
+
+      if (valA < valB) {
+        return order === "asc" ? -1 : 1;
+      }
+      if (valA > valB) {
+        return order === "asc" ? 1 : -1;
+      }
+      return 0;
+    };
+
+    return sortableTasks.sort(compare);
+  }, [filteredTasks, sort]);
+
+  const handleGoToNewTask = () => {
+    dispatch(setIsEdit(false));
+    dispatch(resetDraftTask());
+    navigate("/tasks/new");
   };
-  const closeCreateModal = () => {
-    setVisibleCreateModal(false);
-  };
+
+  useEffect(() => {
+    dispatch(getTasksList(1, 200));
+  }, [dispatch]);
+
   return (
     <div className={styles.container}>
-      <PageTitle title={"Задачи"} hasButton onClick={openCreateModal} />
-      <UpdateTaskModal
-        isNew={true}
-        isOpen={visibleCreateModal}
-        handleClose={closeCreateModal}
-      />
+      <PageTitle title={"Задачи"} hasButton onClick={handleGoToNewTask} />
+      <TaskFilter />
       <div className={styles.tasksContainer}>
-        {tasks.map((task, index) => (
+        {sortedTasks.map((task, index) => (
           <TaskCard key={index} task={task} />
         ))}
       </div>

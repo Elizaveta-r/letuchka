@@ -1,0 +1,39 @@
+$color-primary: #16a34a;
+$color-accent-start: #22c55e;
+$color-accent-end: #06b6d4;
+$color-text-dark: #1f2937;
+$color-text-light: #6b7280;
+$color-border: #e5e7eb;
+
+.basicTaskDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.row {
+  display: flex;
+  align-items: start;
+  gap: 20px;
+}
+
+.section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+  padding-left: 5px;
+
+  &:last-child {
+    padding-bottom: 5px;
+  }
+}
+
+.label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1f2937;
+  text-align: left;
+}

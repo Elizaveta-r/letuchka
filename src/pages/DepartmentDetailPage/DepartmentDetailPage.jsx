@@ -1,12 +1,20 @@
 import { Clock, Contact, Globe, Pencil, Trash } from "lucide-react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import styles from "./DepartmentDetailPage.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteConfirmationModal from "../../modules/DeleteConfirmationModal/DeleteConfirmationModal";
 import Hint from "../../ui/Hint/Hint";
 import { getInitials } from "../../utils/methods/getInitials";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import EmployeeContactModal from "../../modules/EmployeeContactModal/EmployeeContactModal";
+import { formatTime } from "../../utils/methods/formatTime";
+import { getFormattedTimeZoneLabel } from "../../utils/methods/generateTimeZoneOptions";
+import { useDispatch, useSelector } from "react-redux";
+import { getDepartmentById } from "../../utils/api/actions/departments";
+import {
+  setDepartment,
+  setLoadingGetDetails,
+} from "../../store/slices/departmentsSlice";
 
 const employees = [
   {
@@ -39,6 +47,16 @@ const employees = [
 ];
 export default function DepartmentDetailPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { id } = useParams();
+
+  const { department, loading } = useSelector((state) => state?.departments);
+
+  const description = department?.description;
+  const check_in_time = department?.check_in_time;
+  const check_out_time = department?.check_out_time;
+  const timezone = department?.timezone;
 
   const [visibleConfirmDeleteModal, setVisibleConfirmDeleteModal] =
     useState(false);
@@ -74,9 +92,26 @@ export default function DepartmentDetailPage() {
 
   const handleGetDetails = (id) => navigate(`/employees/${id}`);
 
+  useEffect(() => {
+    dispatch(setLoadingGetDetails(""));
+
+    if (!department) {
+      dispatch(getDepartmentById(id));
+    }
+
+    return () => {
+      dispatch(setDepartment(null));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className={styles.pageContent}>
-      <PageTitle title="Подразделение разработки (Frontend)" />
+      <PageTitle title={department?.name} />
 
       <DeleteConfirmationModal
         isOpen={visibleConfirmDeleteModal}
@@ -91,10 +126,7 @@ export default function DepartmentDetailPage() {
         employee={mockEmployee}
       />
       <div className={styles.content}>
-        <p className={styles.desc}>
-          Разработка пользовательских интерфейсов и оптимизация
-          производительности.
-        </p>
+        <p className={styles.desc}>{description}</p>
         <div className={styles.details}>
           <p className={styles.title}>Детали:</p>
           <div className={styles.detailsGrid}>
@@ -103,21 +135,23 @@ export default function DepartmentDetailPage() {
                 <Clock size={"0.85rem"} color="#6b7280" />
                 <p className={styles.label}>Чекин до:</p>
               </div>
-              <p className={styles.time}>09:30</p>
+              <p className={styles.time}>{formatTime(check_in_time)}</p>
             </div>
             <div className={styles.gridItem}>
               <div className={styles.headerCards}>
                 <Clock size={"0.85rem"} color="#6b7280" />{" "}
                 <p className={styles.label}>Чекаут с:</p>
               </div>
-              <p className={styles.time}>18:00</p>
+              <p className={styles.time}>{formatTime(check_out_time)}</p>
             </div>
             <div className={styles.gridItem}>
               <div className={styles.headerCards}>
                 <Globe size={"0.85rem"} color="#6b7280" />{" "}
                 <p className={styles.label}>Часовой пояс:</p>
               </div>
-              <p className={styles.time}>UTC+3 (MSK)</p>
+              <p className={styles.time}>
+                {getFormattedTimeZoneLabel(timezone)}
+              </p>
             </div>
           </div>
         </div>

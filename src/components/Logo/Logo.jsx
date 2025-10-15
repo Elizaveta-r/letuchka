@@ -10,10 +10,11 @@ export default function Logo() {
 
   return (
     <div className={styles.logo} onClick={handleGoHome}>
-      <div className={styles.imgContainer}>
+      {/* <div className={styles.imgContainer}>
         <img className={styles.img} src={Logotype} alt="Логотип 'Летучка'" />
-      </div>
-      <p className={styles.text}>Летучка</p>
+      </div> */}
+      {/* <p className={styles.text}>Летучка</p> */}
+      <p className={styles.text}>Придумайте сами</p>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useRef, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -10,6 +11,7 @@ import { validateEmail } from "../../utils/methods/validation";
 import styles from "./AuthForm.module.scss";
 import { toast } from "sonner";
 import PasswordIcon from "../../components/PasswordIcon/PasswordIcon";
+import { forgotPassword, signIn } from "../../utils/api/actions/user";
 
 export const AuthForm = () => {
   const navigate = useNavigate();
@@ -60,6 +62,7 @@ export const AuthForm = () => {
         navigate("/");
       }
     }
+    dispatch(signIn(setLoading, navigate, { email, password }));
   }, [step, email, password, emailError, dispatch, navigate]);
 
   const handleKeyDown = useCallback(
@@ -73,8 +76,8 @@ export const AuthForm = () => {
   );
 
   const handleResetPassword = useCallback(() => {
-    console.log("handleResetPassword");
-  }, []);
+    dispatch(forgotPassword({ email }));
+  }, [dispatch, email]);
 
   return (
     <div className={styles.form}>

@@ -14,14 +14,36 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmati
 import { getInitials } from "../../utils/methods/getInitials";
 import EmployeeContactModal from "../EmployeeContactModal/EmployeeContactModal";
 
+const displayedRole = (role) => {
+  switch (role) {
+    case "employee":
+      return "Сотрудник";
+    case "head":
+      return "Руководитель";
+    default:
+      return "";
+  }
+};
+
 export default function EmployeeDetailsCard({ employee }) {
   const [visibleConfirmDeleteModal, setVisibleConfirmDeleteModal] =
     useState(false);
   const [visibleEditModal, setVisibleEditModal] = useState(false);
   const [visibleContactModal, setVisibleContactModal] = useState(false);
 
-  const initials = getInitials(employee.name);
+  const fullName = `${employee?.surname} ${employee?.firstname} ${employee?.patronymic}`;
+
+  const initials = getInitials(fullName);
   const statusText = employee.checkedIn ? "На работе c 9:00" : "Нет на работе";
+  const positions = employee?.positions?.map((position) => position.name);
+  const departments = employee?.departments?.map(
+    (department) => department.name
+  );
+
+  const positionsString = positions.join(", ");
+  const departmentsString = departments.join(", ");
+
+  const role = displayedRole(employee.role);
 
   const handleOpenConfirmDeleteModal = () => {
     setVisibleConfirmDeleteModal(true);
@@ -47,14 +69,6 @@ export default function EmployeeDetailsCard({ employee }) {
     setVisibleContactModal(false);
   };
 
-  const mockEmployee = {
-    name: employee.name,
-    email: "employee.email@example.com",
-    phone: "+79788888888",
-    telegramId: employee.telegramId,
-    telegramName: employee.telegramName,
-  };
-
   return (
     <div className={styles.profileSummary}>
       <EditEmployeeModal
@@ -70,13 +84,13 @@ export default function EmployeeDetailsCard({ employee }) {
       <EmployeeContactModal
         isOpen={visibleContactModal}
         onClose={handleCloseContactModal}
-        employee={mockEmployee}
+        employee={employee}
       />
       {/* Аватар и Должность */}
       <div className={styles.profileHeader}>
         <div className={styles.avatar}>{initials}</div>
         <div className={styles.profileText}>
-          <h2 className={styles.position}>{employee.name}</h2>
+          <h2 className={styles.position}>{fullName}</h2>
           <div
             className={`${styles.statusPill} ${
               employee.checkedIn ? styles.on : styles.off
@@ -96,9 +110,10 @@ export default function EmployeeDetailsCard({ employee }) {
           </div>
           <div className={styles.valueContainer}>
             <span className={styles.label}>
-              {employee.position?.length > 1 ? "Должности:" : "Должность:"}
+              {employee?.positions?.length > 1 ? "Должности:" : "Должность:"}
             </span>
-            <span className={styles.value}>{employee.position}</span>
+
+            <span className={styles.value}>{positionsString}</span>
           </div>
         </div>
         <div className={styles.dataItem}>
@@ -107,7 +122,7 @@ export default function EmployeeDetailsCard({ employee }) {
           </div>
           <div className={styles.valueContainer}>
             <span className={styles.label}>Роль:</span>
-            <span className={styles.value}>{employee.role}</span>
+            <span className={styles.value}>{role}</span>
           </div>
         </div>
         <div className={styles.dataItem}>
@@ -116,11 +131,11 @@ export default function EmployeeDetailsCard({ employee }) {
           </div>
           <div className={styles.valueContainer}>
             <span className={styles.label}>
-              {employee.department?.length > 1
+              {employee.departments?.length > 1
                 ? "Подразделения:"
-                : "Подразделение:"}
+                : "Подразделение:"}{" "}
+              <span className={styles.value}>{departmentsString}</span>
             </span>
-            <span className={styles.value}>{employee.department}</span>
           </div>
         </div>
       </div>

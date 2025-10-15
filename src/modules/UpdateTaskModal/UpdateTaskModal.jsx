@@ -7,6 +7,11 @@ import CustomInput from "../../ui/CustomInput/CustomInput";
 import ToggleSwitch from "../../ui/ToggleSwitch/ToggleSwitch";
 import CustomTextArea from "../../ui/CustomTextArea/CustomTextArea";
 import Hint from "../../ui/Hint/Hint";
+import DaysGrid from "../../components/DaysGrid/DaysGrid";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import { ru } from "date-fns/locale";
+import { Calendar } from "react-date-range";
 
 const positions = [
   { value: "Повар", label: "Повар" },
@@ -16,12 +21,29 @@ const positions = [
 const confirmationTypes = [
   { value: "photo", label: "Фото" },
   { value: "text", label: "Текст" },
-  { value: "checkbox", label: "Чекбокс" },
+  { value: "check_box", label: "Чекбокс" },
 ];
 
 const departments = [
   { value: "kitchen", label: "Кухня" },
   { value: "admin", label: "Администрирование" },
+];
+
+const frequency = [
+  { value: "daily", label: "Ежедневно" },
+  { value: "weekly", label: "Еженедельно" },
+  { value: "monthly", label: "Ежемесячно" },
+  { value: "once", label: "Единоразово" },
+];
+
+const weekDays = [
+  "Понедельник",
+  "Вторник",
+  "Среда",
+  "Четверг",
+  "Пятница",
+  "Суббота",
+  "Воскресенье",
 ];
 
 export default function UpdateTaskModal({ isOpen, handleClose, isNew, task }) {
@@ -40,6 +62,15 @@ export default function UpdateTaskModal({ isOpen, handleClose, isNew, task }) {
     task?.acceptance_criteria || ""
   );
   const [department, setDepartment] = React.useState("");
+  const [period, setPeriod] = React.useState({
+    value: "daily",
+    label: "Ежедневно",
+  });
+
+  const [selectedWeekDays, setSelectedWeekDays] = React.useState([]);
+  const [selectedMonthDays, setSelectedMonthDays] = React.useState([]);
+
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
 
   const onClose = () => {
     handleClose();
@@ -110,6 +141,67 @@ export default function UpdateTaskModal({ isOpen, handleClose, isNew, task }) {
                 />
               </div>
 
+              <div className={styles.section}>
+                <p className={styles.label}>Периодичность</p>
+                <CustomSelect
+                  options={frequency}
+                  value={period}
+                  onChange={setPeriod}
+                  placeholder="Выберите периодичность"
+                />
+              </div>
+
+              {period.value === "weekly" && (
+                <div className={styles.timeSection}>
+                  <div className={styles.section}>
+                    <p className={styles.label}>Выберите дни неделни</p>
+                    <div className={styles.weekDays}>
+                      {weekDays.map((day) => (
+                        <div
+                          className={`${styles.day} ${
+                            selectedWeekDays.includes(day)
+                              ? styles.selected
+                              : ""
+                          }`}
+                          key={day}
+                          onClick={() => {
+                            if (selectedWeekDays.includes(day)) {
+                              setSelectedWeekDays(
+                                selectedWeekDays.filter((d) => d !== day)
+                              );
+                            } else {
+                              setSelectedWeekDays([...selectedWeekDays, day]);
+                            }
+                          }}
+                        >
+                          {day}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {period.value === "monthly" && (
+                <DaysGrid
+                  selectedDates={selectedMonthDays}
+                  setSelectedDates={setSelectedMonthDays}
+                />
+              )}
+
+              {period.value === "once" && (
+                <div className={styles.section}>
+                  <p className={styles.label}>Выберите дату выполнения</p>
+                  <Calendar
+                    date={selectedDate}
+                    onChange={(date) => setSelectedDate(date)}
+                    minDate={new Date()}
+                    locale={ru}
+                    color={"#16a34a"}
+                    dateDisplayFormat="dd.MM.yyyy"
+                  />
+                </div>
+              )}
               <div className={styles.timeSection}>
                 <div className={styles.section}>
                   <p className={styles.label}>Время начала задачи</p>
@@ -124,7 +216,7 @@ export default function UpdateTaskModal({ isOpen, handleClose, isNew, task }) {
 
                 <div className={styles.section}>
                   <Hint hintContent="Время, до которого должна быть выполнена задача">
-                    <p className={styles.label}>Дейдлайн задачи</p>
+                    <p className={styles.label}>Дедлайн задачи</p>
                   </Hint>
                   <CustomInput
                     type="time"

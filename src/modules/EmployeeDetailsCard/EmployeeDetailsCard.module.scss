@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $color-primary: #16a34a;
 $color-accent-start: #22c55e;
 $color-accent-end: #0088cc;
@@ -86,7 +88,7 @@ $color-status-failed: #ef4444;
 .dataItem {
   display: grid;
   grid-template-columns: 25px 1fr;
-  align-items: center;
+  align-items: start;
   gap: 10px;
 }
 
@@ -100,9 +102,11 @@ $color-status-failed: #ef4444;
 }
 
 .valueContainer {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  display: inline-block;
+  text-align: left;
+  // display: flex;
+  // align-items: center;
+  // gap: 5px;
 }
 
 .iconPrimary {
@@ -115,9 +119,11 @@ $color-status-failed: #ef4444;
 }
 
 .value {
+  white-space: pre-line;
   font-size: 0.95rem;
   font-weight: 500;
   color: $color-text-dark;
+  margin-left: 4px;
 }
 
 /* Кнопки действий */
@@ -145,7 +151,7 @@ $color-status-failed: #ef4444;
   background-color: $color-primary;
   color: #ffffff;
   &:hover {
-    background-color: darken($color-primary, 5%);
+    background-color: color.adjust($color-primary, $lightness: -5%);
   }
 }
 

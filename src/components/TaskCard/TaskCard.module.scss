@@ -19,6 +19,8 @@ $line-height: 1.4;
 
 // ===== КАРТОЧКА =====
 .taskCard {
+  width: 100%;
+  min-width: 0;
   background: $color-bg-card;
   border-radius: 16px;
   padding: 28px;
@@ -38,6 +40,7 @@ $line-height: 1.4;
 
 // ===== ЗАГОЛОВОК =====
 .header {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -47,9 +50,19 @@ $line-height: 1.4;
 }
 
 .headerContent {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
+}
+
+.row {
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .taskTitle {
@@ -87,6 +100,40 @@ $line-height: 1.4;
       text-decoration-color: transparent;
     }
   }
+}
+
+.positions {
+  display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  gap: 8px;
+  position: relative;
+  max-width: 100%;
+  flex-shrink: 1;
+  min-width: 0;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &.full {
+    overflow: visible;
+    flex-wrap: wrap;
+  }
+}
+
+.shadow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(-90deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
 }
 
 .positionBadge {
@@ -177,6 +224,7 @@ $line-height: 1.4;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  height: 86px;
 }
 
 .badge {
@@ -190,7 +238,7 @@ $line-height: 1.4;
   transition: all 0.25s ease;
   letter-spacing: 0.01em;
   backdrop-filter: blur(10px);
-
+  height: max-content;
   span {
     line-height: 1.3;
   }
@@ -306,6 +354,7 @@ $line-height: 1.4;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
 .label {
@@ -330,6 +379,10 @@ $line-height: 1.4;
   font-weight: 600;
   color: $color-text-dark;
   letter-spacing: -0.01em;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .valueAccent {
@@ -379,6 +432,16 @@ $line-height: 1.4;
   color: #374151;
   line-height: 1.65;
   letter-spacing: 0.01em;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.full {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: initial;
+  }
 }
 
 // ===== АДАПТИВНОСТЬ =====

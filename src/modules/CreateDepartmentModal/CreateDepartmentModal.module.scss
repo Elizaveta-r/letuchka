@@ -55,6 +55,10 @@ $color-border: #e5e7eb;
 
 .buttonCancel,
 .buttonConfirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 10px 18px;
   border: none;
   border-radius: 8px;

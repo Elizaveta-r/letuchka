@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $color-primary: #16a34a;
 $color-text: #1f2937;
 $color-muted: #6b7280;
@@ -32,13 +34,13 @@ $color-shadow-focus: rgba(22, 163, 74, 0.3);
   transition: border-color 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
 
   &:hover {
-    border-color: darken($color-border, 5%);
+    border-color: color.adjust($color-border, $lightness: -5%);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   }
 
   &:focus-within {
     border-color: $color-primary;
-    box-shadow: 0 0 0 3px lighten($color-primary, 35%),
+    box-shadow: 0 0 0 3px color.adjust($color-primary, $lightness: 35%),
       0 1px 3px rgba(0, 0, 0, 0.1);
   }
 }

@@ -4,6 +4,7 @@ import {
   AlarmClockCheck,
   Briefcase,
   Building2,
+  Cable,
   CreditCard,
   FileBarChart,
   Home,
@@ -13,15 +14,16 @@ import {
 const renderItemsData = [
   { name: "Обзор", path: "/", icon: <Home size={18} /> },
   { name: "Биллинг", path: "/billing", icon: <CreditCard size={18} /> },
+  { name: "Отчеты", path: "/reports", icon: <FileBarChart size={18} /> },
   { name: "Задачи", path: "/tasks", icon: <AlarmClockCheck size={18} /> },
+  { name: "Должности", path: "/positions", icon: <Briefcase size={18} /> },
+  { name: "Сотрудники", path: "/employees", icon: <IdCardLanyard size={18} /> },
+  { name: "Интеграции", path: "/integrations", icon: <Cable size={18} /> },
   {
     name: "Подразделения",
     path: "/departments",
     icon: <Building2 size={18} />,
   },
-  { name: "Сотрудники", path: "/employees", icon: <IdCardLanyard size={18} /> },
-  { name: "Должности", path: "/positions", icon: <Briefcase size={18} /> },
-  { name: "Отчеты", path: "/reports", icon: <FileBarChart size={18} /> },
 ];
 
 export const LeftMenu = () => {

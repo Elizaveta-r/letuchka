@@ -17,6 +17,8 @@ import TasksPage from "../pages/TasksPage/TasksPage";
 import PositionsPage from "../pages/PositionsPage/PositionsPage";
 import TasksDetailsPage from "../pages/TasksDetailsPage/TasksDetailsPage";
 import ReportsPage from "../pages/ReportsPage/ReportsPage";
+import { SettingsPage } from "../pages/SettimgsPage/SettingsPage";
+import UpdateTaskPage from "../pages/UpdateTaskPage/UpdateTaskPage";
 
 export default function AppRoutes() {
   const location = useLocation();
@@ -29,6 +31,9 @@ export default function AppRoutes() {
           <HomePage />
         </PageLayout>
       ),
+      handle: {
+        title: "Обзор | Летучка", // 👈 Заголовок
+      },
     },
     {
       path: "/auth",
@@ -37,6 +42,9 @@ export default function AppRoutes() {
           <AuthPage />
         </AuthLayout>
       ),
+      handle: {
+        title: "Авторизация | Летучка", // 👈 Заголовок
+      },
     },
     {
       path: "/reg",
@@ -45,6 +53,9 @@ export default function AppRoutes() {
           <RegPage />
         </AuthLayout>
       ),
+      handle: {
+        title: "Регистрация | Летучка", // 👈 Заголовок
+      },
     },
     {
       path: "/code-verify",
@@ -53,6 +64,9 @@ export default function AppRoutes() {
           <CodeVerifyPage />
         </AuthLayout>
       ),
+      handle: {
+        title: "Подтвердите почту | Летучка", // 👈 Заголовок
+      },
     },
     {
       path: "/billing",
@@ -61,6 +75,9 @@ export default function AppRoutes() {
           <BillingPage />
         </PageLayout>
       ),
+      handle: {
+        title: "Биллинг | Летучка", // 👈 Заголовок
+      },
     },
     {
       path: "/employees",
@@ -69,10 +86,16 @@ export default function AppRoutes() {
         {
           index: true,
           element: <EmployeePage />,
+          handle: {
+            title: "Сотрудники | Летучка", // 👈 Заголовок
+          },
         },
         {
           path: ":id",
           element: <EmployeeDetailPage />,
+          handle: {
+            title: "Детали сотрудника | Летучка", // 👈 Заголовок
+          },
         },
       ],
     },
@@ -83,10 +106,16 @@ export default function AppRoutes() {
         {
           index: true,
           element: <DepartmentsPage />,
+          handle: {
+            title: "Подразделения | Летучка", // 👈 Заголовок
+          },
         },
         {
           path: ":id",
           element: <DepartmentDetailPage />,
+          handle: {
+            title: "Детали подразделения | Летучка", // 👈 Заголовок
+          },
         },
       ],
     },
@@ -97,11 +126,19 @@ export default function AppRoutes() {
         {
           index: true,
           element: <TasksPage />,
+          handle: {
+            title: "Задачи | Летучка", // 👈 Заголовок
+          },
         },
         {
           path: ":id",
           element: <TasksDetailsPage />,
+          handle: {
+            title: "Детали задачи | Летучка", // 👈 Заголовок
+          },
         },
+        { path: "new", element: <UpdateTaskPage /> },
+        { path: "update/:id", element: <UpdateTaskPage /> },
       ],
     },
     {
@@ -111,6 +148,20 @@ export default function AppRoutes() {
           <ReportsPage />
         </PageLayout>
       ),
+      handle: {
+        title: "Отчеты | Летучка", // 👈 Заголовок
+      },
+    },
+    {
+      path: "/settings",
+      element: (
+        <PageLayout>
+          <SettingsPage />
+        </PageLayout>
+      ),
+      handle: {
+        title: "Настройки | Летучка", // 👈 Заголовок
+      },
     },
     {
       path: "/positions",
@@ -119,6 +170,9 @@ export default function AppRoutes() {
           <PositionsPage />
         </PageLayout>
       ),
+      handle: {
+        title: "Должности | Летучка", // 👈 Заголовок
+      },
     },
     {
       path: "/*",
@@ -127,6 +181,9 @@ export default function AppRoutes() {
           <NotFoundPage />
         </PageLayout>
       ),
+      handle: {
+        title: "Страница не найдена | Летучка", // 👈 Заголовок
+      },
     },
   ]);
 

@@ -1,0 +1,63 @@
+$color-primary: #16a34a;
+$color-text-dark: #1f2937;
+$color-border: #e5e7eb;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+.label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1f2937;
+  text-align: left;
+}
+
+.timeSection {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.weekDays {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid $color-border;
+  color: $color-text-dark;
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+
+  &:hover {
+    background-color: #16a34a49;
+  }
+
+  &.selected {
+    background-color: $color-primary;
+    color: #ffffff;
+    border: 1px solid $color-primary;
+  }
+}

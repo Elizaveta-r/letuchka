@@ -11,79 +11,13 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import EmployeeDetailsCard from "../../modules/EmployeeDetailsCard/EmployeeDetailsCard";
 import { ru } from "date-fns/locale";
 import EmployeeHistoryItem from "../../components/EmployeeHistoeyIrem/EmployeeHistoryItem";
-
-const employee = {
-  id: 5107679353,
-  name: "Иван Иванов",
-  telegramId: 6455897008,
-  telegramName: "@ivan_fe",
-  position: ["Повар"],
-  role: "Сотрудник",
-  department: ["Разработка (Frontend)"],
-  checkedIn: true,
-  history: [
-    {
-      // YYYY-MM-DD HH:MM:SS
-      date: "2025-10-04 09:11:53",
-      task_title: "Прием рабочего места в начале смены",
-      task_acceptance_criteria:
-        "Рабочее место повара должно быть организовано так, чтобы все поверхности, инструменты и посуда были чистыми и продезинфицированными, продукты и сырые ингредиенты разделялись, мусор удалялся своевременно, а повар соблюдал личную гигиену и носил чистую форму.",
-      status: "done",
-      is_photo_required: true,
-      photo_url:
-        "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1760.jpg",
-      ai_feedback: "OK",
-      comment: "",
-    },
-    {
-      date: "2025-10-05 09:11:53",
-      task_title: "Чистота мойки",
-      task_acceptance_criteria:
-        "Мойка на кухне должна быть всегда чистой, свободной от остатков пищи и загрязнений, с регулярной дезинфекцией после каждого использования.",
-      status: "done_late",
-      is_photo_required: true,
-      photo_url:
-        "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1762.jpg",
-      ai_feedback: "OK",
-      comment: "Задача выполнена с опозданием. В 21:04:26",
-    },
-    {
-      date: "2025-10-06 09:13:50",
-      task_title: "Подготовка зоны выдачи",
-      task_acceptance_criteria:
-        "Проверка чистоты зоны выдачи, наличие салфеток, специй и соответствие выкладки стандартам.",
-      status: "overdue",
-      photo_url: "",
-      is_photo_required: true,
-      ai_feedback: "Отсутствует фотография обязательного элемента в кадре.",
-      comment: "",
-    },
-    {
-      date: "2025-10-03 09:00:00",
-      task_title: "Комментарии приемки рабочего места от прошлой смены",
-      task_acceptance_criteria:
-        "Проверка чистоты зоны выдачи, наличие салфеток, специй и соответствие выкладки стандартам.",
-      status: "done",
-      photo_url: "",
-      is_photo_required: false,
-      ai_feedback: "",
-      comment: "Все чисто, заготовки есть",
-    },
-    {
-      date: "2025-10-03 09:00:00",
-      task_title: "Чистота мойки",
-      task_acceptance_criteria:
-        "Мойка на кухне должна быть всегда чистой, свободной от остатков пищи и загрязнений, с регулярной дезинфекцией после каждого использования.",
-      status: "overdue",
-      photo_url:
-        "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1782.jpg",
-      is_photo_required: true,
-      ai_feedback:
-        "❌ На фото отсутствует мойка. Рекомендации: Сделайте фото мойки на кухне, демонстрируя её чистоту и отсутствие остатков пищи и загрязнений.",
-      comment: "",
-    },
-  ],
-};
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setEmployee,
+  setLoadingGetEmployee,
+} from "../../store/slices/employeesSlice";
+import { getEmployeeById } from "../../utils/api/actions/employees";
+import { useParams } from "react-router-dom";
 
 const INITIAL_RANGE = {
   startDate: addDays(new Date(), -7),
@@ -91,7 +25,84 @@ const INITIAL_RANGE = {
   key: "selection",
 };
 
+const history = [
+  {
+    date: "2025-10-08 09:05:00",
+    task_title: "Прием рабочего места в начале смены",
+    task_acceptance_criteria:
+      "Рабочее место должно быть чистым, инструменты дезинфицированы.",
+    status: "done",
+    is_photo_required: true,
+    photo_url:
+      "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1760.jpg",
+    ai_feedback: "OK",
+    comment: "",
+    checkedIn: true,
+  },
+  {
+    date: "2025-10-07 15:30:00",
+    task_title: "Чистота мойки (Дневная проверка)",
+    task_acceptance_criteria:
+      "Мойка должна быть чистой, свободной от остатков пищи и загрязнений.",
+    status: "overdue", // ❌ Провал/Просрочка
+    is_photo_required: true,
+    photo_url:
+      "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1782.jpg",
+    ai_feedback:
+      "❌ На фото отсутствует мойка. Рекомендации: Сделайте фото мойки на кухне, демонстрируя её чистоту.",
+    comment: "Забыл сфотографировать мойку, исправлю.",
+    checkedIn: true,
+  },
+  {
+    date: "2025-10-06 09:13:50",
+    task_title: "Подготовка зоны выдачи",
+    task_acceptance_criteria:
+      "Проверка чистоты зоны выдачи, наличие салфеток, специй и соответствие выкладки стандартам.",
+    status: "done",
+    is_photo_required: true,
+    photo_url:
+      "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1762.jpg",
+    ai_feedback: "OK",
+    comment: "",
+    checkedIn: true,
+  },
+  {
+    date: "2025-10-05 08:50:00",
+    task_title: "Комментарии приемки рабочего места от прошлой смены",
+    task_acceptance_criteria:
+      "Проверка чистоты зоны выдачи, наличие салфеток, специй и соответствие выкладки стандартам.",
+    status: "done",
+    is_photo_required: false,
+    photo_url: "",
+    ai_feedback: "",
+    checkedIn: false,
+    comment: "Быстро проверил, место в порядке. Все заготовки на месте.",
+  },
+  {
+    checkedIn: false,
+    date: "2025-10-04 18:00:00",
+    task_title: "Сдача смены (Уборка)",
+    task_acceptance_criteria:
+      "Полная уборка рабочего места, дезинфекция поверхностей, замена мусорных пакетов.",
+    status: "done_late", // 🟡 Задержка
+    is_photo_required: true,
+    photo_url:
+      "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1800.jpg",
+    ai_feedback: "OK",
+    comment:
+      "Пришлось задержаться на 15 минут из-за срочного заказа. Сдал в 18:15:22.",
+  },
+];
+
 export default function EmployeeDetailPage() {
+  const dispatch = useDispatch();
+
+  const { id } = useParams();
+
+  const { employee, loadingGetEmployee } = useSelector(
+    (state) => state?.employees
+  );
+
   const [modalPhotoUrl, setModalPhotoUrl] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
 
@@ -120,17 +131,16 @@ export default function EmployeeDetailPage() {
     const { startDate, endDate } = dateRange[0];
 
     if (!startDate || !endDate) {
-      return employee.history;
+      return employee?.history;
     }
 
     const endOfDay = addDays(endDate, 1);
 
-    return employee.history.filter((item) => {
+    return employee?.history?.filter((item) => {
       const itemDate = new Date(item.date);
       return itemDate >= startDate && itemDate < endOfDay;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [employee.history, dateRange]);
+  }, [employee?.history, dateRange]);
 
   const rangeText = useMemo(() => {
     const { startDate, endDate } = dateRange[0];
@@ -149,11 +159,29 @@ export default function EmployeeDetailPage() {
   const isFilterActive = !!dateRange[0].startDate;
 
   useEffect(() => {
+    dispatch(setLoadingGetEmployee(""));
+
+    if (!employee) {
+      dispatch(getEmployeeById(id));
+    }
+
+    return () => {
+      dispatch(setEmployee(null));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, id]);
+
+  useEffect(() => {
     if (showCalendar) {
       // Копируем текущий примененный диапазон во временный при открытии модального окна
       setTempDateRange(dateRange);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showCalendar]);
+
+  if (loadingGetEmployee) {
+    return <div>Загрузка...</div>;
+  }
 
   return (
     <div className={styles.pageContent}>
@@ -202,6 +230,7 @@ export default function EmployeeDetailPage() {
                     ranges={tempDateRange}
                     direction="vertical"
                     locale={ru}
+                    color="#16a34a"
                     maxDate={new Date()}
                   />
                   <button
@@ -222,7 +251,14 @@ export default function EmployeeDetailPage() {
           </div>
 
           <div className={styles.historyList}>
-            {filteredHistory.map((item, index) => (
+            {/* {filteredHistory?.map((item, index) => (
+              <EmployeeHistoryItem
+                key={index}
+                item={item}
+                onPhotoClick={handleOpenPhotoModal}
+              />
+            ))} */}
+            {history?.map((item, index) => (
               <EmployeeHistoryItem
                 key={index}
                 item={item}
@@ -230,11 +266,12 @@ export default function EmployeeDetailPage() {
               />
             ))}
             {/* Сообщение, если история пуста */}
-            {filteredHistory.length === 0 && (
-              <p className={styles.noHistory}>
-                Действий сотрудника не найдено в выбранном диапазоне.
-              </p>
-            )}
+            {filteredHistory?.length === 0 ||
+              (!filteredHistory && (
+                <p className={styles.noHistory}>
+                  Действий сотрудника не найдено в выбранном диапазоне.
+                </p>
+              ))}
           </div>
         </div>
         <ImageModal photoUrl={modalPhotoUrl} onClose={handleClosePhotoModal} />

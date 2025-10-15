@@ -8,11 +8,11 @@ export default function EmployeeRowHeader() {
         <p className={styles.nameEmp}>ФИО</p>
       </div>
 
-      <p className={styles.positionCol}>ДОЛЖНОСТЬ</p>
+      <p className={styles.positionCol}>ДОЛЖНОСТЬ(-И)</p>
 
       <p className={styles.roleCol}>РОЛЬ</p>
 
-      <p className={styles.department}>ПОДРАЗДЕЛЕНИЕ</p>
+      <p className={styles.department}>ПОДРАЗДЕЛЕНИЕ(-Я)</p>
 
       <div className={`${styles.statusIndicator}`}>
         <p className={styles.status}>НА РАБОТЕ</p>

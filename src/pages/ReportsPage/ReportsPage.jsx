@@ -415,6 +415,7 @@ export default function ReportsPage() {
                 ranges={tempDateRange}
                 direction="vertical"
                 locale={ru}
+                color="#16a34a"
                 maxDate={new Date()}
               />
               <button

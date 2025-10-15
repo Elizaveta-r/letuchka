@@ -1,3 +1,5 @@
+@use "sass:color";
+
 /* Переменные */
 $color-primary: #16a34a;
 $color-accent-start: #22c55e;
@@ -26,7 +28,7 @@ $color-bg-light: #f9fafb;
   transition: border-color 0.2s, box-shadow 0.2s;
 
   &:hover {
-    border-color: lighten($color-primary, 10%);
+    border-color: color.adjust($color-primary, $lightness: 10%);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   }
 }
@@ -148,7 +150,7 @@ $color-bg-light: #f9fafb;
     font-weight: 600;
 
     &:hover {
-      background-color: darken($color-primary, 5%);
+      background-color: color.adjust($color-primary, $lightness: -5%);
     }
   }
 }

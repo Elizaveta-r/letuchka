@@ -1,0 +1,34 @@
+.calendar {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.dateCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid #e5e7eb;
+
+  &:hover {
+    background-color: #16a34a49;
+    border-color: #16a34a49;
+  }
+
+  &.selected {
+    background-color: #16a34a;
+    color: white;
+    border-color: #16a34a;
+  }
+}
