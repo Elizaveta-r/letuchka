@@ -20,6 +20,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useMediaQuery } from "react-responsive";
 
 // ======================================================================
 // МОКОВЫЕ ДАННЫЕ
@@ -100,11 +101,29 @@ const KpiCard = ({ title, value, icon, colorClass }) => {
   );
 };
 
+const KpiCardMobile = ({ title, value, icon, colorClass }) => {
+  const Icon = icon;
+  return (
+    <div className={`${styles.kpiCard} ${styles[colorClass]}`}>
+      <div className={styles.iconWrapper}>
+        <Icon size={30} />
+      </div>
+      <div className={styles.content}>
+        <span className={styles.kpiValue}>{value}</span>
+        <span className={styles.kpiTitle}>{title}</span>
+      </div>
+    </div>
+  );
+};
+
 // ======================================================================
 // ГЛАВНЫЙ КОМПОНЕНТ ДАШБОРДА
 // ======================================================================
 
 export default function HomePage() {
+  const isMobile = useMediaQuery({
+    query: "(max-width: 1023px)",
+  });
   const totalAIChecks = kpiData.aiChecksOK + kpiData.aiChecksFAIL;
 
   const aiSuccessRate = totalAIChecks
@@ -132,12 +151,21 @@ export default function HomePage() {
           icon={Clock}
           colorClass="red"
         />
-        <KpiCard
-          title="Успешность AI-проверок"
-          value={`${aiSuccessRate}%`} // Показываем процент
-          icon={ThumbsUp}
-          colorClass="gradient" // Используем градиент для акцента
-        />
+        {isMobile ? (
+          <KpiCardMobile
+            title="Успешность AI-проверок"
+            value={`${aiSuccessRate}%`}
+            icon={ThumbsUp}
+            colorClass="gradient"
+          />
+        ) : (
+          <KpiCard
+            title="Успешность AI-проверок"
+            value={`${aiSuccessRate}%`}
+            icon={ThumbsUp}
+            colorClass="gradient"
+          />
+        )}
         {/* Отдельная карточка для прогресса сотрудников */}
         <div className={`${styles.kpiCard} ${styles.blue}`}>
           <div className={styles.content}>
