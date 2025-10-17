@@ -152,7 +152,7 @@
 /* Нижнее меню */
 .bottomMenu {
   position: fixed;
-  bottom: 0;
+  bottom: -1px;
   left: 0;
   right: 0;
   background: v.$color_white;

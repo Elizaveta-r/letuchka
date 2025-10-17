@@ -2,8 +2,6 @@ import React from "react";
 import {
   CheckCircle, // Выполнено
   Clock, // Просрочено
-  Users, // Сотрудники
-  Zap, // На контроле AI
   AlertTriangle, // Проблемные задачи
   TrendingUp, // График
   ArrowRight, // Быстрые ссылки

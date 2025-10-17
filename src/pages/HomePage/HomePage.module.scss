@@ -12,6 +12,9 @@
   }
 
   @media screen and (max-width: 767px) {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
     gap: 10px;
   }
 }
@@ -139,6 +142,10 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 20px;
+
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .sectionTitle {
@@ -163,6 +170,73 @@
 .alertIcon {
   color: v.$color-mandatory;
 }
+
+// .tasksTable {
+//   display: grid;
+//   grid-template-columns: 1.4fr 1.3fr 1.1fr 1fr;
+//   gap: 8px;
+//   font-size: 0.95rem;
+//   text-align: center;
+
+//   .headerRow {
+//     font-weight: 600;
+//     color: v.$color-text-light;
+//     padding-bottom: 10px;
+//     border-bottom: 1px solid v.$color-border;
+//   }
+
+//   .taskRow {
+//     display: contents;
+//     padding: 12px 0;
+//     border-bottom: 1px solid color.adjust(v.$color-border, $lightness: 5%);
+
+//     & > span {
+//       padding: 10px 0;
+//       white-space: nowrap;
+//       overflow: hidden;
+//       text-overflow: ellipsis;
+//     }
+
+//     &:last-child {
+//       border-bottom: none;
+//     }
+
+//     .taskName,
+//     .employeeName {
+//       cursor: pointer;
+
+//       text-decoration: underline transparent;
+//       text-decoration-thickness: 1.5px;
+//       transition: text-decoration-color 0.3s ease-in-out;
+
+//       &:hover {
+//         text-decoration-color: v.$color-green-500;
+//       }
+//     }
+//   }
+
+//   .statusCell,
+//   .timeCell {
+//     text-align: center;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     font-weight: 700;
+//     border-radius: 4px;
+//     padding: 4px 8px;
+//     line-height: 1;
+//     gap: 4px;
+//   }
+
+//   .fail {
+//     color: #b91c1c;
+//     background-color: v.$color-red-50;
+//   }
+//   .late {
+//     color: v.$color-orange-50;
+//     background-color: v.$color-yellow-50;
+//   }
+// }
 
 .tasksTable {
   display: grid;
@@ -197,7 +271,6 @@
     .taskName,
     .employeeName {
       cursor: pointer;
-
       text-decoration: underline transparent;
       text-decoration-thickness: 1.5px;
       transition: text-decoration-color 0.3s ease-in-out;
@@ -228,6 +301,120 @@
   .late {
     color: v.$color-orange-50;
     background-color: v.$color-yellow-50;
+  }
+
+  // Мобильная версия
+  @media (max-width: 710px) {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 64vh;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    overflow: auto;
+
+    .headerRow {
+      display: none; // Скрываем заголовки таблицы
+    }
+
+    .taskRow {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+      border: 1px solid v.$color-border;
+      border-radius: 12px;
+      background: v.$color_white;
+      box-shadow: 0 1px 3px v.$color-shadow;
+      transition: box-shadow 0.2s ease;
+
+      &:hover {
+        box-shadow: 0 4px 12px v.$color-shadow;
+      }
+
+      & > span {
+        padding: 0;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: initial;
+        text-align: left;
+      }
+
+      .taskName,
+      .employeeName {
+        font-size: 0.9375rem;
+
+        &::before {
+          content: attr(data-label);
+          display: block;
+          font-size: 0.75rem;
+          color: v.$color-text-light;
+          font-weight: 600;
+          margin-bottom: 4px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+
+      .taskName::before {
+        content: "Задача";
+      }
+
+      .employeeName::before {
+        content: "Сотрудник";
+      }
+
+      .statusCell,
+      .timeCell {
+        justify-content: flex-start;
+        padding: 8px 12px;
+        font-size: 0.875rem;
+        align-self: flex-start;
+      }
+
+      .statusCell::before {
+        content: "Статус: ";
+        font-weight: 400;
+        margin-right: 4px;
+        color: v.$color-text-light;
+      }
+
+      .timeCell {
+        background: v.$color-bg-light;
+        color: v.$color-text-secondary;
+        font-weight: 500;
+
+        &::before {
+          content: "Время: ";
+          font-weight: 400;
+          margin-right: 4px;
+          color: v.$color-text-light;
+        }
+      }
+    }
+  }
+
+  // Для совсем маленьких экранов
+  @media (max-width: 420px) {
+    .taskRow {
+      padding: 14px;
+      gap: 10px;
+
+      .taskName,
+      .employeeName {
+        font-size: 0.875rem;
+
+        &::before {
+          font-size: 0.6875rem;
+        }
+      }
+
+      .statusCell,
+      .timeCell {
+        padding: 6px 10px;
+        font-size: 0.8125rem;
+      }
+    }
   }
 }
 
