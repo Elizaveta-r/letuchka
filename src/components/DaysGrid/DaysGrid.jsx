@@ -24,7 +24,7 @@ const DaysGrid = () => {
   return (
     <div className={styles.calendar}>
       <div className={styles.calendarGrid}>
-        {dates.map((date) => (
+        {dates?.map((date) => (
           <div
             key={date}
             className={`${styles.dateCell} ${

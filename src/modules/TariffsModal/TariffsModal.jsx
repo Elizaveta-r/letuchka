@@ -197,7 +197,7 @@ export default function Tariffs({ isOpen, onClose }) {
                   </div>
 
                   <ul className={styles.featureList}>
-                    {tariff.features.map((feature, idx) => (
+                    {tariff?.features?.map((feature, idx) => (
                       <li key={idx} className={styles.featureItem}>
                         {feature.included ? (
                           <Check size={16} className={styles.iconIncluded} />

@@ -116,12 +116,12 @@ export default function EditEmployeeModal({
     setRole(getRoleValue(emp.role));
 
     const initialPositions = Array.isArray(emp.positions)
-      ? emp.positions.map((p) => getPosition(p.name))
+      ? emp?.positions.map((p) => getPosition(p?.name))
       : [];
     setPosition(initialPositions);
 
-    if (Array.isArray(emp.departments) && emp.departments.length > 0) {
-      const initialDepartments = emp.departments.map((d) => ({
+    if (Array.isArray(emp?.departments) && emp?.departments?.length > 0) {
+      const initialDepartments = emp?.departments?.map((d) => ({
         value: d.id,
         label: d.name,
       }));
@@ -131,13 +131,13 @@ export default function EditEmployeeModal({
     } else {
       setDepartment(
         departments?.[0]
-          ? { value: departments[0].id, label: departments[0].name }
+          ? { value: departments[0]?.id, label: departments[0]?.name }
           : null
       );
     }
 
     if (emp.timezone) {
-      const tz = timeZoneOptions.find((t) => t.value === emp.timezone) || null;
+      const tz = timeZoneOptions?.find((t) => t.value === emp.timezone) || null;
       setTimeZone(tz);
     } else {
       setTimeZone(null);

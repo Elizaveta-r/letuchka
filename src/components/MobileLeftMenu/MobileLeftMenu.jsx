@@ -114,7 +114,7 @@ export const MobileLeftMenu = () => {
     <>
       {/* Десктопное меню */}
       <nav className={styles.leftMenu} aria-label="Главное меню">
-        {allMenuItems.map((item, index) => {
+        {allMenuItems?.map((item, index) => {
           return (
             <div key={`left-menu-${item.name}-${index}`}>
               <div
@@ -171,7 +171,7 @@ export const MobileLeftMenu = () => {
                   <X size={24} />
                 </button>
 
-                {burgerMenuItems.map((item, index) => (
+                {burgerMenuItems?.map((item, index) => (
                   <motion.div
                     key={`burger-menu-${item.name}-${index}`}
                     initial={{ opacity: 0, x: 20 }}
@@ -203,7 +203,7 @@ export const MobileLeftMenu = () => {
 
         {/* Нижнее меню */}
         <nav className={styles.bottomMenu} aria-label="Главная навигация">
-          {mainMenuItems.map((item, index) => (
+          {mainMenuItems?.map((item, index) => (
             <div
               key={`bottom-menu-${item.name}-${index}`}
               role="button"

@@ -21,7 +21,7 @@ export default function UpdateTaskPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isEdit, draftTask } = useSelector((state) => state.tasks);
+  const { isEdit, draftTask } = useSelector((state) => state?.tasks);
   const { departments } = useSelector((state) => state?.departments);
 
   const serverDepartmentId = isEdit
@@ -51,11 +51,6 @@ export default function UpdateTaskPage() {
       return;
     }
 
-    // 2. ЕСЛИ В REDUX НЕТ: Делаем API-запрос
-    console.log(
-      `Отдел с ID ${serverDepartmentId} не найден. Выполняю GET-запрос.`
-    );
-
     dispatch(getDepartmentById(serverDepartmentId)) // Предполагаем, что этот экшен возвращает Promise
       .then((res) => {
         if (res.data && res.data.department) {
@@ -83,30 +78,30 @@ export default function UpdateTaskPage() {
   };
 
   const handleConfirm = () => {
-    if (draftTask.disposable_date) {
-      const isoString = draftTask.disposable_date;
+    if (draftTask?.disposable_date) {
+      const isoString = draftTask?.disposable_date;
       disposableDateString = isoString.split("T")[0];
     }
 
     const taskDataToSend = {
       ...draftTask,
-      time_type: draftTask.time_type.value,
-      week_days: draftTask.week_days?.map((d) => d.value),
-      department_id: draftTask.department_id?.value,
-      done_type: draftTask.done_type.value,
+      time_type: draftTask?.time_type.value,
+      week_days: draftTask?.week_days?.map((d) => d.value),
+      department_id: draftTask?.department_id?.value,
+      done_type: draftTask?.done_type.value,
       disposable_date: disposableDateString,
-      position_ids: draftTask.position_ids?.map((p) => p.value),
+      position_ids: draftTask?.position_ids?.map((p) => p.value),
     };
 
     const taskDataToEdit = {
       ...draftTask,
-      task_id: draftTask.id,
-      time_type: draftTask.time_type.value,
-      week_days: draftTask.week_days?.map((d) => d.value),
-      department_id: draftTask.department_id?.value,
-      done_type: draftTask.done_type.value,
+      task_id: draftTask?.id,
+      time_type: draftTask?.time_type.value,
+      week_days: draftTask?.week_days?.map((d) => d.value),
+      department_id: draftTask?.department_id?.value,
+      done_type: draftTask?.done_type.value,
       disposable_date: disposableDateString,
-      position_ids: draftTask.position_ids?.map((p) => p.value),
+      position_ids: draftTask?.position_ids?.map((p) => p.value),
     };
 
     if (isEdit) {

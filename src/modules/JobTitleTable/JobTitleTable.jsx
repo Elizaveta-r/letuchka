@@ -59,8 +59,8 @@ const JobTitleTable = ({ positions, onEdit, onDelete }) => {
           ) : (
             <tr>
               <td colSpan="4" className={styles.noData}>
-                Список должностей пуст. Нажмите "Добавить", чтобы создать первую
-                должность.
+                Список должностей пуст. <br /> Нажмите{" "}
+                <strong>"Добавить"</strong>, чтобы создать первую должность.
               </td>
             </tr>
           )}
@@ -68,8 +68,8 @@ const JobTitleTable = ({ positions, onEdit, onDelete }) => {
           {positions?.length === 0 && (
             <tr>
               <td colSpan="4" className={styles.noData}>
-                Список должностей пуст. Нажмите "Добавить", чтобы создать первую
-                должность.
+                Список должностей пуст. <br /> Нажмите{" "}
+                <strong>"Добавить"</strong>, чтобы создать первую должность.
               </td>
             </tr>
           )}

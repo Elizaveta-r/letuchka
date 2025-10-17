@@ -25,12 +25,12 @@ export default function TasksPage() {
 
     const normalizedSearchText = searchText ? searchText.toLowerCase() : null;
 
-    return tasks.filter((task) => {
+    return tasks?.filter((task) => {
       const matchesSearch = normalizedSearchText
         ? [
-            task.name,
-            task.accept_condition,
-            task.positions.map((p) => p.name).join(" "),
+            task?.name,
+            task?.accept_condition,
+            task?.positions?.map((p) => p.name).join(" "),
           ]
             .filter(Boolean)
             .join(" ")
@@ -43,7 +43,7 @@ export default function TasksPage() {
         : true;
 
       const matchesPosition = position_id
-        ? task.positions.some((p) => p.id === position_id.value)
+        ? task.positions?.some((p) => p.id === position_id.value)
         : true;
 
       return matchesSearch && matchesDepartment && matchesPosition;
@@ -83,7 +83,7 @@ export default function TasksPage() {
       return 0;
     };
 
-    return sortableTasks.sort(compare);
+    return sortableTasks?.sort(compare);
   }, [filteredTasks, sort]);
 
   const handleGoToNewTask = () => {
@@ -95,8 +95,6 @@ export default function TasksPage() {
   useEffect(() => {
     dispatch(getTasksList(1, 200));
   }, [dispatch]);
-
-  console.log(sortedTasks?.length);
 
   return (
     <div className={styles.container}>
@@ -111,7 +109,7 @@ export default function TasksPage() {
           }}
         >
           {sortedTasks?.length > 0 ? (
-            sortedTasks.map((task, index) => (
+            sortedTasks?.map((task, index) => (
               <TaskCard key={index} task={task} />
             ))
           ) : (

@@ -37,11 +37,11 @@ export default function EmployeeRow({
     }
   };
 
-  const departmentsForEmployee = allDepartments.filter((department) =>
+  const departmentsForEmployee = allDepartments?.filter((department) =>
     employeeDepartmentIdsSet.has(department.id)
   );
 
-  const positionsForEmployee = allPositions.filter((position) =>
+  const positionsForEmployee = allPositions?.filter((position) =>
     employeePositionIdsSet.has(position.id)
   );
 
@@ -60,11 +60,11 @@ export default function EmployeeRow({
       </div>
 
       <div>
-        {positionsForEmployee.map((position, index) => {
-          const isLast = index === positionsForEmployee.length - 1;
+        {positionsForEmployee?.map((position, index) => {
+          const isLast = index === positionsForEmployee?.length - 1;
           return (
             <p key={`position-${index}`} className={styles.positionCol}>
-              {position.name}
+              {position?.name}
               {!isLast && ", "}
             </p>
           );
@@ -74,9 +74,9 @@ export default function EmployeeRow({
       <p className={styles.roleCol}>{getRoleName()}</p>
 
       <div>
-        {departmentsForEmployee.map((department, index) => {
+        {departmentsForEmployee?.map((department, index) => {
           // Определяем, является ли текущий элемент последним в массиве
-          const isLast = index === departmentsForEmployee.length - 1;
+          const isLast = index === departmentsForEmployee?.length - 1;
 
           return (
             <p
@@ -84,7 +84,7 @@ export default function EmployeeRow({
               className={styles.department}
               // Добавляем запятую и пробел, если это не последний элемент
             >
-              {department.name}
+              {department?.name}
               {!isLast && ", "}
             </p>
           );

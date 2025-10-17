@@ -156,7 +156,7 @@ export default function UpdateTaskModal({ isOpen, handleClose, isNew, task }) {
                   <div className={styles.section}>
                     <p className={styles.label}>Выберите дни неделни</p>
                     <div className={styles.weekDays}>
-                      {weekDays.map((day) => (
+                      {weekDays?.map((day) => (
                         <div
                           className={`${styles.day} ${
                             selectedWeekDays.includes(day)

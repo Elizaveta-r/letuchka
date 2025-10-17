@@ -15,7 +15,7 @@ const IntegrationPage = () => {
   const dispatch = useDispatch();
 
   const { integrations, isIntegrationLoading } = useSelector(
-    (state) => state.integrations
+    (state) => state?.integrations
   );
 
   const [visibleModal, setVisibleModal] = useState(false);
@@ -39,7 +39,7 @@ const IntegrationPage = () => {
   };
 
   const handleDeleteIntegration = () => {
-    dispatch(deleteIntegration(selectedIntegration.id)).then((res) => {
+    dispatch(deleteIntegration(selectedIntegration?.id)).then((res) => {
       if (res.status === 200) {
         handleCloseConfirmationDeleteModal();
       }
@@ -81,7 +81,7 @@ const IntegrationPage = () => {
 
       {integrations && (
         <div className={styles.list}>
-          {integrations.map((integration) => {
+          {integrations?.map((integration) => {
             return (
               <IntegrationCard
                 key={integration.id}

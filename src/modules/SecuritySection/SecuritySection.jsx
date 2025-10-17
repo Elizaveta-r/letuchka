@@ -62,12 +62,12 @@ export const SecuritySection = () => {
       <div className={styles.sessionsBlock}>
         <p className={styles.sessionsTitle}>Активные сессии</p>
         <div className={styles.sessionsList}>
-          {sortedSessions.length === 0 ? (
+          {sortedSessions?.length === 0 ? (
             <div className={styles.emptySessions}>
               Активных сессий не найдено
             </div>
           ) : (
-            sortedSessions.map((session) => {
+            sortedSessions?.map((session) => {
               const isSessionCurrent = session.id === currentSessionId;
               return (
                 <SessionCard

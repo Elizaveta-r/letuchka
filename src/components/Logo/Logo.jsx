@@ -14,7 +14,7 @@ export default function Logo() {
         <img className={styles.img} src={Logotype} alt="Логотип 'Летучка'" />
       </div> */}
       {/* <p className={styles.text}>Летучка</p> */}
-      <p className={styles.text}>Придумайте сами</p>
+      <p className={styles.text}>На будущее</p>
     </div>
   );
 }

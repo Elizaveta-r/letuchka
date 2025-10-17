@@ -62,11 +62,20 @@
     border-radius: 50%;
     opacity: 0.8;
   }
+
   .content {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
   }
+
+  .contentMobile {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 4px;
+  }
+
   .kpiValue {
     font-size: 2.2rem;
     font-weight: 700;

@@ -41,7 +41,7 @@ export default function DepartmentDetailPage() {
   const [visibleContactModal, setVisibleContactModal] = useState(false);
 
   const handleIsDefaultChange = (newCheckedValue) => {
-    if (!department || !department.id) return; // Защита от отсутствия данных
+    if (!department || !department?.id) return; // Защита от отсутствия данных
 
     // Вызываем Thunk, который сам управляет оптимистичным обновлением и откатом
     dispatch(

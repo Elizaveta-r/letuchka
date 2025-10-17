@@ -233,9 +233,9 @@ export default function ReportsPage() {
   };
 
   const employeeOptions = useMemo(() => {
-    const options = employees.map((employee) => ({
-      value: employee.id,
-      label: employee.name,
+    const options = employees?.map((employee) => ({
+      value: employee?.id,
+      label: employee?.name,
     }));
     // Добавляем опцию "Все сотрудники" в начало
     options.unshift({ value: DEFAULT_EMPLOYEE_ID, label: "Все сотрудники" });
@@ -288,14 +288,14 @@ export default function ReportsPage() {
 
     // Шаг 2: Фильтрация истории по дате
     return employeesToDisplay
-      .map((employee) => {
+      ?.map((employee) => {
         let filteredHistory = employee.history;
 
         if (startDate && endDate) {
           // Нормализация конечной даты до 23:59:59 текущего дня
           const endOfDay = addDays(endDate, 1);
 
-          filteredHistory = employee.history.filter((item) => {
+          filteredHistory = employee?.history?.filter((item) => {
             const itemDate = new Date(item.date);
             // Используем isWithinInterval для надежной проверки
             return itemDate >= startDate && itemDate < endOfDay;
@@ -303,14 +303,14 @@ export default function ReportsPage() {
         }
 
         // Сортируем историю внутри сотрудника по убыванию даты
-        filteredHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+        filteredHistory?.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         return {
           ...employee,
           history: filteredHistory,
         };
       })
-      .filter((employee) => employee.history.length > 0); // Убираем сотрудников, у которых не осталось задач после фильтрации
+      ?.filter((employee) => employee.history.length > 0); // Убираем сотрудников, у которых не осталось задач после фильтрации
   }, [employees, selectedEmployeeId, dateRange]);
 
   // Форматирование текста для кнопки даты
@@ -436,8 +436,8 @@ export default function ReportsPage() {
       </div>
 
       <div className={styles.employeesContainer}>
-        {filteredEmployees.length > 0 ? (
-          filteredEmployees.map((employee) => (
+        {filteredEmployees?.length > 0 ? (
+          filteredEmployees?.map((employee) => (
             // ⭐️ Возвращаемся к циклу по сотрудникам
             <div className={styles.employees} key={employee.id}>
               {/* ⭐️ Заголовок ФИО: */}

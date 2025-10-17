@@ -27,15 +27,15 @@ export const BasicTaskDetails = () => {
   const { department_id, position_ids, name, done_type, accept_condition } =
     useSelector((state) => state.tasks.draftTask);
 
-  const { departments } = useSelector((state) => state.departments);
-  const { positions } = useSelector((state) => state.positions);
+  const { departments } = useSelector((state) => state?.departments);
+  const { positions } = useSelector((state) => state?.positions);
 
-  const departmentOptions = departments.map((dep) => ({
+  const departmentOptions = departments?.map((dep) => ({
     value: dep.id,
     label: dep.name,
   }));
 
-  const positionOptions = positions.map((pos) => ({
+  const positionOptions = positions?.map((pos) => ({
     value: pos.id,
     label: pos.name,
   }));

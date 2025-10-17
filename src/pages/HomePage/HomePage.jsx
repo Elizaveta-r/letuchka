@@ -105,13 +105,15 @@ const KpiCardMobile = ({ title, value, icon, colorClass }) => {
   const Icon = icon;
   return (
     <div className={`${styles.kpiCard} ${styles[colorClass]}`}>
-      <div className={styles.iconWrapper}>
-        <Icon size={30} />
-      </div>
-      <div className={styles.content}>
+      <div className={styles.contentMobile}>
+        <div className={styles.iconWrapper}>
+          <Icon size={30} />
+        </div>
+
         <span className={styles.kpiValue}>{value}</span>
-        <span className={styles.kpiTitle}>{title}</span>
       </div>
+
+      <span className={styles.kpiTitle}>{title}</span>
     </div>
   );
 };
@@ -206,7 +208,7 @@ export default function HomePage() {
             </div>
 
             {/* Строки данных */}
-            {problematicTasks.map((task) => (
+            {problematicTasks?.map((task) => (
               <div key={task.id} className={styles.taskRow}>
                 <span className={styles.taskName}>{task.task}</span>
                 <span className={styles.employeeName}>{task.employee}</span>
@@ -290,7 +292,7 @@ export default function HomePage() {
           <div className={styles.linksCard}>
             <h2 className={styles.sectionTitle}>Быстрые ссылки</h2>
             <div className={styles.linkList}>
-              {quickLinks.map((link) => (
+              {quickLinks?.map((link) => (
                 <a
                   key={link.path}
                   href={link.path}

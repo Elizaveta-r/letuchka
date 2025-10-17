@@ -47,7 +47,7 @@ export const LeftMenu = () => {
 
   return (
     <nav className={styles.leftMenu} aria-label="Главное меню">
-      {renderItemsData.map((item, index) => {
+      {renderItemsData?.map((item, index) => {
         return (
           <div key={`left-menu-${item.name}-${index}`}>
             <div

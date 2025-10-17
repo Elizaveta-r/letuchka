@@ -132,7 +132,7 @@ export default function EmployeePage() {
 
         {/* СТРОКИ ДАННЫХ */}
         {employees ? (
-          employees.map((employee) => (
+          employees?.map((employee) => (
             <EmployeeRow
               key={employee.id}
               {...employee}

@@ -185,7 +185,7 @@ const Sorting = ({ value, options, onChange }) => {
 
       {visibleOptions && (
         <div className={styles.sortOptions}>
-          {options.map((option) => (
+          {options?.map((option) => (
             <p
               onClick={() => handleOptionClick(option)}
               key={`${option.key}-${option.order}`}

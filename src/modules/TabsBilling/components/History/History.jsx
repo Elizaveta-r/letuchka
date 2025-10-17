@@ -81,12 +81,12 @@ export const History = () => {
         {history?.length > 0 ? (
           <>
             {[...history]
-              .sort((a, b) => {
+              ?.sort((a, b) => {
                 const dateA = new Date(convertGoDateToISO(a.created_at));
                 const dateB = new Date(convertGoDateToISO(b.created_at));
                 return dateB - dateA; // сначала новые
               })
-              .map((item, index) => {
+              ?.map((item, index) => {
                 return (
                   <div key={`history-item-${index}`} className={styles.item}>
                     <div>{formatDateLocal(item.created_at)}</div>

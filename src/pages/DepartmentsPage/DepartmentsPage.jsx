@@ -195,7 +195,7 @@ export default function DepartmentsPage() {
 
       {departments && (
         <div className={styles.content}>
-          {departments.map((department, index) => (
+          {departments?.map((department, index) => (
             <DepartmentCard
               key={index}
               department={department}
