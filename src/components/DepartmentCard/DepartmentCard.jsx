@@ -1,29 +1,46 @@
 import React from "react";
 import styles from "./DepartmentCard.module.scss";
-// Импортируем иконки из Lucide React
-import { Clock, Users, ArrowRight, PencilLine, Trash } from "lucide-react";
-import Hint from "../../ui/Hint/Hint";
 import { formatTime } from "../../utils/methods/formatTime";
 import { getFormattedTimeZoneLabel } from "../../utils/methods/generateTimeZoneOptions";
-import { useSelector } from "react-redux";
-import { RingLoader } from "react-spinners";
+import { useDispatch, useSelector } from "react-redux";
+import { CardActions } from "../CardActions/CardActions";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
+import {
+  HintCheckIn,
+  HintCheckOut,
+  HintTimeZone,
+} from "../../modules/CreateDepartmentModal/CreateDepartmentModal";
+import { CustomCheckbox } from "../../ui/CustomCheckbox/CustomCheckbox";
+import { toggleDepartmentIsDefault } from "../../store/slices/departmentsSlice";
 
 const DepartmentCard = ({
-  id,
-  name,
-  description,
-  timezone,
-  check_in_time,
-  check_out_time,
-  employees_count,
+  department,
   onDetailsClick,
   onUpdateClick,
-  // onDeleteClick,
+  onDeleteClick,
 }) => {
+  const dispatch = useDispatch();
+
   const { loadingGetDetails } = useSelector((state) => state?.departments);
 
+  const handleIsDefaultChange = (newCheckedValue) => {
+    if (!department || !department.id) return; // Защита от отсутствия данных
+
+    // Вызываем Thunk, который сам управляет оптимистичным обновлением и откатом
+    dispatch(
+      toggleDepartmentIsDefault({
+        department: department,
+        newValue: newCheckedValue,
+      })
+    );
+  };
+
   const handleUpdateClick = () => {
-    onUpdateClick(id);
+    onUpdateClick(department?.id);
+  };
+
+  const handleDeleteClick = () => {
+    onDeleteClick(department?.id);
   };
 
   return (
@@ -31,47 +48,38 @@ const DepartmentCard = ({
       <div className={styles.headerAccent} />
 
       <div className={styles.content}>
-        <h2 className={styles.title}>{name}</h2>
-        <p className={styles.description}>{description}</p>
+        <div className={styles.header}>
+          <h2 className={styles.title}>{department?.name}</h2>
+          <HintWithPortal
+            hintContent={"Использовать по умолчанию"}
+            hasIcon={false}
+          >
+            <CustomCheckbox
+              checked={department.is_default}
+              onChange={handleIsDefaultChange}
+            />
+          </HintWithPortal>
+        </div>
+
+        <p className={styles.description}>
+          {department?.description
+            ? department?.description
+            : "Описание отсутствует"}
+        </p>
 
         {/* Блок с ключевыми данными */}
         <div className={styles.dataGrid}>
-          <div className={styles.dataItem}>
-            <span className={styles.dataLabel}>Часовой пояс:</span>
-
-            <Hint
-              position="top"
-              hintContent="Определяет время получения автоматических задач и уведомлений сотрудниками."
-            >
-              <span className={styles.dataValue}>
-                {getFormattedTimeZoneLabel(timezone)}
-              </span>
-            </Hint>
-          </div>
-
-          {/* Количество сотрудников */}
-          <div className={styles.dataItem}>
-            <div className={styles.employeeCount}>
-              <span className={styles.dataLabel}>Сотрудников:</span>
-            </div>
-
-            <span className={styles.dataValue}>{employees_count}</span>
-          </div>
-
           {/* Время Check-in */}
           <div className={styles.dataItem}>
             <div className={styles.checkInTime}>
-              <span className={styles.dataLabel}>Чекин до:</span>
+              <span className={styles.dataLabel}>Чекин в:</span>
             </div>
 
-            <Hint
-              position="right"
-              hintContent={`Сотрудник должен быть на рабочем месте и отметиться (сделать "чекин") не позднее указанного времени.`}
-            >
+            <HintWithPortal hintContent={<HintCheckIn />}>
               <span className={`${styles.dataValue} ${styles.checkIn}`}>
-                {formatTime(check_in_time)}
+                {formatTime(department?.check_in_time)}
               </span>
-            </Hint>
+            </HintWithPortal>
           </div>
 
           {/* Время Check-out */}
@@ -80,45 +88,44 @@ const DepartmentCard = ({
               <span className={styles.dataLabel}>Чекаут с:</span>
             </div>
 
-            <Hint
-              position="top"
-              hintContent={`Это самое раннее время, когда сотрудник может официально отметиться об уходе с работы (сделать "чекаут").`}
-            >
+            <HintWithPortal hintContent={<HintCheckOut />}>
               <span className={styles.dataValue}>
-                {formatTime(check_out_time)}
+                {formatTime(department?.check_out_time)}
               </span>
-            </Hint>
+            </HintWithPortal>
+          </div>
+
+          <div className={styles.dataItem}>
+            <span className={styles.dataLabel}>Часовой пояс:</span>
+
+            <HintWithPortal hintContent={<HintTimeZone />}>
+              <span className={styles.dataValue}>
+                {getFormattedTimeZoneLabel(department?.timezone)}
+              </span>
+            </HintWithPortal>
+          </div>
+
+          {/* Количество сотрудников */}
+          <div className={styles.dataItem}>
+            <div className={styles.employeeCount}>
+              <span className={styles.dataLabel}>Сотрудников:</span>
+            </div>
+
+            <span className={styles.dataValue}>
+              {department?.employees_count}
+            </span>
           </div>
         </div>
 
         {/* --- */}
 
         {/* Кнопки с акцентами */}
-        <div className={styles.actions}>
-          {loadingGetDetails === id ? (
-            <button className={styles.buttonSecondary} onClick={onDetailsClick}>
-              Подробнее <RingLoader color="#16a34a" size={18} />{" "}
-              {/* Используем ArrowRight */}
-            </button>
-          ) : (
-            <button className={styles.buttonSecondary} onClick={onDetailsClick}>
-              Подробнее <ArrowRight size={18} /> {/* Используем ArrowRight */}
-            </button>
-          )}
-          <button
-            className={`${styles.buttonSecondary} ${styles.buttonIcon}`}
-            onClick={handleUpdateClick}
-          >
-            <PencilLine size={18} />
-          </button>
-
-          {/* 3. Кнопка "Удалить" (иконка, стиль удаления) */}
-          <button
-            className={`${styles.buttonSecondary} ${styles.buttonIcon} ${styles.buttonDelete}`}
-          >
-            <Trash size={18} />
-          </button>
-        </div>
+        <CardActions
+          loading={loadingGetDetails === department?.id}
+          onDetails={onDetailsClick}
+          onUpdate={handleUpdateClick}
+          onDelete={handleDeleteClick}
+        />
       </div>
     </div>
   );

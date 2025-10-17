@@ -10,6 +10,7 @@ export const ProfileSection = () => {
   const [visibleModalChangeName, setVisibleModalChangeName] = useState(false);
 
   const handleOpenModalChangeName = () => {
+    console.log("open");
     setVisibleModalChangeName(true);
   };
 
@@ -51,9 +52,11 @@ export const ProfileSection = () => {
           </div>
         </div>
       </div>
-      {visibleModalChangeName && (
-        <ModalChangeUsername setVisible={setVisibleModalChangeName} />
-      )}
+
+      <ModalChangeUsername
+        isOpen={visibleModalChangeName}
+        onClose={() => setVisibleModalChangeName(false)}
+      />
     </div>
   );
 };

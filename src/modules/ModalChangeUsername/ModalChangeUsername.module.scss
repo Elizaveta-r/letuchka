@@ -1,5 +1,4 @@
-$color-border: #e5e7eb;
-$color-text-dark: #1f2937;
+@use "../../styles/variables" as v;
 
 .form {
   display: flex;
@@ -18,7 +17,7 @@ $color-text-dark: #1f2937;
   margin-bottom: 6px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   text-align: left;
 }
 
@@ -28,14 +27,14 @@ $color-text-dark: #1f2937;
   justify-content: flex-end;
   gap: 10px;
   padding-top: 20px;
-  border-top: 1px solid $color-border;
+  border-top: 1px solid v.$color-border;
+}
+
+.cancelButton {
+  padding: 10px 24px;
 }
 
 .saveButton {
-  border-radius: 8px;
-  width: max-content;
-  padding: 6.5px 12px;
+  height: 40px;
   font-size: 14px;
-  min-width: 98.63px;
-  min-height: 37px;
 }

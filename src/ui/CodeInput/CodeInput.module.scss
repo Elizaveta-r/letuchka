@@ -1,4 +1,5 @@
-// CodeInput.module.scss
+@use "../../styles/variables" as v;
+
 .codeInput {
   display: flex;
   gap: 12px;
@@ -9,12 +10,12 @@
 .input {
   width: 48px;
   height: 48px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid v.$color-border;
   border-radius: 8px;
   text-align: center;
   font-size: 18px;
   font-weight: 600;
-  background-color: #ffffff;
+  background-color: v.$color-white;
   transition: all 0.2s ease;
   outline: none;
 
@@ -32,23 +33,23 @@
   &:focus {
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(59 246 75 / 0.1);
-    background-color: #fefefe;
+    background-color: v.$color-bg-light;
   }
 
   &:hover {
-    border-color: #9ca3af;
+    border-color: v.$color-reset-gray;
   }
 
   &.filled {
     border-color: var(--color-primary);
-    background-color: #eff6ff;
+    background-color: v.$color-bg-light;
     color: var(--color-primary);
   }
 
   &:disabled {
-    background-color: #f9fafb;
-    border-color: #d1d5db;
-    color: #9ca3af;
+    background-color: v.$color-disabled;
+    border-color: v.$color-border;
+    color: v.$color-reset-gray;
     cursor: not-allowed;
   }
 

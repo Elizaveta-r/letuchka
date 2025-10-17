@@ -1,5 +1,108 @@
+@use "../../styles/variables" as v;
+
 .filters {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto auto;
   align-items: center;
   gap: 10px;
+}
+
+.sort {
+  position: relative;
+  display: inline-block;
+}
+
+.sortHeader {
+  width: 46px;
+  height: 46px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0;
+
+  background-color: v.$color-white;
+  border: 1px solid v.$color-border;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+
+  &:hover {
+    border-color: v.$color-primary;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    background-color: v.$color-bg-light;
+  }
+}
+
+.sortIcon {
+  color: v.$color-text-secondary;
+}
+
+.chevron {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%) rotate(0deg);
+  transition: transform 0.2s ease;
+  color: v.$color-reset-gray;
+}
+
+.chevronOpen {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.sortOptions {
+  margin-top: 4px;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: auto;
+  min-width: 180px;
+
+  background-color: v.$color-white;
+  border: 1px solid v.$color-border;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  padding: 5px 0;
+}
+
+.option {
+  font-size: 14px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: v.$color-disabled;
+  }
+}
+
+.clearFiltersBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 8px;
+  height: 46px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: v.$color-primary;
+  border: 1px solid rgba(v.$color-primary, 0.5);
+  background-color: rgba(v.$color-primary, 0.05);
+
+  transition: background-color 0.2s ease-in;
+
+  &:hover {
+    background-color: v.$color-primary;
+    color: v.$color-white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
 }

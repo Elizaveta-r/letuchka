@@ -18,6 +18,12 @@ const initialDraftTask = {
   position_ids: [],
 };
 
+const initialTaskFilters = {
+  department_id: null,
+  position_id: null,
+  searchText: "",
+};
+
 const initialState = {
   data: localStorage.getItem("tasksData")
     ? JSON.parse(localStorage.getItem("tasksData"))
@@ -35,11 +41,7 @@ const initialState = {
     key: "name", // 'name', 'start_time' или другой ключ
     order: "asc", // 'asc' (по возрастанию) или 'desc' (по убыванию)
   },
-  taskFilters: {
-    department_id: null,
-    position_id: null,
-    searchText: "",
-  },
+  taskFilters: initialTaskFilters,
 };
 
 const tasksSlice = createSlice({
@@ -60,6 +62,9 @@ const tasksSlice = createSlice({
     },
     setTaskFilters(state, action) {
       state.taskFilters = action.payload;
+    },
+    resetTaskFilters(state) {
+      state.taskFilters = initialTaskFilters;
     },
     setSort(state, action) {
       const { key, order } = action.payload;
@@ -217,6 +222,24 @@ const tasksSlice = createSlice({
   },
 });
 
+export const areTaskFiltersChanged = (state) => {
+  const currentFilters = state.tasks.taskFilters;
+
+  // Проверяем, отличается ли хоть один ключ от начального состояния
+  return Object.keys(initialTaskFilters).some((key) => {
+    const initialValue = initialTaskFilters[key];
+    const currentValue = currentFilters[key];
+
+    // Специальная проверка для null/undefined/пустой строки
+    if (key === "searchText") {
+      return currentValue !== initialValue;
+    }
+
+    // Для department_id и position_id, которые могут быть null/undefined
+    return currentValue !== initialValue;
+  });
+};
+
 export const {
   setIsEdit,
   setActiveTask,
@@ -242,6 +265,7 @@ export const {
   setDoneType,
   setAcceptCondition,
   setDepartmentId,
+  resetTaskFilters,
   setPositionIds,
 } = tasksSlice.actions;
 export default tasksSlice.reducer;

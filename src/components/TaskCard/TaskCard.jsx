@@ -142,7 +142,7 @@ export const TaskCard = ({ task, isFull }) => {
           </div>
 
           <div className={`${styles.positions} ${isFull ? styles.full : ""}`}>
-            {task?.positions.map((position, index) => (
+            {task?.positions?.map((position, index) => (
               <div
                 key={`${position?.id}-${index}`}
                 className={styles.positionBadge}

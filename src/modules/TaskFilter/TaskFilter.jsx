@@ -1,11 +1,25 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDataForSelect } from "../../utils/methods/formatDataForSelect";
-import { setSort, setTaskFilter } from "../../store/slices/tasksSlice";
+import {
+  resetTaskFilters,
+  areTaskFiltersChanged,
+  setSort,
+  setTaskFilter,
+} from "../../store/slices/tasksSlice";
 
 import styles from "./TaskFilter.module.scss";
 import { SearchInput } from "../../ui/SearchInput/SearchInput";
 import CustomSelect from "../../ui/CustomSelect/CustomSelect";
+import {
+  ArrowDownAZ,
+  ArrowDownWideNarrow,
+  ArrowUpAZ,
+  ArrowUpNarrowWide,
+  Calendar,
+  ChevronDown,
+  Clock,
+} from "lucide-react";
 
 const sortOptions = [
   { value: "name_asc", label: "Название А-Я", key: "name", order: "asc" },
@@ -26,9 +40,12 @@ const sortOptions = [
 
 export const TaskFilter = () => {
   const dispatch = useDispatch();
+
   const { positions } = useSelector((state) => state?.positions);
   const { departments } = useSelector((state) => state?.departments);
   const { taskFilters, sort } = useSelector((state) => state?.tasks);
+
+  const filtersAreActive = useSelector(areTaskFiltersChanged);
 
   const { searchText, department_id, position_id } = taskFilters;
 
@@ -71,6 +88,7 @@ export const TaskFilter = () => {
       })
     );
   };
+
   return (
     <div className={styles.filters}>
       <SearchInput
@@ -94,13 +112,91 @@ export const TaskFilter = () => {
           handleSelectChange("department_id", selectedOption)
         }
       />
-      <CustomSelect
-        options={sortOptions}
-        placeholder="Сортировка"
+
+      <Sorting
         value={currentSortOption}
+        options={sortOptions}
         onChange={handleSortChange}
-        className={styles.sortSelect}
       />
+
+      {filtersAreActive && (
+        <button
+          className={styles.clearFiltersBtn}
+          onClick={() => dispatch(resetTaskFilters())}
+        >
+          Очистить фильтры
+        </button>
+      )}
+    </div>
+  );
+};
+
+const getSortIcon = (key, order) => {
+  // В зависимости от ключа, выбираем тип иконки
+  switch (key) {
+    case "name":
+      return order === "asc" ? ArrowDownAZ : ArrowUpAZ;
+    case "start_time":
+    case "deadline_time":
+      return order === "asc" ? Clock : Calendar; // Пример: часы для времени
+    case "custom_field":
+      return order === "asc" ? ArrowDownWideNarrow : ArrowUpNarrowWide; // Пример: для пользовательских полей
+    default:
+      return ArrowDownAZ;
+  }
+};
+const Sorting = ({ value, options, onChange }) => {
+  const sortRef = useRef(null);
+  const [visibleOptions, setVisibleOptions] = useState(false);
+
+  const handleToggle = () => {
+    setVisibleOptions(!visibleOptions);
+  };
+
+  const handleOptionClick = (option) => {
+    onChange(option);
+    setVisibleOptions(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sortRef.current && !sortRef.current.contains(event.target)) {
+        setVisibleOptions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // 💡 Определяем текущую иконку для отображения в заголовке
+  const CurrentIcon = value?.key
+    ? getSortIcon(value.key, value.order)
+    : ArrowDownAZ;
+
+  return (
+    <div className={styles.sort} ref={sortRef}>
+      <div className={styles.sortHeader} onClick={handleToggle}>
+        {/* 💡 Отображаем ТОЛЬКО иконку текущего типа сортировки */}
+        <CurrentIcon size={18} className={styles.sortIcon} />
+      </div>
+
+      {visibleOptions && (
+        <div className={styles.sortOptions}>
+          {options.map((option) => (
+            <p
+              onClick={() => handleOptionClick(option)}
+              key={`${option.key}-${option.order}`}
+              className={styles.option}
+            >
+              {/* Отображаем полный текст опции */}
+              {option.label}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

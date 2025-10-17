@@ -1,16 +1,4 @@
-$color-primary: #16a34a;
-$color-accent-start: #22c55e;
-$color-accent-end: #06b6d4;
-$color-status-on: #10b981;
-$color-status-off: #777777;
-
-/* Цвета для текста и фона */
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-background: #f9fafb;
-$color-border: #e5e7eb;
-
-$grid-template-cols: 1.5fr 1.2fr 100px 1fr 80px auto;
+@use "../../styles/variables" as v;
 
 .pageContent {
   display: flex;
@@ -22,4 +10,14 @@ $grid-template-cols: 1.5fr 1.2fr 100px 1fr 80px auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.empty {
+  color: v.$color-text-light;
+  padding: 80px 0;
+}
+
+.employeeName {
+  font-style: italic;
+  line-height: 1.3;
 }

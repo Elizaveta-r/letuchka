@@ -1,10 +1,4 @@
-/* Переменные */
-$color-primary: #16a34a;
-$color-accent-start: #22c55e;
-$color-accent-end: #06b6d4;
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-border: #e5e7eb;
+@use "../../styles/variables" as v;
 
 .formContent {
   display: flex;
@@ -24,16 +18,16 @@ $color-border: #e5e7eb;
   display: block;
   font-size: 0.9rem;
   font-weight: 500;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   text-align: left;
 }
 
 .timeZoneDisplay {
   padding: 12px 16px;
-  background-color: #f3f4f6;
-  border: 1px solid $color-border;
+  background-color: v.$color-disabled;
+  border: 1px solid v.$color-border;
   border-radius: 8px;
-  color: $color-primary;
+  color: v.$color-primary;
   font-weight: 600;
   font-size: 1rem;
 }
@@ -49,7 +43,7 @@ $color-border: #e5e7eb;
   justify-content: flex-end;
   gap: 12px;
   padding-top: 20px;
-  border-top: 1px solid $color-border;
+  border-top: 1px solid v.$color-border;
   font-family: "Nunito", sans-serif;
 }
 
@@ -69,27 +63,30 @@ $color-border: #e5e7eb;
 }
 
 .buttonCancel {
-  background-color: #f9fafb;
-  color: $color-text-light;
-  border: 1px solid $color-border;
+  background-color: v.$color-bg-light;
+  color: v.$color-text-light;
+  border: 1px solid v.$color-border;
 
   &:hover {
-    background-color: #f3f4f6;
+    background-color: v.$color-disabled;
   }
 }
 
 .buttonConfirm {
-  // Градиент для кнопки создания
   background: linear-gradient(
     135deg,
-    $color-accent-start 0%,
-    $color-accent-end 100%
+    v.$color-accent-start 0%,
+    v.$color-accent-end 100%
   );
-  color: #ffffff;
-  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+  color: v.$color-white;
+  box-shadow: v.$color-shadow-primary;
 
   &:hover {
     opacity: 0.9;
-    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+    box-shadow: v.$color-shadow-primary-hover;
   }
+}
+
+.small {
+  font-style: italic;
 }

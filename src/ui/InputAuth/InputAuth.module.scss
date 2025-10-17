@@ -1,3 +1,5 @@
+@use "../../styles/variables" as v;
+
 .container {
   display: flex;
   flex-direction: column;
@@ -7,11 +9,11 @@
 .inputWrapper {
   position: relative;
   width: 100%;
-  border: 1px solid #d1d5db;
+  border: 1px solid v.$color-border;
   border-radius: 9999px;
   padding: 14px 1.25rem;
   transition: all 0.2s ease;
-  background: #fff;
+  background: v.$color-white;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,7 +24,7 @@
     top: 50%;
     transform: translateY(-50%);
     font-size: 16px;
-    color: #b4b4b4;
+    color: v.$color-text-light;
     pointer-events: none;
     transition: all 0.2s ease;
     background: transparent;
@@ -38,7 +40,7 @@
     width: 100%;
     background: transparent;
     font-size: 16px;
-    color: #111;
+    color: v.$color-text-dark;
 
     &::placeholder {
       color: transparent;
@@ -48,16 +50,16 @@
     &:-webkit-autofill:hover,
     &:-webkit-autofill:focus,
     &:-webkit-autofill:active {
-      box-shadow: 0 0 0 1000px #fff inset !important;
-      -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
-      -webkit-text-fill-color: #111 !important;
+      box-shadow: 0 0 0 1000px v.$color_white inset !important;
+      -webkit-box-shadow: 0 0 0 1000px v.$color_white inset !important;
+      -webkit-text-fill-color: v.$color-text-dark !important;
       transition: background-color 9999s ease-out 0s;
     }
 
     &:-moz-autofill {
-      box-shadow: 0 0 0 1000px #fff inset !important;
-      -moz-box-shadow: 0 0 0 1000px #fff inset !important;
-      -moz-text-fill-color: #111 !important;
+      box-shadow: 0 0 0 1000px v.$color_white inset !important;
+      -moz-box-shadow: 0 0 0 1000px v.$color_white inset !important;
+      -moz-text-fill-color: v.$color-text-dark !important;
     }
   }
 
@@ -66,8 +68,8 @@
       top: 0px;
       left: 24px;
       font-size: 1rem;
-      color: #b4b4b4;
-      background: #fff;
+      color: v.$color-text-light;
+      background: v.$color_white;
       padding: 0 6px;
       @media screen and (max-width: 1023px) {
         font-size: 14px;
@@ -83,7 +85,7 @@
       left: 24px;
       font-size: 1rem;
       color: var(--color-primary);
-      background: #fff;
+      background: v.$color_white;
       padding: 0 6px;
 
       @media screen and (max-width: 1023px) {
@@ -100,7 +102,7 @@
       left: 24px;
       font-size: 1rem;
       color: var(--color-danger);
-      background: #fff;
+      background: v.$color_white;
       padding: 0 6px;
 
       @media screen and (max-width: 1023px) {

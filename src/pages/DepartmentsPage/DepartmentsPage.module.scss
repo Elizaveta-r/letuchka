@@ -1,3 +1,5 @@
+@use "../../styles/variables" as v;
+
 .pageContent {
   display: flex;
   flex-direction: column;
@@ -11,5 +13,6 @@
 }
 
 .empty {
+  color: v.$color-text-light;
   padding: 80px 0;
 }

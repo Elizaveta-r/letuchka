@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  employees: localStorage.getItem("employees")
-    ? JSON.parse(localStorage.getItem("employees"))
+  employees: sessionStorage.getItem("employees")
+    ? JSON.parse(sessionStorage.getItem("employees"))
     : null,
-  employee: localStorage.getItem("employee")
-    ? JSON.parse(localStorage.getItem("employee"))
+  employee: sessionStorage.getItem("employee")
+    ? JSON.parse(sessionStorage.getItem("employee"))
     : null,
   loadingEmployee: false,
   loadingGetEmployee: "",
@@ -27,6 +27,10 @@ const employeesSlice = createSlice({
     setLoadingGetEmployee(state, action) {
       state.loadingGetEmployee = action.payload;
     },
+    triggerContactAutosave: () => {
+      // action.payload будет содержать данные контакта для API:
+      // { type: 'phone', value: '+7...', contact_id: '...', employee_id: '...' }
+    },
   },
 });
 
@@ -35,5 +39,6 @@ export const {
   setEmployee,
   setEmployeesLoading,
   setLoadingGetEmployee,
+  triggerContactAutosave,
 } = employeesSlice.actions;
 export default employeesSlice.reducer;

@@ -1,23 +1,10 @@
-@use "sass:color";
-
-$color-primary: #16a34a;
-$color-accent-start: #22c55e;
-$color-accent-end: #0088cc;
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-border: #e5e7eb;
-$color-bg-light: #f9fafb;
-
-/* Цвета статусов */
-$color-status-done: #10b981;
-$color-status-late: #f59e0b;
-$color-status-failed: #ef4444;
+@use "../../styles/variables" as v;
 
 .profileSummary {
   padding: 20px;
-  background-color: #ffffff;
+  background-color: v.$color-white;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px v.$color-shadow-light;
 }
 
 .profileHeader {
@@ -26,7 +13,7 @@ $color-status-failed: #ef4444;
   gap: 15px;
   margin-bottom: 20px;
   padding-bottom: 15px;
-  border-bottom: 1px solid $color-border;
+  border-bottom: 1px solid v.$color-border;
   text-align: left;
 }
 
@@ -39,14 +26,18 @@ $color-status-failed: #ef4444;
   justify-content: center;
   font-size: 1.2rem;
   font-weight: 700;
-  color: #ffffff;
-  background: linear-gradient(45deg, $color-accent-start, $color-accent-end);
+  color: v.$color-white;
+  background: linear-gradient(
+    45deg,
+    v.$color-accent-start,
+    v.$color-accent-end
+  );
 }
 
 .position {
   font-size: 1.2rem;
   font-weight: 600;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   line-height: 1.3;
 }
 
@@ -65,15 +56,15 @@ $color-status-failed: #ef4444;
   }
 
   &.on {
-    color: $color-status-done;
+    color: v.$color-status-done;
     .dot {
-      background-color: $color-status-done;
+      background-color: v.$color-status-done;
     }
   }
   &.off {
-    color: $color-status-failed;
+    color: v.$color-status-failed;
     .dot {
-      background-color: $color-status-failed;
+      background-color: v.$color-status-failed;
     }
   }
 }
@@ -104,62 +95,107 @@ $color-status-failed: #ef4444;
 .valueContainer {
   display: inline-block;
   text-align: left;
-  // display: flex;
-  // align-items: center;
-  // gap: 5px;
 }
 
 .iconPrimary {
-  color: $color-primary;
+  color: v.$color-primary;
 }
 
 .label {
   font-size: 0.9rem;
-  color: $color-text-light;
+  color: v.$color-text-light;
 }
 
 .value {
   white-space: pre-line;
   font-size: 0.95rem;
   font-weight: 500;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   margin-left: 4px;
 }
 
-/* Кнопки действий */
 .actions {
   display: flex;
   gap: 10px;
   padding-top: 20px;
-  border-top: 1px dashed $color-border;
+  border-top: 1px dashed v.$color-border;
 }
 
+.contactButton,
 .editButton,
 .deleteButton {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 15px;
-  font-weight: 600;
-  border-radius: 6px;
+  justify-content: flex-start;
+  gap: 10px;
+  width: max-content;
+  padding: 12px 16px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
-  border: none;
+
+  background-color: v.$color-bg-base;
+  border: 1px solid v.$color-border;
+  color: v.$color-text-secondary;
+
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 14px;
+  font-weight: 500;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.contactButton {
+  & svg {
+    color: v.$color-attention;
+  }
+
+  &:hover {
+    color: v.$color-attention;
+    background-color: rgba(v.$color-attention, 0.05);
+    border-color: rgba(v.$color-attention, 0.5);
+
+    svg {
+      transform: scale(1.05);
+    }
+  }
 }
 
 .editButton {
-  background-color: $color-primary;
-  color: #ffffff;
+  & svg {
+    color: v.$color-info;
+  }
+
   &:hover {
-    background-color: color.adjust($color-primary, $lightness: -5%);
+    color: v.$color-info;
+    background-color: rgba(v.$color-info, 0.05);
+    border-color: rgba(v.$color-info, 0.5);
+
+    svg {
+      color: v.$color-info;
+      transform: scale(1.05);
+    }
   }
 }
 
 .deleteButton {
-  background-color: $color-bg-light;
-  color: $color-text-dark;
-  border: 1px solid $color-border;
-  &:hover {
-    background-color: #f3f4f6;
+  & svg {
+    color: v.$color-mandatory;
   }
+  &:hover {
+    color: v.$color-mandatory;
+    background-color: rgba(v.$color-mandatory, 0.05);
+    border-color: rgba(v.$color-mandatory, 0.5);
+
+    svg {
+      color: v.$color-mandatory;
+      transform: scale(1.05);
+    }
+  }
+}
+
+.employeeName {
+  font-style: italic;
+  line-height: 1.3;
 }

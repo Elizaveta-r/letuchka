@@ -19,6 +19,7 @@ import TasksDetailsPage from "../pages/TasksDetailsPage/TasksDetailsPage";
 import ReportsPage from "../pages/ReportsPage/ReportsPage";
 import { SettingsPage } from "../pages/SettimgsPage/SettingsPage";
 import UpdateTaskPage from "../pages/UpdateTaskPage/UpdateTaskPage";
+import IntegrationPage from "../pages/IntegrationPage/IntegrationPage";
 
 export default function AppRoutes() {
   const location = useLocation();
@@ -173,6 +174,14 @@ export default function AppRoutes() {
       handle: {
         title: "Должности | Летучка", // 👈 Заголовок
       },
+    },
+    {
+      path: "/integrations",
+      element: (
+        <PageLayout>
+          <IntegrationPage />
+        </PageLayout>
+      ),
     },
     {
       path: "/*",

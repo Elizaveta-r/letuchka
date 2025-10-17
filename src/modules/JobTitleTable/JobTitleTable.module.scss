@@ -1,28 +1,19 @@
 @use "sass:color";
+@use "../../styles/variables" as v;
 
-$color-primary: #16a34a;
-$color-accent-start: #22c55e;
-$color-accent-end: #06b6d4;
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-border: #e5e7eb;
-$color-bg-light: #f9fafb;
-$color-delete-red: #ef4444;
-
-/* --- ЗАГОЛОВОК И КНОПКА ДОБАВЛЕНИЯ --- */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
   padding-bottom: 15px;
-  border-bottom: 2px solid $color-border;
+  border-bottom: 2px solid v.$color-border;
 }
 
 .title {
   font-size: 2rem;
   font-weight: 700;
-  color: $color-text-dark;
+  color: v.$color-text-main;
 }
 
 .addButton {
@@ -32,27 +23,24 @@ $color-delete-red: #ef4444;
   padding: 10px 20px;
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
-
-  // Акцентный градиент для кнопки
+  color: v.$color-white;
   background-image: linear-gradient(
     90deg,
-    $color-accent-start,
-    $color-accent-end
+    v.$color-accent-start,
+    v.$color-accent-end
   );
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 4px 10px rgba($color-accent-start, 0.3);
+  box-shadow: 0 4px 10px rgba(v.$color-accent-start, 0.3);
 
   &:hover {
     opacity: 0.9;
-    box-shadow: 0 6px 15px rgba($color-accent-start, 0.4);
+    box-shadow: 0 6px 15px rgba(v.$color-accent-start, 0.4);
   }
 }
 
-/* --- СТИЛИ ТАБЛИЦЫ --- */
 .tableContainer {
   width: 100%;
   overflow-x: auto;
@@ -61,18 +49,16 @@ $color-delete-red: #ef4444;
 .jobTable {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 10px; /* Отступ между строками для "воздушности" */
+  border-spacing: 0 10px;
 }
 
-/* Заголовки */
 thead th {
   text-align: center;
-  color: $color-text-light;
+  color: v.$color-text-light;
   font-size: 0.9rem;
   font-weight: 600;
   padding: 0 15px 15px 15px;
-  // Тонкая линия под заголовком
-  border-bottom: 1px solid color.adjust($color-border, $lightness: 5%);
+  border-bottom: 1px solid color.adjust(v.$color-border, $lightness: 5%);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -81,16 +67,14 @@ thead th {
   text-align: center !important;
 }
 
-/* Ячейки */
 tbody td {
-  background-color: $color-bg-light;
+  background-color: v.$color-bg-light;
   padding: 15px;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   font-size: 0.95rem;
   font-weight: 500;
   vertical-align: middle;
 
-  // Скругление углов для строк
   &:first-child {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
@@ -104,81 +88,95 @@ tbody td {
 tr {
   transition: all 0.2s;
   &:hover td {
-    background-color: color.adjust($color-bg-light, $lightness: 2%);
+    background-color: color.adjust(v.$color-bg-light, $lightness: 2%);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
 }
 
 .jobName {
   font-weight: 600;
-  color: $color-text-dark;
+  color: v.$color-text-main;
+  max-width: 250px;
+  word-break: break-all;
 }
 
 .jobDescription {
-  color: $color-text-light;
+  color: v.$color-text-light;
   font-style: italic;
   max-width: 350px;
+  word-break: break-all;
 }
 
-/* Ячейка с количеством сотрудников */
 .employeeCell {
-  color: $color-primary;
+  color: v.$color-primary;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
 
   .userIcon {
-    color: $color-primary;
+    color: v.$color-primary;
   }
 }
 
-/* --- КНОПКИ ДЕЙСТВИЙ (как в вашем стиле) --- */
 .actionsCell {
   display: flex;
   gap: 10px;
   justify-content: center;
+}
 
-  button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    border-radius: 50%;
-    background: none;
-    cursor: pointer;
-    transition: all 0.2s;
+.edit,
+.trash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid v.$color-border;
+  background: v.$color_white;
+
+  svg {
+    transition: transform 0.25s ease;
   }
 }
 
-.editButton {
-  color: $color-primary;
-  border: 1px solid $color-primary;
+.edit {
+  color: v.$color-info;
 
   &:hover {
-    background-color: $color-primary;
-    color: #ffffff;
+    background: rgba(59, 130, 246, 0.1);
+    border-color: v.$color-info;
+    transform: translateY(-1px);
+
+    svg {
+      transform: rotate(-5deg);
+    }
   }
 }
 
-.deleteButton {
-  color: #ef4444;
-  border: 1px solid #ef4444;
+.trash {
+  color: v.$color-mandatory;
 
   &:hover {
-    background-color: #ef4444;
-    color: #ffffff;
+    background: rgba(220, 38, 38, 0.1);
+    border-color: v.$color-mandatory;
+    transform: translateY(-1px);
+
+    svg {
+      transform: scale(1.1);
+    }
   }
 }
 
 .noData {
   text-align: center;
   font-style: italic;
-  color: $color-text-light;
+  color: v.$color-text-light;
   padding: 40px !important;
-  background-color: #ffffff !important;
+  background-color: v.$color-white !important;
   border-radius: 8px;
   margin-top: 20px;
   box-shadow: none !important;

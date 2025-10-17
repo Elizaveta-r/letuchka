@@ -8,24 +8,50 @@ import styles from "./ToggleSwitch.module.scss"; // Предполагаем, ч
  * @param {string} [label] - Необязательный текстовый лейбл рядом со свитчером.
  * @param {string} [className] - Необязательный дополнительный класс для контейнера.
  */
-const ToggleSwitch = ({ checked, onChange, label, className, labelStyle }) => {
+const ToggleSwitch = ({
+  checked,
+  onChange,
+  label,
+  className,
+  labelStyle,
+  togglePosition = "right",
+}) => {
   return (
     <div className={`${styles.switchContainer} ${className || ""}`}>
+      {togglePosition === "left" && (
+        <label className={styles.switch}>
+          {/* Скрытый чекбокс управляет состоянием */}
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={onChange}
+            className={styles.switchInput}
+          />
+          {/* Визуальный ползунок (Slider) */}
+          <span
+            className={`${styles.slider} ${checked ? styles.checked : ""}`}
+          />
+        </label>
+      )}
       {label && (
         <span className={`${styles.switchLabel} ${labelStyle}`}>{label}</span>
       )}
 
-      <label className={styles.switch}>
-        {/* Скрытый чекбокс управляет состоянием */}
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={onChange}
-          className={styles.switchInput}
-        />
-        {/* Визуальный ползунок (Slider) */}
-        <span className={`${styles.slider} ${checked ? styles.checked : ""}`} />
-      </label>
+      {togglePosition === "right" && (
+        <label className={styles.switch}>
+          {/* Скрытый чекбокс управляет состоянием */}
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={onChange}
+            className={styles.switchInput}
+          />
+          {/* Визуальный ползунок (Slider) */}
+          <span
+            className={`${styles.slider} ${checked ? styles.checked : ""}`}
+          />
+        </label>
+      )}
     </div>
   );
 };

@@ -1,47 +1,10 @@
 @use "sass:color";
-
-$color-primary: #16a34a;
-$color-accent-start: #22c55e;
-$color-accent-end: #06b6d4;
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-border: #e5e7eb;
-$color-bg-light: #f9fafb;
-$color-reset-gray: #9ca3af;
-
-/* Цвета статусов */
-$color-status-done: #10b981;
-$color-status-late: #f59e0b;
-$color-status-failed: #ef4444;
+@use "../../styles/variables" as v;
 
 .pageContent {
   display: flex;
   flex-direction: column;
   gap: 25px;
-}
-
-.title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.telegram {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.valueLink {
-  @extend .value;
-  color: $color-accent-end;
-  text-decoration: none;
-  border-bottom: 1.5px solid transparent;
-  transition: all 0.3s ease-in;
-  line-height: 100%;
-  &:hover {
-    border-bottom: 1.5px solid $color-accent-end;
-  }
 }
 
 .mainGrid {
@@ -51,83 +14,46 @@ $color-status-failed: #ef4444;
   align-items: flex-start;
 }
 
-.profileSummary {
+.historySection {
+  background-color: v.$color-white;
   padding: 20px;
-  background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.profileHeader {
+.historyHeader {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 15px;
   margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid $color-border;
-  text-align: left;
+  padding-bottom: 10px;
+  border-bottom: 1px solid v.$color-border;
 }
 
-.avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
+.historyTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: v.$color-text-main;
+}
+
+.historyList {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #ffffff;
-  background: linear-gradient(45deg, $color-accent-start, $color-accent-end);
+  flex-direction: column;
+  gap: 15px;
 }
 
 .position {
   font-size: 1.2rem;
   font-weight: 600;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   line-height: 1.3;
 }
 
 .role {
   font-size: 0.9rem;
-  color: $color-text-light;
+  color: v.$color-text-light;
 }
 
-/* Статус "На работе" */
-.statusPill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  //   padding: 6px 12px;
-  //   border-radius: 20px;
-  //   margin-bottom: 25px;
-
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  &.on {
-    // background-color: lighten($color-status-done, 40%);
-    color: $color-status-done;
-    .dot {
-      background-color: $color-status-done;
-    }
-  }
-  &.off {
-    // background-color: lighten($color-status-failed, 25%);
-    color: $color-status-failed;
-    .dot {
-      background-color: $color-status-failed;
-    }
-  }
-}
-
-/* Список данных */
 .dataList {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -142,16 +68,16 @@ $color-status-failed: #ef4444;
   gap: 10px;
 
   .iconPrimary {
-    color: $color-primary;
+    color: v.$color-primary;
   }
   .label {
     font-size: 0.9rem;
-    color: $color-text-light;
+    color: v.$color-text-light;
   }
   .value {
     font-size: 0.95rem;
     font-weight: 500;
-    color: $color-text-dark;
+    color: v.$color-text-main;
   }
 }
 
@@ -170,80 +96,13 @@ $color-status-failed: #ef4444;
   gap: 5px;
 }
 
-/* Кнопки действий */
-.actions {
-  display: flex;
-  gap: 10px;
-  padding-top: 20px;
-  border-top: 1px dashed $color-border;
-}
-.editButton,
-.deleteButton {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 15px;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: none;
-}
-.editButton {
-  background-color: $color-primary;
-  color: #ffffff;
-  &:hover {
-    background-color: color.adjust($color-primary, $lightness: -5%);
-  }
-}
-.deleteButton {
-  background-color: $color-bg-light;
-  color: $color-text-dark;
-  border: 1px solid $color-border;
-  &:hover {
-    background-color: #f3f4f6;
-  }
-}
-
-/* === 2. ПРАВАЯ КОЛОНКА (ИСТОРИЯ) === */
-
-.historySection {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.historyHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid $color-border;
-}
-
-.historyTitle {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: $color-text-dark;
-}
-
-.historyList {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-/* --- СТИЛИ ФИЛЬТРА ДАТ --- */
-
 .calendarControls {
   position: relative;
-  z-index: 100; // Убедимся, что календарь находится поверх
+  z-index: 100;
 }
 
 .filterButtonWrapper {
-  display: flex; // Выстраивает кнопки Reset и Filter в ряд
+  display: flex;
   gap: 8px;
 }
 
@@ -254,15 +113,15 @@ $color-status-failed: #ef4444;
   padding: 8px 15px;
   font-size: 0.9rem;
   font-weight: 600;
-  color: $color-primary;
-  background-color: #ffffff;
-  border: 1px solid $color-primary;
+  color: v.$color-primary;
+  background-color: v.$color-white;
+  border: 1px solid v.$color-primary;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background-color: color.adjust($color-primary, $lightness: 40%);
+    background-color: color.adjust(v.$color-primary, $lightness: 40%);
   }
 }
 
@@ -273,16 +132,16 @@ $color-status-failed: #ef4444;
   width: 38px;
   height: 38px;
   padding: 0;
-  color: $color-reset-gray;
-  background-color: #ffffff;
-  border: 1px solid $color-border;
+  color: v.$color-reset-gray;
+  background-color: v.$color-white;
+  border: 1px solid v.$color-border;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    color: $color-text-dark;
-    border-color: $color-text-dark;
+    color: v.$color-text-main;
+    border-color: v.$color-text-main;
   }
 }
 
@@ -290,12 +149,11 @@ $color-status-failed: #ef4444;
   position: absolute;
   top: 45px;
   right: 0;
-  background-color: #ffffff;
+  background-color: v.$color-white;
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   padding: 10px;
 
-  // Переопределяем стили DateRange для более чистого вида
   :global(.rdrCalendarWrapper) {
     box-shadow: none !important;
     border-radius: 8px;
@@ -310,8 +168,12 @@ $color-status-failed: #ef4444;
   width: 100%;
   margin-top: 10px;
   padding: 8px;
-  background: linear-gradient(90deg, $color-accent-start, $color-accent-end);
-  color: #ffffff;
+  background: linear-gradient(
+    90deg,
+    v.$color-accent-start,
+    v.$color-accent-end
+  );
+  color: v.$color-white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -327,16 +189,16 @@ $color-status-failed: #ef4444;
   width: 100%;
   margin-top: 5px;
   padding: 8px;
-  background-color: #ffffff;
-  color: $color-reset-gray;
-  border: 1px solid $color-border;
+  background-color: v.$color-white;
+  color: v.$color-reset-gray;
+  border: 1px solid v.$color-border;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s;
 
   &:hover {
-    background-color: $color-bg-light;
-    color: $color-text-dark;
+    background-color: v.$color-bg-light;
+    color: v.$color-text-main;
   }
 }

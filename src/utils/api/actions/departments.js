@@ -6,16 +6,17 @@ import {
 } from "../../../store/slices/departmentsSlice";
 import { $authHost } from "../http";
 import { logPostError } from "../helpers/logErrorHelper";
+import { getEmployeesByDepartmentAndRole } from "./employees";
 
 export const getDepartmentsList = (page, page_size) => {
   return async (dispatch) => {
     try {
       const res = await $authHost.get(
-        `/v1/organization/department/list?page=${page}&page_size=${page_size}`
+        `/organization/department/list?page=${page}&page_size=${page_size}`
       );
       if (res.status === 200) {
         dispatch(setDepartments(res.data.departments));
-        localStorage.setItem(
+        sessionStorage.setItem(
           "departments",
           JSON.stringify(res.data.departments)
         );
@@ -26,19 +27,20 @@ export const getDepartmentsList = (page, page_size) => {
       throw error;
     }
   };
-}; // route: /v1/organization/department/list
+}; // route: /organization/department/list
 
 export const getDepartmentById = (id) => {
   return async (dispatch) => {
     dispatch(setDepartmentsLoading(true));
     try {
       const res = await $authHost.get(
-        `/v1/organization/department?department_id=${id}`
+        `/organization/department?department_id=${id}`
       );
       if (res.status === 200) {
         console.log("res.data.department", res.data.department);
         dispatch(setDepartment(res.data.department));
-        localStorage.setItem("department", JSON.stringify(res.data.department));
+        dispatch(getEmployeesByDepartmentAndRole(id, "head"));
+        dispatch(getEmployeesByDepartmentAndRole(id, "employee"));
       }
       return res;
     } catch (error) {
@@ -54,37 +56,56 @@ export const createDepartment = (data) => {
   return async (dispatch) => {
     dispatch(setDepartmentsLoading(true));
     try {
-      const res = await $authHost.post(`/v1/organization/department`, data);
+      const res = await $authHost.post(`/organization/department`, data);
       if (res.status === 200) {
         dispatch(getDepartmentsList(1, 10));
         toast.success("Подразделение успешно создано!");
       }
       return res;
     } catch (error) {
-      logPostError(error);
+      logPostError("createDepartment", error);
       throw error;
     } finally {
       dispatch(setDepartmentsLoading(false));
     }
   };
-}; // route: /v1/organization/department
+}; // route: /organization/department
 export const updateDepartment = (data) => {
   return async (dispatch) => {
     dispatch(setDepartmentsLoading(true));
     console.log("updatedata", data);
     try {
-      const res = await $authHost.put(`/v1/organization/department`, data);
+      const res = await $authHost.put(`/organization/department`, data);
       if (res.status === 200) {
         dispatch(getDepartmentsList(1, 10));
         toast.success("Подразделение успешно обновлено!");
       }
       return res;
     } catch (error) {
-      logPostError(error);
+      logPostError("updateDepartment", error);
       throw error;
     } finally {
       dispatch(setDepartmentsLoading(false));
     }
   };
-}; // route: /v1/organization/department
-export const deleteDepartment = () => {};
+}; // route: /organization/department
+export const deleteDepartment = (id) => {
+  return async (dispatch) => {
+    dispatch(setDepartmentsLoading(true));
+    try {
+      const res = await $authHost.delete(
+        `/organization/department?department_id=${id}`
+      );
+      if (res.status === 200) {
+        dispatch(getDepartmentsList(1, 10));
+        toast.success("Подразделение успешно удалено!");
+      }
+      return res;
+    } catch (error) {
+      logPostError("deleteDepartment", error);
+      throw error;
+    } finally {
+      dispatch(setDepartmentsLoading(false));
+    }
+  };
+};

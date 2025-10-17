@@ -1,3 +1,4 @@
+import Hint from "../../ui/Hint/Hint";
 import styles from "./EmployeeRowHeader.module.scss";
 
 export default function EmployeeRowHeader() {
@@ -15,7 +16,9 @@ export default function EmployeeRowHeader() {
       <p className={styles.department}>ПОДРАЗДЕЛЕНИЕ(-Я)</p>
 
       <div className={`${styles.statusIndicator}`}>
-        <p className={styles.status}>НА РАБОТЕ</p>
+        <Hint hintContent="Отметился ли сотрудник о приходе на работу">
+          <p className={styles.status}>ЧЕКИН</p>
+        </Hint>
       </div>
 
       <div className={styles.actions}>

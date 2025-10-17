@@ -1,7 +1,4 @@
-$color-primary: #16a34a;
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-border: #e5e7eb;
+@use "../../styles/variables" as v;
 
 .backdrop {
   position: fixed;
@@ -9,7 +6,7 @@ $color-border: #e5e7eb;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: v.$color-shadow-dark;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,7 +14,7 @@ $color-border: #e5e7eb;
 }
 
 .modal {
-  background: #ffffff;
+  background: v.$color-white;
   border-radius: 12px;
   max-width: 600px;
   width: 90%;
@@ -33,13 +30,16 @@ $color-border: #e5e7eb;
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid $color-border;
+  border-bottom: 1px solid v.$color-border;
 }
 
 .title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: $color-text-dark;
+  color: v.$color-text-main;
+  white-space: pre-line;
+  width: 100%;
+  text-align: center;
 }
 
 .closeButton {
@@ -47,7 +47,7 @@ $color-border: #e5e7eb;
   background: none;
   border: none;
   cursor: pointer;
-  color: $color-text-light;
+  color: v.$color-text-light;
   width: 32px;
   height: 32px;
   display: flex;
@@ -57,8 +57,8 @@ $color-border: #e5e7eb;
   transition: background-color 0.2s, color 0.2s;
 
   &:hover {
-    background-color: #f3f4f6;
-    color: $color-primary;
+    background-color: v.$color-disabled;
+    color: v.$color-primary;
   }
 }
 

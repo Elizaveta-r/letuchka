@@ -10,6 +10,7 @@ import EmployeeContactModal from "../../modules/EmployeeContactModal/EmployeeCon
 import { useDispatch, useSelector } from "react-redux";
 import {
   createEmployee,
+  deleteEmployee,
   getEmployeeById,
   getEmployeesList,
   updateEmployee,
@@ -28,6 +29,8 @@ export default function EmployeePage() {
   const [visibleConfirmDeleteModal, setVisibleConfirmDeleteModal] =
     useState(false);
   const [visibleContactModal, setVisibleContactModal] = useState(false);
+
+  const fullName = `${editedEmployee?.surname} ${editedEmployee?.firstname} ${editedEmployee?.patronymic}`;
 
   const handleOpenNewEmployeeModal = () => {
     setIsNewEmployee(true);
@@ -79,6 +82,14 @@ export default function EmployeePage() {
     return dispatch(updateEmployee(data));
   };
 
+  const handleDeleteEmployee = () => {
+    dispatch(deleteEmployee(editedEmployee?.id)).then((res) => {
+      if (res.status === 200) {
+        setVisibleConfirmDeleteModal(false);
+      }
+    });
+  };
+
   useEffect(() => {
     dispatch(getEmployeesList(1, 10));
   }, [dispatch]);
@@ -102,31 +113,39 @@ export default function EmployeePage() {
       <DeleteConfirmationModal
         isOpen={visibleConfirmDeleteModal}
         onClose={handleCloseConfirmDeleteModal}
-        message={<MessageDelete employeeName={editedEmployee?.name} />}
+        onConfirm={handleDeleteEmployee}
+        message={<MessageDelete employeeName={fullName} />}
       />
 
-      <EmployeeContactModal
-        isOpen={visibleContactModal}
-        onClose={handleCloseContactModal}
-        contacts={editedEmployee}
-      />
+      {editedEmployee && (
+        <EmployeeContactModal
+          isOpen={visibleContactModal}
+          onClose={handleCloseContactModal}
+          employee={editedEmployee}
+        />
+      )}
 
       <div className={styles.content}>
-        <EmployeeRowHeader />
+        {employees && <EmployeeRowHeader />}
 
         {/* СТРОКИ ДАННЫХ */}
-        {employees
-          ? employees.map((employee) => (
-              <EmployeeRow
-                key={employee.id}
-                {...employee}
-                onShowDetails={() => handleDetails(employee.id)}
-                onShowContacts={() => handleOpenContactModal(employee)}
-                onEdit={() => handleOpenEmployeeModal(employee)}
-                onDelete={() => handleOpenConfirmDeleteModal(employee)}
-              />
-            ))
-          : null}
+        {employees ? (
+          employees.map((employee) => (
+            <EmployeeRow
+              key={employee.id}
+              {...employee}
+              onShowDetails={() => handleDetails(employee.id)}
+              onShowContacts={() => handleOpenContactModal(employee)}
+              onEdit={() => handleOpenEmployeeModal(employee)}
+              onDelete={() => handleOpenConfirmDeleteModal(employee)}
+            />
+          ))
+        ) : (
+          <div className={styles.empty}>
+            Список сотрудников пуст. <br /> Нажмите <strong>"Добавить"</strong>,
+            чтобы добавить первого сотрудника.
+          </div>
+        )}
       </div>
     </div>
   );
@@ -135,46 +154,9 @@ export default function EmployeePage() {
 const MessageDelete = ({ employeeName }) => {
   return (
     <>
-      Вы уверены, что хотите <strong>удалить</strong> сотрудника
-      <span className={styles.employeeName}> {employeeName}</span>? Это действие
-      необратимо.
+      Вы уверены, что хотите <strong>удалить</strong> сотрудника <br />
+      <span className={styles.employeeName}>{employeeName}</span>? <br /> Это
+      действие <strong>необратимо</strong>.
     </>
   );
 };
-
-// ----------------------------------------------------------------------
-// Моковые данные
-// ----------------------------------------------------------------------
-
-// const employees = [
-//   {
-//     id: 1,
-//     name: "Иван Иванов",
-//     telegramId: 6455897008,
-//     telegramName: "@ivan_fe",
-//     position: "Frontend разработчик",
-//     role: "Сотрудник",
-//     department: "Разработка (Frontend)",
-//     checkedIn: true,
-//   },
-//   {
-//     id: 2,
-//     name: "Петр Петров-Синицин",
-//     telegramId: 6455897008,
-//     telegramName: "@petr_lead",
-//     position: "Ведущий Backend",
-//     role: "Руководитель",
-//     department: "Разработка (Backend)",
-//     checkedIn: false,
-//   },
-//   {
-//     id: 3,
-//     name: "Сидор Сидоров",
-//     telegramId: 6455897008,
-//     telegramName: "@sidor_qa",
-//     position: "Старший тестировщик",
-//     role: "Сотрудник",
-//     department: "Обеспечение качества",
-//     checkedIn: true,
-//   },
-// ];

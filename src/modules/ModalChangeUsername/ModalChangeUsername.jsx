@@ -40,16 +40,19 @@ export const ModalChangeUsername = ({ isOpen, onClose }) => {
         <Modal isOpen={isOpen} onClose={handleClose} title={"Изменение имени"}>
           <div className={styles.form}>
             <div className={styles.formItem}>
-              <p className={styles.formLabel}>Должность</p>
+              <p className={styles.formLabel}>Имя</p>
               <CustomInput
                 value={name}
-                setValue={setName}
+                onChange={(e) => setName(e.target.value)}
                 placeholder={"Введите новое имя"}
               />
             </div>
 
             <div className={styles.actions}>
-              <CancelButton onClick={handleClose} />
+              <CancelButton
+                onClick={handleClose}
+                className={styles.cancelButton}
+              />
               <Button
                 secondary={true}
                 title={"Сохранить"}

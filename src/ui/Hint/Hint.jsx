@@ -11,7 +11,14 @@ import styles from "./Hint.module.scss";
  * @param {React.ReactNode} hintContent - Содержимое подсказки (текст, картинки, шаги).
  * @param {string} position - Позиция всплывающего окна ('top', 'right', 'left', 'bottom'). По умолчанию 'top'.
  */
-const Hint = ({ children, hintContent, position = "top", hasIcon = true }) => {
+const Hint = ({
+  children,
+  hintContent,
+  position = "top",
+  hasIcon = true,
+  isCentered = false,
+  isMaxWidth,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
 
   // 1. Анимационные варианты для всплывающего окна
@@ -47,7 +54,10 @@ const Hint = ({ children, hintContent, position = "top", hasIcon = true }) => {
   );
 
   return (
-    <div className={styles.hintContainer}>
+    <div
+      className={styles.hintContainer}
+      style={{ justifyContent: isCentered ? "center" : "flex-start" }}
+    >
       {hasIcon ? (
         <div className={styles.hintTarget}>
           {children}
@@ -82,7 +92,9 @@ const Hint = ({ children, hintContent, position = "top", hasIcon = true }) => {
           <AnimatePresence>
             {isVisible && (
               <motion.div
-                className={`${styles.hintTooltip} ${styles[position]}`}
+                className={`${styles.hintTooltip} ${styles[position]} ${
+                  isMaxWidth ? styles.maxWidth : ""
+                }`}
                 variants={tooltipVariants}
                 initial="initial"
                 animate="animate"

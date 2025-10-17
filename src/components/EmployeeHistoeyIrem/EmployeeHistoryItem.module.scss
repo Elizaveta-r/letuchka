@@ -1,17 +1,5 @@
 @use "sass:color";
-
-$color-primary: #16a34a;
-$color-accent-start: #22c55e;
-$color-accent-end: #0088cc;
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-border: #e5e7eb;
-$color-bg-light: #f9fafb;
-
-/* Цвета статусов */
-$color-status-done: #10b981;
-$color-status-late: #f59e0b;
-$color-status-failed: #ef4444;
+@use "../../styles/variables" as v;
 
 .historyItem {
   display: grid;
@@ -20,46 +8,46 @@ $color-status-failed: #ef4444;
   padding: 15px;
   border-radius: 8px;
   transition: background-color 0.2s;
-  border: 1px solid $color-border;
+  border: 1px solid v.$color-border;
 
   &.photo {
     grid-template-columns: 30px 1fr 120px;
   }
 
   &:hover {
-    background-color: $color-bg-light;
+    background-color: v.$color-bg-light;
   }
 
   /* Цвета статусов */
   &.done {
-    border-left: 4px solid $color-status-done;
+    border-left: 4px solid v.$color-status-done;
   }
   &.doneLate {
-    border-left: 4px solid $color-status-late;
+    border-left: 4px solid v.$color-status-late;
   }
   &.failed {
-    border-left: 4px solid $color-status-failed;
+    border-left: 4px solid v.$color-status-failed;
   }
 }
 
 .statusIcon {
-  color: $color-text-light;
+  color: v.$color-text-light;
   padding-top: 5px;
 }
 
 .done {
   .statusIcon {
-    color: $color-status-done;
+    color: v.$color-status-done;
   }
 }
 .doneLate {
   .statusIcon {
-    color: $color-status-late;
+    color: v.$color-status-late;
   }
 }
 .failed {
   .statusIcon {
-    color: $color-status-failed;
+    color: v.$color-status-failed;
   }
 }
 
@@ -78,17 +66,17 @@ $color-status-failed: #ef4444;
 .taskTitle {
   font-size: 1rem;
   font-weight: 600;
-  color: $color-text-dark;
+  color: v.$color-text-main;
 }
 
 .date {
   font-size: 0.8rem;
-  color: $color-text-light;
+  color: v.$color-text-light;
 }
 
 .positionInfo {
   font-size: 0.85rem;
-  color: $color-text-light;
+  color: v.$color-text-light;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -116,30 +104,30 @@ $color-status-failed: #ef4444;
 }
 
 .aiSuccess {
-  color: $color-status-done;
-  background-color: color.adjust($color-status-done, $lightness: 30%);
+  color: v.$color-status-done;
+  background-color: color.adjust(v.$color-status-done, $lightness: 30%);
 
   svg {
-    color: $color-status-done;
+    color: v.$color-status-done;
   }
 }
 
 .aiFail {
-  color: $color-status-failed;
-  background-color: color.adjust($color-status-failed, $lightness: 25%);
+  color: v.$color-status-failed;
+  background-color: color.adjust(v.$color-status-failed, $lightness: 25%);
 
   svg {
-    color: $color-status-failed;
+    color: v.$color-status-failed;
   }
 }
 
 .criteria,
 .comment {
   font-size: 0.8rem;
-  color: $color-text-dark;
+  color: v.$color-text-main;
 }
 .comment {
-  color: $color-status-late;
+  color: v.$color-status-late;
   font-style: italic;
   display: flex;
   align-items: center;
@@ -167,8 +155,8 @@ $color-status-failed: #ef4444;
 .photoLink {
   align-self: flex-start;
   padding: 8px 12px;
-  background-color: $color-bg-light;
-  color: $color-primary;
+  background-color: v.$color-bg-light;
+  color: v.$color-primary;
   font-size: 0.85rem;
   font-weight: 600;
   border-radius: 6px;
@@ -178,14 +166,14 @@ $color-status-failed: #ef4444;
   cursor: pointer;
 
   &:hover {
-    background-color: #e5e7eb;
+    background-color: v.$color-border;
   }
 }
 
 .noHistory {
-  color: $color-text-light;
+  color: v.$color-text-light;
   text-align: center;
   padding: 40px;
-  background-color: $color-bg-light;
+  background-color: v.$color-bg-light;
   border-radius: 8px;
 }

@@ -1,13 +1,5 @@
 @use "sass:color";
-
-/* Переменные */
-$color-primary: #16a34a;
-$color-accent-start: #22c55e;
-$color-accent-end: #06b6d4;
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-border: #e5e7eb;
-$color-bg-light: #f9fafb;
+@use "../../styles/variables" as v;
 
 .selectContainer {
   position: relative;
@@ -21,29 +13,29 @@ $color-bg-light: #f9fafb;
   justify-content: space-between;
   align-items: center;
   padding: 10px 15px;
-  background-color: #ffffff;
-  border: 1px solid $color-border;
+  background-color: v.$color-white;
+  border: 1px solid v.$color-border;
   border-radius: 8px;
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
 
   &:hover {
-    border-color: color.adjust($color-primary, $lightness: 10%);
+    border-color: color.adjust(v.$color-primary, $lightness: 10%);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   }
 }
 
 .selectedLabel {
-  color: $color-text-dark;
+  color: v.$color-text-main;
   font-weight: 500;
 }
 
 .placeholder {
-  color: $color-text-light;
+  color: v.$color-text-light;
 }
 
 .icon {
-  color: $color-text-light;
+  color: v.$color-text-light;
   transition: transform 0.2s;
 
   &.open {
@@ -53,30 +45,28 @@ $color-bg-light: #f9fafb;
 
 .dropdown {
   position: absolute;
-  top: 100%; // Сразу под заголовком
+  top: 100%;
   left: 0;
   right: 0;
   z-index: 500;
   margin-top: 8px;
-  background-color: #ffffff;
-  border: 1px solid $color-border;
+  background-color: v.$color-white;
+  border: 1px solid v.$color-border;
   border-radius: 8px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  overflow: hidden; // Для красивых границ
-  transform-origin: top; // Для анимации Framer Motion
+  overflow: hidden;
+  transform-origin: top;
 }
-
-/* --- Стили для поиска --- */
 
 .searchBox {
   display: flex;
   align-items: center;
   padding: 10px 15px;
-  border-bottom: 1px solid $color-border;
+  border-bottom: 1px solid v.$color-border;
 }
 
 .searchIcon {
-  color: $color-text-light;
+  color: v.$color-text-light;
   margin-right: 8px;
 }
 
@@ -88,10 +78,8 @@ $color-bg-light: #f9fafb;
   padding: 0;
 }
 
-/* --- Стили для опций --- */
-
 .optionsList {
-  max-height: 200px; // Ограничение высоты для скролла
+  max-height: 200px;
   overflow-y: auto;
   padding: 5px 0;
 }
@@ -109,14 +97,14 @@ $color-bg-light: #f9fafb;
   align-items: center;
   padding: 3px 8px;
   border-radius: 4px;
-  background-color: #e6e6e6;
-  color: #333;
+  background-color: v.$color-border-base;
+  color: v.$hint-bg;
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #d1d1d1;
+    background-color: v.$color-slider-off;
   }
 }
 
@@ -127,13 +115,13 @@ $color-bg-light: #f9fafb;
 
 .checkMark {
   margin-left: auto;
-  color: #10b981;
+  color: v.$color-status-done;
 }
 
 .option {
   padding: 10px 15px;
   cursor: pointer;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   font-size: 0.95rem;
   transition: background-color 0.2s;
   display: flex;
@@ -141,44 +129,42 @@ $color-bg-light: #f9fafb;
   justify-content: space-between;
 
   &:hover {
-    background-color: $color-bg-light;
+    background-color: v.$color-bg-light;
   }
 
   &.active {
-    background-color: $color-primary;
-    color: #ffffff;
+    background-color: v.$color-primary;
+    color: v.$color-white;
     font-weight: 600;
 
     &:hover {
-      background-color: color.adjust($color-primary, $lightness: -5%);
+      background-color: color.adjust(v.$color-primary, $lightness: -5%);
     }
   }
 }
 
 .noResults {
   padding: 10px 15px;
-  color: $color-text-light;
+  color: v.$color-text-light;
   font-style: italic;
   font-size: 0.9rem;
 }
-
-/* --- Опция создания (Creatable) --- */
 
 .createOption {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 10px 15px;
-  background: linear-gradient(90deg, #f0fdf4, #ffffff); // Легкий градиент
-  border-bottom: 1px solid $color-border;
-  color: $color-primary;
+  background: linear-gradient(90deg, #f0fdf4, v.$color-white);
+  border-bottom: 1px solid v.$color-border;
+  color: v.$color-primary;
   font-weight: 600;
 
   &:hover {
-    background: linear-gradient(90deg, #dcfce7, #ffffff);
+    background: linear-gradient(90deg, v.$color-lime-50, v.$color-white);
   }
 
   svg {
-    color: $color-accent-end; // Используем акцентный цвет для иконки
+    color: v.$color-accent-end;
   }
 }

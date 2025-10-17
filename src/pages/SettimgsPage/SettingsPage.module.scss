@@ -1,3 +1,5 @@
+@use "../../styles/variables" as v;
+
 .container {
   display: flex;
   flex-direction: column;
@@ -15,133 +17,6 @@
   }
 }
 
-// Sessions Section
-.sessionsList {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.sessionCard {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1.5rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #fafafa;
-  transition: all 0.15s ease;
-
-  &:hover {
-    border-color: #d1d5db;
-    background: white;
-  }
-
-  &.currentSession {
-    border-color: #3e68ff;
-    background: rgba(62, 104, 255, 0.02);
-  }
-}
-
-.sessionIcon {
-  padding: 0.75rem;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: #666;
-
-  svg {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-
-  .currentSession & {
-    border-color: #3e68ff;
-    background: rgba(62, 104, 255, 0.1);
-    color: #3e68ff;
-  }
-}
-
-.sessionInfo {
-  flex: 1;
-}
-
-.sessionHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
-
-  @media (max-width: 640px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-}
-
-.sessionDevice {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #000;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.currentBadge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.5rem;
-  background: #3e68ff;
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 500;
-  border-radius: 12px;
-}
-
-.sessionTime {
-  font-size: 0.875rem;
-  color: #666;
-}
-
-.sessionDetails {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.sessionDetail {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  color: #666;
-}
-
-.detailIcon {
-  width: 0.875rem;
-  height: 0.875rem;
-  color: #999;
-}
-
-.revokeButton {
-  padding: 0.5rem 1rem;
-  background: none;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  color: #dc2626;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-
-  &:hover {
-    background: #fef2f2;
-    border-color: #fca5a5;
-  }
-}
-
 // Responsive Design
 @media (max-width: 768px) {
   .container {
@@ -150,22 +25,5 @@
 
   .section {
     padding: 1.5rem 1rem;
-  }
-
-  .sessionCard {
-    padding: 1rem;
-  }
-
-  .sessionHeader {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .sessionDetails {
-    gap: 0.25rem;
-  }
-
-  .sessionDetail {
-    font-size: 0.8125rem;
   }
 }

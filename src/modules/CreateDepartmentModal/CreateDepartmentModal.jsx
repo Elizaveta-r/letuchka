@@ -7,14 +7,16 @@ import { timeZoneOptions } from "../../utils/methods/generateTimeZoneOptions";
 import CustomSelect from "../../ui/CustomSelect/CustomSelect";
 import CustomTextArea from "../../ui/CustomTextArea/CustomTextArea";
 import { toast } from "sonner";
-import Hint from "../../ui/Hint/Hint";
 import { useDispatch, useSelector } from "react-redux";
 import { RingLoader } from "react-spinners";
 import { formatTime } from "../../utils/methods/formatTime";
 import { setDepartment } from "../../store/slices/departmentsSlice";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
+import { CustomCheckbox } from "../../ui/CustomCheckbox/CustomCheckbox";
 
 export default function CreateDepartmentModal({
   isOpen,
+  isNew,
   onClose,
   onConfirm,
   onUpdate,
@@ -29,6 +31,7 @@ export default function CreateDepartmentModal({
     checkOutTime: "18:00",
   });
   const [timeZone, setTimeZone] = React.useState("");
+  const [isDefault, setIsDefault] = React.useState(false);
 
   const handleInputChange = (event) => {
     setFormData({
@@ -53,7 +56,12 @@ export default function CreateDepartmentModal({
       return;
     }
 
-    onConfirm({ ...formData, timeZone }).then((res) => {
+    if (!timeZone) {
+      toast.error("Пожалуйста, выберите часовой пояс.");
+      return;
+    }
+
+    onConfirm({ ...formData, timeZone, is_default: isDefault }).then((res) => {
       if (res && res.status === 200) {
         setFormData({
           name: "",
@@ -72,7 +80,17 @@ export default function CreateDepartmentModal({
       return;
     }
 
-    onUpdate({ ...formData, timeZone, id: department?.id }).then((res) => {
+    if (!timeZone) {
+      toast.error("Пожалуйста, выберите часовой пояс.");
+      return;
+    }
+
+    onUpdate({
+      ...formData,
+      timeZone,
+      id: department?.id,
+      is_default: isDefault,
+    }).then((res) => {
       if (res && res.status === 200) {
         setFormData({
           name: "",
@@ -88,15 +106,19 @@ export default function CreateDepartmentModal({
   };
 
   useEffect(() => {
-    if (department) {
+    if (!isNew && department) {
       setFormData({
-        name: department?.name,
-        description: department?.description,
-        checkInTime: formatTime(department?.check_in_time),
-        checkOutTime: formatTime(department?.check_out_time),
+        name: department.name || "",
+        description: department.description || "",
+        checkInTime: formatTime(department.check_in_time) || "09:00",
+        checkOutTime: formatTime(department.check_out_time) || "18:00",
       });
-      setTimeZone({ value: department?.timezone, label: department?.timezone });
-    } else {
+      const tzOption =
+        timeZoneOptions.find((t) => t.value === department.timezone) || null;
+
+      setTimeZone(tzOption);
+      setIsDefault(department.is_default);
+    } else if (isNew) {
       setFormData({
         name: "",
         description: "",
@@ -105,7 +127,7 @@ export default function CreateDepartmentModal({
       });
       setTimeZone("");
     }
-  }, [department, isOpen]);
+  }, [isNew, isOpen, department]);
 
   return (
     <AnimatePresence>
@@ -114,7 +136,7 @@ export default function CreateDepartmentModal({
           isOpen={isOpen}
           onClose={handleClose}
           title={`${
-            department ? "Редактирование" : "Создание нового"
+            !isNew ? "Редактирование" : "Создание нового"
           } подразделения`}
         >
           <div className={styles.formContent}>
@@ -126,7 +148,7 @@ export default function CreateDepartmentModal({
               <CustomInput
                 id="name"
                 name="name"
-                placeholder="Например, Frontend-разработка"
+                placeholder="Например, Отдел контроля качества"
                 value={formData.name}
                 onChange={handleInputChange}
               />
@@ -134,12 +156,9 @@ export default function CreateDepartmentModal({
 
             {/* 2. Таймзона  */}
             <div className={styles.section}>
-              <Hint
-                hintContent="Определяет время получения автоматических задач и уведомлений сотрудниками."
-                minWidth={"500px"}
-              >
+              <HintWithPortal hintContent={<HintTimeZone />}>
                 <label className={styles.label}>Часовой пояс</label>
-              </Hint>
+              </HintWithPortal>
 
               <CustomSelect
                 placeholder="Выберите часовой пояс"
@@ -150,31 +169,14 @@ export default function CreateDepartmentModal({
               />
             </div>
 
-            {/* 3. Описание подразделения */}
-            <div className={styles.section}>
-              <label className={styles.label} htmlFor="description">
-                Описание подразделения
-              </label>
-              <CustomTextArea
-                id="description"
-                name="description"
-                placeholder="Краткое описание функций"
-                value={formData.description}
-                onChange={handleInputChange}
-                rows={4}
-              />
-            </div>
-
             {/* 4. Время Check-in и Check-out */}
             <div className={styles.timeGrid}>
               <div className={styles.section}>
-                <Hint
-                  hintContent={`Сотрудник должен быть на рабочем месте и отметиться (сделать "чекин") не позднее указанного времени.`}
-                >
+                <HintWithPortal hintContent={<HintCheckIn />}>
                   <label className={styles.label} htmlFor="checkInTime">
-                    Чекин (до)
+                    Чекин (в)
                   </label>
-                </Hint>
+                </HintWithPortal>
 
                 <CustomInput
                   id="checkInTime"
@@ -185,13 +187,11 @@ export default function CreateDepartmentModal({
                 />
               </div>
               <div className={styles.section}>
-                <Hint
-                  hintContent={`Это самое раннее время, когда сотрудник может официально отметиться об уходе с работы (сделать "чекаут").`}
-                >
+                <HintWithPortal hintContent={<HintCheckOut />}>
                   <label className={styles.label} htmlFor="checkOutTime">
                     Чекаут (с)
                   </label>
-                </Hint>
+                </HintWithPortal>
 
                 <CustomInput
                   id="checkOutTime"
@@ -204,6 +204,29 @@ export default function CreateDepartmentModal({
             </div>
           </div>
 
+          {/* 3. Описание подразделения */}
+          <div className={styles.section}>
+            <label className={styles.label} htmlFor="description">
+              Описание подразделения
+            </label>
+            <CustomTextArea
+              id="description"
+              name="description"
+              placeholder="Краткое описание функций (необязательно)"
+              value={formData.description}
+              onChange={handleInputChange}
+              rows={4}
+            />
+          </div>
+
+          <div className={styles.section} style={{ margin: "20px 0" }}>
+            <CustomCheckbox
+              label="Сделать подразделением по умолчанию"
+              checked={isDefault}
+              onChange={setIsDefault}
+            />{" "}
+          </div>
+
           {/* Кнопки действий */}
           <div className={styles.actions}>
             <button className={styles.buttonCancel} onClick={onClose}>
@@ -211,12 +234,12 @@ export default function CreateDepartmentModal({
             </button>
             <button
               className={styles.buttonConfirm}
-              onClick={department ? handleUpdate : handleConfirm}
+              onClick={!isNew ? handleUpdate : handleConfirm}
             >
               {loading && <RingLoader color="#fff" size={12} />}
               {loading
                 ? "Создание..."
-                : department
+                : !isNew
                 ? "Сохранить"
                 : "Создать подразделение"}
             </button>
@@ -226,3 +249,32 @@ export default function CreateDepartmentModal({
     </AnimatePresence>
   );
 }
+
+export const HintTimeZone = ({ text = "работает ваше подразделение" }) => {
+  return (
+    <div className={styles.hint}>
+      Определяет в каком часовом поясе {text}. <br /> <br />
+      <small className={styles.small}>
+        Это влияет на корректную отправку уведомлений.
+      </small>
+    </div>
+  );
+};
+
+export const HintCheckIn = () => {
+  return (
+    <div className={styles.hint}>
+      В это время сотруднику приходит уведомление с возможностью отметиться{" "}
+      <small className={styles.small}>(сделать чекин)</small> на рабочем месте.
+    </div>
+  );
+};
+
+export const HintCheckOut = () => {
+  return (
+    <div className={styles.hint}>
+      Рекомендуемое время, начиная с которого сотрудник может завершить{" "}
+      <small className={styles.small}>(сделать чекаут)</small> рабочий день.
+    </div>
+  );
+};

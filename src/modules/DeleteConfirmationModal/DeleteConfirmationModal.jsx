@@ -3,6 +3,7 @@ import styles from "./DeleteConfirmationModal.module.scss";
 import { AlertTriangle, UserMinus } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import Modal from "../../ui/Modal/Modal";
+import { RingLoader } from "react-spinners";
 
 /**
  * Компонент модального окна для подтверждения удаления.
@@ -18,11 +19,11 @@ export default function DeleteConfirmationModal({
   message,
   buttonTitle = "Удалить сотрудника",
   buttonIcon = <UserMinus size={20} />,
+  loading = false,
 }) {
   // Обработчик подтверждения
   const handleConfirm = () => {
     onConfirm();
-    onClose(); // Закрываем модалку после подтверждения
   };
 
   return (
@@ -45,8 +46,8 @@ export default function DeleteConfirmationModal({
 
               {/* Кнопка "Удалить" (основная, красная) */}
               <button className={styles.buttonConfirm} onClick={handleConfirm}>
-                {buttonIcon}
-                {buttonTitle}
+                {loading ? <RingLoader color="white" size={12} /> : buttonIcon}
+                {loading ? "Удаление..." : buttonTitle}
               </button>
             </div>
           </div>

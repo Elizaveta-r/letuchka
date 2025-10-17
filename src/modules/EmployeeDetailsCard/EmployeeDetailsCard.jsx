@@ -13,6 +13,12 @@ import EditEmployeeModal from "../EditEmployeeModal/EditEmployeeModal";
 import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmationModal";
 import { getInitials } from "../../utils/methods/getInitials";
 import EmployeeContactModal from "../EmployeeContactModal/EmployeeContactModal";
+import { useDispatch } from "react-redux";
+import {
+  deleteEmployee,
+  updateEmployee,
+} from "../../utils/api/actions/employees";
+import { useNavigate } from "react-router-dom";
 
 const displayedRole = (role) => {
   switch (role) {
@@ -26,6 +32,9 @@ const displayedRole = (role) => {
 };
 
 export default function EmployeeDetailsCard({ employee }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [visibleConfirmDeleteModal, setVisibleConfirmDeleteModal] =
     useState(false);
   const [visibleEditModal, setVisibleEditModal] = useState(false);
@@ -34,16 +43,16 @@ export default function EmployeeDetailsCard({ employee }) {
   const fullName = `${employee?.surname} ${employee?.firstname} ${employee?.patronymic}`;
 
   const initials = getInitials(fullName);
-  const statusText = employee.checkedIn ? "На работе c 9:00" : "Нет на работе";
+  const statusText = employee?.checkedIn ? "На работе c 9:00" : "Нет на работе";
   const positions = employee?.positions?.map((position) => position.name);
   const departments = employee?.departments?.map(
     (department) => department.name
   );
 
-  const positionsString = positions.join(", ");
-  const departmentsString = departments.join(", ");
+  const positionsString = positions?.join(", ");
+  const departmentsString = departments?.join(", ");
 
-  const role = displayedRole(employee.role);
+  const role = displayedRole(employee?.role);
 
   const handleOpenConfirmDeleteModal = () => {
     setVisibleConfirmDeleteModal(true);
@@ -69,23 +78,41 @@ export default function EmployeeDetailsCard({ employee }) {
     setVisibleContactModal(false);
   };
 
+  const handleUpdate = (data) => {
+    return dispatch(updateEmployee(data));
+  };
+
+  const handleDeleteEmployee = () => {
+    dispatch(deleteEmployee(employee?.id)).then((res) => {
+      if (res.status === 200) {
+        setVisibleConfirmDeleteModal(false);
+        navigate(-1);
+      }
+    });
+  };
+
   return (
     <div className={styles.profileSummary}>
       <EditEmployeeModal
         isOpen={visibleEditModal}
         onClose={handleCloseEditModal}
+        onUpdate={handleUpdate}
+        isNew={false}
         employee={employee}
       />
       <DeleteConfirmationModal
         isOpen={visibleConfirmDeleteModal}
         onClose={handleCloseConfirmDeleteModal}
-        message={<MessageDelete employeeName={employee.name} />}
+        onConfirm={handleDeleteEmployee}
+        message={<MessageDelete employeeName={fullName} />}
       />
-      <EmployeeContactModal
-        isOpen={visibleContactModal}
-        onClose={handleCloseContactModal}
-        employee={employee}
-      />
+      {employee && (
+        <EmployeeContactModal
+          isOpen={visibleContactModal}
+          onClose={handleCloseContactModal}
+          employee={employee}
+        />
+      )}
       {/* Аватар и Должность */}
       <div className={styles.profileHeader}>
         <div className={styles.avatar}>{initials}</div>
@@ -93,7 +120,7 @@ export default function EmployeeDetailsCard({ employee }) {
           <h2 className={styles.position}>{fullName}</h2>
           <div
             className={`${styles.statusPill} ${
-              employee.checkedIn ? styles.on : styles.off
+              employee?.checkedIn ? styles.on : styles.off
             }`}
           >
             <div className={styles.dot}></div>
@@ -131,7 +158,7 @@ export default function EmployeeDetailsCard({ employee }) {
           </div>
           <div className={styles.valueContainer}>
             <span className={styles.label}>
-              {employee.departments?.length > 1
+              {employee?.departments?.length > 1
                 ? "Подразделения:"
                 : "Подразделение:"}{" "}
               <span className={styles.value}>{departmentsString}</span>
@@ -142,7 +169,10 @@ export default function EmployeeDetailsCard({ employee }) {
 
       {/* Кнопки действий */}
       <div className={styles.actions}>
-        <button className={styles.editButton} onClick={handleOpenContactModal}>
+        <button
+          className={styles.contactButton}
+          onClick={handleOpenContactModal}
+        >
           <Contact size={18} /> Контактные данные
         </button>
         <button className={styles.editButton} onClick={handleOpenEditModal}>
@@ -162,9 +192,9 @@ export default function EmployeeDetailsCard({ employee }) {
 const MessageDelete = ({ employeeName }) => {
   return (
     <>
-      Вы уверены, что хотите <strong>удалить</strong> сотрудника
-      <span className={styles.employeeName}> {employeeName}</span>? Это действие
-      необратимо.
+      Вы уверены, что хотите <strong>удалить</strong> сотрудника <br />
+      <span className={styles.employeeName}>{employeeName}</span>? <br /> Это
+      действие <strong>необратимо</strong>.
     </>
   );
 };

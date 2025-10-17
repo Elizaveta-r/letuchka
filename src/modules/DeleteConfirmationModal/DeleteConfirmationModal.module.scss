@@ -1,16 +1,11 @@
-/* Переменные для цветов */
-$color-danger: #ef4444; // Красный для опасного действия
-$color-danger-hover: #dc2626; // Темно-красный
-$color-primary: #16a34a; // Основной зеленый
-$color-text-light: #6b7280; // Светлый текст
-$color-border: #e5e7eb;
+@use "../../styles/variables" as v;
 
 .content {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 10px; // Дополнительный отступ внутри модалки
+  padding: 10px;
 }
 
 .iconContainer {
@@ -18,20 +13,21 @@ $color-border: #e5e7eb;
 }
 
 .warningIcon {
-  color: $color-danger;
-  stroke-width: 1.5; // Чуть тоньше для элегантности
+  color: v.$color-danger;
+  stroke-width: 1.5;
 }
 
 .message {
   font-size: 1rem;
-  color: $color-text-light;
+  color: v.$color-text-light;
   line-height: 1.5;
   margin-bottom: 30px;
+  white-space: pre-line;
 }
 
 .employeeName {
   font-weight: 600;
-  color: $color-danger;
+  color: v.$color-danger;
   margin-left: 4px;
   margin-right: 4px;
 }
@@ -58,24 +54,23 @@ $color-border: #e5e7eb;
 }
 
 .buttonCancel {
-  // Стиль для отмены: чистый и ненавязчивый
-  background-color: #f9fafb;
-  color: $color-text-light;
-  border: 1px solid $color-border;
+  background-color: v.$color-bg-light;
+  color: v.$color-text-light;
+  border: 1px solid v.$color-border;
 
   &:hover {
-    background-color: #f3f4f6;
+    background-color: v.$color-disabled;
   }
 }
 
 .buttonConfirm {
   // Стиль для удаления: красный акцент
-  background-color: $color-danger;
-  color: #ffffff;
+  background-color: v.$color-danger;
+  color: v.$color-white;
   box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
 
   &:hover {
-    background-color: $color-danger-hover;
-    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+    background-color: v.$color-danger-hover;
+    box-shadow: 0 6px 20px v.$trash-border;
   }
 }

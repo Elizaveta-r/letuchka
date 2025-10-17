@@ -1,5 +1,6 @@
 import { Pencil, Trash, Users } from "lucide-react";
 import styles from "./JobTitleTable.module.scss";
+import Hint from "../../ui/Hint/Hint";
 
 const JobTitleTable = ({ positions, onEdit, onDelete }) => {
   return (
@@ -21,7 +22,9 @@ const JobTitleTable = ({ positions, onEdit, onDelete }) => {
             positions?.map((job) => (
               <tr key={job.id}>
                 <td className={styles.jobName}>{job.name}</td>
-                <td className={styles.jobDescription}>{job.description}</td>
+                <td className={styles.jobDescription}>
+                  {job.description ? job.description : "Описание отсутствует"}
+                </td>
                 <td>
                   <div className={styles.employeeCell}>
                     <Users size={16} className={styles.userIcon} />
@@ -32,20 +35,23 @@ const JobTitleTable = ({ positions, onEdit, onDelete }) => {
                 {/* Кнопки действий */}
                 <td>
                   <div className={styles.actionsCell}>
-                    <button
-                      className={styles.editButton}
-                      onClick={() => onEdit(job.id)}
-                      title="Редактировать"
+                    <Hint
+                      hintContent="Редактировать"
+                      hasIcon={false}
+                      isMaxWidth
                     >
-                      <Pencil size={16} />
-                    </button>
-                    <button
-                      className={styles.deleteButton}
-                      onClick={() => onDelete(job.id)}
-                      title="Удалить"
-                    >
-                      <Trash size={16} />
-                    </button>
+                      <div className={styles.edit} onClick={() => onEdit(job)}>
+                        <Pencil size={16} />
+                      </div>{" "}
+                    </Hint>
+                    <Hint hintContent="Удалить" hasIcon={false} isMaxWidth>
+                      <div
+                        className={styles.trash}
+                        onClick={() => onDelete(job.id)}
+                      >
+                        <Trash size={16} />
+                      </div>{" "}
+                    </Hint>
                   </div>
                 </td>
               </tr>

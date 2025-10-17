@@ -2,28 +2,44 @@ import styles from "./DepartmentsPage.module.scss";
 import DepartmentCard from "../../components/DepartmentCard/DepartmentCard";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CreateDepartmentModal from "../../modules/CreateDepartmentModal/CreateDepartmentModal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createDepartment,
+  deleteDepartment,
   getDepartmentById,
   getDepartmentsList,
   updateDepartment,
 } from "../../utils/api/actions/departments";
 import {
+  selectHasDefaultDepartment,
   setDepartment,
   setLoadingGetDetails,
 } from "../../store/slices/departmentsSlice";
+import DeleteConfirmationModal from "../../modules/DeleteConfirmationModal/DeleteConfirmationModal";
+import { Trash } from "lucide-react";
+import { toast } from "sonner";
+
+const CHECK_DELAY_MS = 500;
 
 export default function DepartmentsPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { departments } = useSelector((state) => state?.departments);
+  const { departments, department, loading } = useSelector(
+    (state) => state?.departments
+  );
+
+  const hasDefault = useSelector(selectHasDefaultDepartment);
 
   const [visibleCreateModal, setVisibleCreateModal] = useState(false);
   const [visibleUpdateModal, setVisibleUpdateModal] = useState(false);
+  const [isNew, setIsNew] = useState(false);
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+
+  const [hasCheckedDefault, setHasCheckedDefault] = useState(false);
+  const timerRef = useRef(null);
 
   const handleDetails = (id) => {
     dispatch(setLoadingGetDetails(id));
@@ -33,8 +49,23 @@ export default function DepartmentsPage() {
   };
 
   const handleOpenUpdateModal = (id) => {
+    setIsNew(false);
     dispatch(getDepartmentById(id));
     setVisibleUpdateModal(true);
+  };
+
+  const handleOpenCreateModal = () => {
+    setIsNew(true);
+    setVisibleCreateModal(true);
+  };
+
+  const handleOpenConfirmationModal = (id) => {
+    dispatch(getDepartmentById(id));
+    setOpenConfirmationModal(true);
+  };
+
+  const handleCloseConfirmationModal = () => {
+    setOpenConfirmationModal(false);
   };
 
   const handleCreateDepartment = (data) => {
@@ -44,6 +75,7 @@ export default function DepartmentsPage() {
       timezone: data?.timeZone.value,
       check_in_time: data?.checkInTime,
       check_out_time: data?.checkOutTime,
+      is_default: data?.is_default,
     };
 
     return dispatch(createDepartment(dataForServer));
@@ -57,9 +89,18 @@ export default function DepartmentsPage() {
       timezone: data?.timeZone.value,
       check_in_time: data?.checkInTime,
       check_out_time: data?.checkOutTime,
+      is_default: data?.is_default,
     };
 
     return dispatch(updateDepartment(dataForServer));
+  };
+
+  const handleDeleteDepartment = () => {
+    dispatch(deleteDepartment(department?.id)).then((res) => {
+      if (res.status === 200) {
+        handleCloseConfirmationModal();
+      }
+    });
   };
 
   const handleCreateClose = () => {
@@ -75,21 +116,75 @@ export default function DepartmentsPage() {
     dispatch(getDepartmentsList(1, 10));
   }, [dispatch]);
 
+  useEffect(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    if (
+      departments &&
+      departments.length > 0 &&
+      !loading &&
+      !hasDefault &&
+      !hasCheckedDefault
+    ) {
+      timerRef.current = setTimeout(() => {
+        toast.warning("⚠️ Не выбрано подразделение по умолчанию! ", {
+          id: "default-department-warning",
+          duration: Infinity,
+          description: "Рекомендуется установить одно основное подразделение",
+          action: {
+            label: "Скрыть",
+            onClick: () => toast.dismiss("default-department-warning"),
+          },
+        });
+
+        setHasCheckedDefault(true);
+        timerRef.current = null;
+      }, CHECK_DELAY_MS);
+    }
+
+    if (hasDefault) {
+      toast.dismiss("default-department-warning");
+
+      if (hasCheckedDefault) {
+        setHasCheckedDefault(false);
+      }
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [departments, loading, hasDefault, hasCheckedDefault]);
+
   return (
     <div className={styles.pageContent}>
       <PageTitle
         title="Ваши подразделения"
         hasButton
-        onClick={() => setVisibleCreateModal(true)}
+        onClick={handleOpenCreateModal}
       />
-      <CreateDepartmentModal
-        isOpen={visibleCreateModal || visibleUpdateModal}
-        onClose={() =>
-          visibleCreateModal ? handleCreateClose() : handleUpdateClose()
-        }
-        onConfirm={handleCreateDepartment}
-        onUpdate={handleUpdateDepartment}
+      <DeleteConfirmationModal
+        isOpen={openConfirmationModal}
+        onClose={handleCloseConfirmationModal}
+        message={`Вы действительно хотите удалить подразделение? \n Это действие нельзя будет отменить.`}
+        onConfirm={handleDeleteDepartment}
+        buttonTitle="Удалить"
+        buttonIcon={<Trash size={20} />}
       />
+      {department && (
+        <CreateDepartmentModal
+          isOpen={visibleCreateModal || visibleUpdateModal}
+          onClose={() =>
+            visibleCreateModal ? handleCreateClose() : handleUpdateClose()
+          }
+          isNew={isNew}
+          onConfirm={handleCreateDepartment}
+          onUpdate={handleUpdateDepartment}
+        />
+      )}
 
       {!departments && (
         <div className={styles.empty}>
@@ -103,9 +198,10 @@ export default function DepartmentsPage() {
           {departments.map((department, index) => (
             <DepartmentCard
               key={index}
-              {...department}
+              department={department}
               onDetailsClick={() => handleDetails(department.id)}
               onUpdateClick={handleOpenUpdateModal}
+              onDeleteClick={handleOpenConfirmationModal}
             />
           ))}
         </div>

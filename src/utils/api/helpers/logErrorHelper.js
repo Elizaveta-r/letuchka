@@ -1,12 +1,12 @@
 import { toast } from "sonner";
 
-export const logPostError = (err) => {
+export const logPostError = (method = "-", err) => {
   if (err?.response) {
-    console.log(err.response.data);
+    console.log(method, err.response.data);
     if (err.response.data?.message) toast.error(err.response.data.message);
   } else if (err?.request) {
-    console.log(err.request);
+    console.log(method, err.request);
   } else {
-    console.log(err?.message);
+    console.log(method, err?.message);
   }
 };

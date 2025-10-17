@@ -1,27 +1,27 @@
-$color-primary: #16a34a;
-$color-primary-light: #dcfce7;
-$color-text: #1f2937;
-$color-muted: #6b7280;
-$color-border: #e5e7eb;
-$color-bg-light: #f9fafb;
-$color-shadow: rgba(0, 0, 0, 0.04);
+@use "../../../../styles/variables" as v;
 
 .content {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.03);
+  background: v.$color_white;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   padding: 0;
   height: 100%;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06);
+  }
 }
 
 .title {
-  font-size: 1.1rem;
+  font-size: 14px;
   font-weight: 600;
-  color: $color-text;
-  padding: 24px 28px 20px;
-  border-bottom: 1px solid $color-border;
-  background: $color-bg-light;
+  color: v.$color-text-light;
+  padding: 20px 24px 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .balanceWrapper {
@@ -30,15 +30,13 @@ $color-shadow: rgba(0, 0, 0, 0.04);
   gap: 0;
 }
 
-/* --- Секция баланса с градиентом --- */
 .balance {
-  font-size: 3.2rem;
-  font-weight: 800;
-  color: $color-text;
-  letter-spacing: -1.5px;
-  padding: 32px 28px;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
-  border-bottom: 1px solid $color-border;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: v.$color-text-main;
+  letter-spacing: -2px;
+  padding: 8px 24px 32px;
+  background: v.$linear-tariffs-gradient;
   position: relative;
 
   &::before {
@@ -46,107 +44,209 @@ $color-shadow: rgba(0, 0, 0, 0.04);
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(180deg, $color-primary 0%, #22c55e 100%);
+    right: 0;
+    height: 3px;
+    background: v.$gradient-primary;
   }
 }
 
-/* --- Секция деталей (Тариф) --- */
 .detailsContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  padding: 24px 28px;
-  background: #ffffff;
+  gap: 12px;
+  padding: 24px;
+  background: v.$color_white;
+  border-bottom: 1px solid v.$color-border;
 }
 
 .detailItem {
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-  background: $color-bg-light;
-  border-radius: 10px;
-  border: 1px solid $color-border;
+  gap: 12px;
+  padding: 16px;
+  background: v.$color-bg-light;
+  border-radius: 12px;
+  border: 1px solid v.$color-border;
   transition: all 0.2s ease;
 
   &:hover {
-    background: #ffffff;
-    box-shadow: 0 2px 8px $color-shadow;
+    background: v.$color_white;
+    border-color: v.$color-primary;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.1);
   }
 }
 
 .iconTariff,
 .iconDate {
-  width: 36px;
-  height: 36px;
-  padding: 8px;
-  border-radius: 8px;
-  margin-bottom: 4px;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: all 0.2s ease;
 }
 
 .iconTariff {
-  background: $color-primary-light;
-  color: $color-primary;
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.1) 0%,
+    rgba(34, 197, 94, 0.2) 100%
+  );
+  color: v.$color-primary;
 }
 
 .iconDate {
-  background: #fef3c7;
-  color: #f59e0b;
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.1) 0%,
+    rgba(6, 182, 212, 0.2) 100%
+  );
+  color: #0891b2;
+}
+
+.detailContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
 }
 
 .detailLabel {
-  color: $color-muted;
+  color: v.$color-text-light;
   font-weight: 500;
-  font-size: 0.85rem;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .detailValue {
-  color: $color-text;
-  font-weight: 700;
-  font-size: 1.1rem;
+  color: v.$color-text-main;
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statusTip {
+  font-size: 13px;
+  color: v.$color-text-light;
+  line-height: 1.6;
+  padding: 16px 24px;
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.03) 0%,
+    rgba(6, 182, 212, 0.03) 100%
+  );
+  border-bottom: 1px solid v.$color-border;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.statusIcon {
+  flex-shrink: 0;
+  color: v.$color-primary;
   margin-top: 2px;
 }
 
-/* --- Подсказка статуса --- */
-.statusTip {
-  font-size: 0.85rem;
-  color: $color-muted;
-  line-height: 1.6;
-  padding: 20px 28px 24px;
-  background: $color-bg-light;
-  border-top: 1px solid $color-border;
+.actionsContainer {
+  padding: 20px 24px 24px;
+  background: v.$color_white;
+  display: flex;
+  gap: 12px;
+}
+
+.actionButton {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  outline: none;
 
-  &::before {
-    content: "ℹ️";
-    font-size: 1.1rem;
-    flex-shrink: 0;
+  &:active {
+    transform: scale(0.98);
   }
 }
 
-/* --- Адаптивность --- */
+.primaryAction {
+  background: v.$gradient-primary;
+  color: v.$color-white;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    transform: translateY(-2px);
+  }
+}
+
+.secondaryAction {
+  background: v.$color-bg-light;
+  color: v.$color-text-main;
+  border: 1px solid v.$color-border;
+
+  &:hover {
+    background: v.$color_white;
+    border-color: v.$color-primary;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px v.$color-shadow-light;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .detailsContainer {
     grid-template-columns: 1fr;
   }
 
   .balance {
-    font-size: 2.5rem;
-    padding: 24px 20px;
+    font-size: 2.8rem;
+    padding: 8px 20px 24px;
   }
 
   .title,
   .detailsContainer,
-  .statusTip {
+  .statusTip,
+  .actionsContainer {
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  .actionsContainer {
+    flex-direction: column;
+  }
+
+  .actionButton {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .balance {
+    font-size: 2.2rem;
+    letter-spacing: -1px;
+  }
+
+  .detailItem {
+    padding: 12px;
+  }
+
+  .detailLabel {
+    font-size: 11px;
+  }
+
+  .detailValue {
+    font-size: 14px;
   }
 }

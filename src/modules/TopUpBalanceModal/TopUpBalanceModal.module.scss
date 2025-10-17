@@ -1,9 +1,4 @@
-$color-primary: #16a34a; // Зеленый
-$color-primary-dark: #15803d;
-$color-error: #dc2626; // Красный
-$color-border: #e5e7eb;
-$color-text-dark: #1f2937;
-$color-text-muted: #6b7280;
+@use "../../styles/variables" as v;
 
 .modalContent {
   display: flex;
@@ -18,25 +13,25 @@ $color-text-muted: #6b7280;
   h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: $color-text-dark;
+    color: v.$color-text-main;
   }
 }
 
 .closeButton {
   background: none;
   border: none;
-  color: $color-text-muted;
+  color: v.$color-text-light;
   cursor: pointer;
   padding: 5px;
   transition: color 0.2s;
 
   &:hover {
-    color: $color-error;
+    color: v.$color-error;
   }
 }
 
 .balanceInfo {
-  background: #f3f4f6;
+  background: v.$color-disabled;
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 25px;
@@ -44,18 +39,17 @@ $color-text-muted: #6b7280;
 
   p {
     margin: 0;
-    color: $color-text-muted;
+    color: v.$color-text-light;
   }
 }
 
 .currentBalance {
   font-size: 1.6rem;
   font-weight: 800;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   margin-top: 5px !important;
 }
 
-/* --- Секция быстрого выбора --- */
 .quickSelect {
   margin-bottom: 25px;
 }
@@ -67,28 +61,22 @@ $color-text-muted: #6b7280;
   margin-top: 10px;
 }
 
-button {
-  font-family: "Nunito";
-}
-
 .quickButton {
   padding: 8px 12px;
-  background-color: #e5e7eb;
-  color: $color-text-dark;
-  border: 1px solid #d1d5db;
+  background-color: v.$color-bg-light;
+  color: v.$color-text-main;
+  border: 1px solid v.$color-border;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 700;
   transition: all 0.2s;
 
   &:hover {
-    background-color: $color-primary;
-    color: #ffffff;
-    border-color: $color-primary;
+    background-color: v.$color-primary;
+    color: v.$color-white;
+    border-color: v.$color-primary;
   }
 }
-
-/* --- Инпут суммы --- */
 
 .inputGroup {
   margin-bottom: 20px;
@@ -97,22 +85,20 @@ button {
 .label {
   display: block;
   font-size: 0.9rem;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   font-weight: 500;
   margin-bottom: 8px;
 }
 
 .inputError {
-  border-color: $color-error !important;
+  border-color: v.$color-error !important;
 }
 
 .error {
-  color: $color-error;
+  color: v.$color-error;
   font-size: 0.85rem;
   margin-top: 8px;
 }
-
-/* --- Кнопка отправки --- */
 
 .submitButton {
   width: 100%;
@@ -123,19 +109,19 @@ button {
   padding: 15px;
   font-size: 1.1rem;
   font-weight: 700;
-  background-color: $color-primary;
-  color: #ffffff;
+  background-color: v.$color-primary;
+  color: v.$color-white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover:not(:disabled) {
-    background-color: $color-primary-dark;
+    background-color: v.$color-primary-dark;
   }
 
   &:disabled {
-    background-color: #a3a3a3;
+    background-color: v.$color-disabled-button;
     cursor: not-allowed;
   }
 }
@@ -145,8 +131,8 @@ button {
   align-items: flex-start;
   gap: 8px;
   font-size: 0.8rem;
-  color: $color-text-muted;
+  color: v.$color-text-light;
   margin-top: 15px;
   padding-top: 10px;
-  border-top: 1px dashed $color-border;
+  border-top: 1px dashed v.$color-border;
 }

@@ -10,7 +10,7 @@ export const getPositionsList = (page, pageSize) => {
   return async (dispatch) => {
     try {
       const res = await $authHost.get(
-        `/v1/organization/position/list?page=${page}&page_size=${pageSize}`
+        `/organization/position/list?page=${page}&page_size=${pageSize}`
       );
       if (res.status === 200) {
         dispatch(setPositions(res.data.positions));
@@ -22,13 +22,13 @@ export const getPositionsList = (page, pageSize) => {
       throw error;
     }
   };
-}; // rout: /v1/organization/position/list (page, page_size > 200)
+}; // rout: /organization/position/list (page, page_size > 200)
 
 export const createPosition = (data) => {
   return async (dispatch) => {
     dispatch(setPositionsLoading(true));
     try {
-      const res = await $authHost.post(`/v1/organization/position`, data);
+      const res = await $authHost.post(`/organization/position`, data);
       if (res.status === 200) {
         console.log("createPosition", res.data);
         if (res.status === 200) {
@@ -40,20 +40,20 @@ export const createPosition = (data) => {
       }
       return res;
     } catch (error) {
-      logPostError(error);
+      logPostError("createPosition", error);
       console.error("createPosition", error);
       throw error;
     } finally {
       dispatch(setPositionsLoading(false));
     }
   };
-}; // rout: /v1/organization/position (name, description)
+}; // rout: /organization/position (name, description)
 
 export const updatePosition = (data) => {
   return async (dispatch) => {
     dispatch(setPositionsLoading(true));
     try {
-      const res = await $authHost.put(`/v1/organization/position`, data);
+      const res = await $authHost.put(`/organization/position`, data);
       if (res.status === 200) {
         dispatch(getPositionsList(1, 10));
         toast.success("Должность успешно обновлена!");
@@ -61,13 +61,33 @@ export const updatePosition = (data) => {
       }
       return res;
     } catch (error) {
-      logPostError(error);
+      logPostError("updatePosition", error);
       console.error("updatePosition", error);
       throw error;
     } finally {
       dispatch(setPositionsLoading(false));
     }
   };
-}; // rout: /v1/organization/position (position_id, name, description)
+}; // rout: /organization/position (position_id, name, description)
 
-export const deletePosition = () => {}; // rout: /v1/organization/position (not allowed)
+export const deletePosition = (id) => {
+  return async (dispatch) => {
+    dispatch(setPositionsLoading(true));
+    try {
+      const res = await $authHost.delete(
+        `/organization/position?position_id=${id}`
+      );
+      if (res.status === 200) {
+        dispatch(getPositionsList(1, 10));
+        toast.success("Должность успешно удалена!");
+        return res.data;
+      }
+      return res;
+    } catch (error) {
+      logPostError("deletePosition", error);
+      throw error;
+    } finally {
+      dispatch(setPositionsLoading(false));
+    }
+  };
+}; // rout: /organization/position (not allowed)

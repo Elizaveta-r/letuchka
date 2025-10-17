@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import JobTitleTable from "../../modules/JobTitleTable/JobTitleTable";
 import styles from "./PositionsPage.module.scss";
@@ -7,34 +7,35 @@ import EditPositionModal from "../../modules/EditPositionModal/EditPositionModal
 import { PackageMinus } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getPositionsList } from "../../utils/api/actions/positions";
+import {
+  deletePosition,
+  getPositionsList,
+} from "../../utils/api/actions/positions";
 
 export default function PositionsPage() {
   const dispatch = useDispatch();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { positions } = useSelector((state) => state?.positions);
+  const { positions, loading } = useSelector((state) => state?.positions);
 
   const action = searchParams.get("action");
 
   const [visibleModal, setVisibleCreateModal] = useState(false);
   const [isConfirmationOpen, setConfirmationOpen] = React.useState(false);
   const [selectedPosition, setSelectedPosition] = React.useState(null);
+  const [isNew, setIsNew] = useState(false);
 
-  const handleOpenCreateModal = useCallback(
-    (id) => {
-      if (id) {
-        const selectedPosition = positions?.find(
-          (position) => position.id === id
-        );
-        setSelectedPosition(selectedPosition);
-      }
-      setVisibleCreateModal(true);
-    },
-    [positions]
-  );
+  const handleOpenCreateModal = () => {
+    setIsNew(true);
+    setVisibleCreateModal(true);
+  };
 
+  const handleOpenUpdateModal = (position) => {
+    setIsNew(false);
+    setVisibleCreateModal(true);
+    setSelectedPosition(position);
+  };
   const handleCloseCreateModal = () => {
     setVisibleCreateModal(false);
     setSearchParams({});
@@ -51,6 +52,15 @@ export default function PositionsPage() {
     setConfirmationOpen(true);
   };
 
+  const handleDelete = () => {
+    dispatch(deletePosition(selectedPosition?.id)).then((res) => {
+      if (res.status === 200) {
+        setConfirmationOpen(false);
+        setSelectedPosition(null);
+      }
+    });
+  };
+
   const handleConfirmDeleteClose = () => {
     setConfirmationOpen(false);
     setSelectedPosition(null);
@@ -60,7 +70,7 @@ export default function PositionsPage() {
     if (action === "create") {
       handleOpenCreateModal();
     }
-  }, [action, handleOpenCreateModal]);
+  }, [action]);
 
   useEffect(() => {
     dispatch(getPositionsList(1, 10));
@@ -72,13 +82,16 @@ export default function PositionsPage() {
         message={<Message positionName={selectedPosition?.name} />}
         isOpen={isConfirmationOpen}
         onClose={handleConfirmDeleteClose}
+        onConfirm={handleDelete}
         buttonTitle="Удалить"
         buttonIcon={<PackageMinus size={20} />}
+        loading={loading}
       />
       <EditPositionModal
         isOpen={visibleModal}
         onClose={handleCloseCreateModal}
         position={selectedPosition}
+        isNew={isNew}
       />
       <PageTitle
         title={"Должности"}
@@ -86,7 +99,7 @@ export default function PositionsPage() {
         onClick={handleOpenCreateModal}
       />
       <JobTitleTable
-        onEdit={handleOpenCreateModal}
+        onEdit={handleOpenUpdateModal}
         onDelete={handleConfirmDelete}
         positions={positions}
       />
@@ -97,10 +110,7 @@ export default function PositionsPage() {
 const Message = ({ positionName }) => {
   return (
     <div>
-      <p>
-        Вы действительно хотите удалить должность{" "}
-        <strong>{positionName}</strong>?
-      </p>
+      Вы действительно хотите удалить должность <strong>{positionName}</strong>?
     </div>
   );
 };

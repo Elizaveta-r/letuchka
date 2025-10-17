@@ -10,8 +10,14 @@ import {
   updatePosition,
 } from "../../utils/api/actions/positions";
 import { RingLoader } from "react-spinners";
+import { toast } from "sonner";
 
-export default function EditPositionModal({ isOpen, onClose, position }) {
+export default function EditPositionModal({
+  isOpen,
+  onClose,
+  position,
+  isNew,
+}) {
   const dispatch = useDispatch();
 
   const { loading } = useSelector((state) => state?.positions);
@@ -22,13 +28,13 @@ export default function EditPositionModal({ isOpen, onClose, position }) {
   });
 
   useEffect(() => {
-    if (position) {
+    if (!isNew) {
       setInput({
         name: position?.name || "",
         description: position?.description || "",
       });
     }
-  }, [position]);
+  }, [isNew, position]);
 
   const handleChangeInput = (e) => {
     setInput({
@@ -46,6 +52,10 @@ export default function EditPositionModal({ isOpen, onClose, position }) {
   };
 
   const handleConfirmCreate = () => {
+    if (!input.name) {
+      toast.error("Пожалуйста, заполните название должности.");
+      return;
+    }
     dispatch(
       createPosition({
         name: input.name,
@@ -53,16 +63,16 @@ export default function EditPositionModal({ isOpen, onClose, position }) {
       })
     ).then((res) => {
       if (res.status === 200) {
-        onClose();
-        setInput({
-          name: "",
-          description: "",
-        });
+        handleClose();
       }
     });
   };
 
   const handleConfirmUpdate = () => {
+    if (!input.name) {
+      toast.error("Пожалуйста, заполните название должности.");
+      return;
+    }
     dispatch(
       updatePosition({
         position_id: position.id,
@@ -71,11 +81,7 @@ export default function EditPositionModal({ isOpen, onClose, position }) {
       })
     ).then((res) => {
       if (res.status === 200) {
-        onClose();
-        setInput({
-          name: "",
-          description: "",
-        });
+        handleClose();
       }
     });
   };
@@ -86,7 +92,7 @@ export default function EditPositionModal({ isOpen, onClose, position }) {
         <Modal
           isOpen={isOpen}
           onClose={onClose}
-          title={position ? "Редактирование должности" : "Создание должности"}
+          title={!isNew ? "Редактирование должности" : "Создание должности"}
         >
           <div className={styles.content}>
             <div className={styles.form}>
@@ -106,7 +112,7 @@ export default function EditPositionModal({ isOpen, onClose, position }) {
                   name="description"
                   value={input.description}
                   onChange={handleChangeInput}
-                  placeholder={"Введите описание должности"}
+                  placeholder={"Введите описание должности (необязательно)"}
                 />
               </div>
             </div>
@@ -116,10 +122,10 @@ export default function EditPositionModal({ isOpen, onClose, position }) {
               </button>
               <button
                 className={styles.buttonConfirm}
-                onClick={position ? handleConfirmUpdate : handleConfirmCreate}
+                onClick={!isNew ? handleConfirmUpdate : handleConfirmCreate}
               >
                 {loading && <RingLoader color="white" size={12} />}
-                {loading ? "Подождите..." : position ? "Сохранить" : "Создать"}
+                {loading ? "Подождите..." : !isNew ? "Сохранить" : "Создать"}
               </button>
             </div>
           </div>

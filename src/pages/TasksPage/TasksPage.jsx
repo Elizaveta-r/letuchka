@@ -26,7 +26,6 @@ export default function TasksPage() {
     const normalizedSearchText = searchText ? searchText.toLowerCase() : null;
 
     return tasks.filter((task) => {
-      console.log(task.positions.map((p) => p.name).join(" "));
       const matchesSearch = normalizedSearchText
         ? [
             task.name,
@@ -97,15 +96,37 @@ export default function TasksPage() {
     dispatch(getTasksList(1, 200));
   }, [dispatch]);
 
+  console.log(sortedTasks?.length);
+
   return (
     <div className={styles.container}>
       <PageTitle title={"Задачи"} hasButton onClick={handleGoToNewTask} />
-      <TaskFilter />
-      <div className={styles.tasksContainer}>
-        {sortedTasks.map((task, index) => (
-          <TaskCard key={index} task={task} />
-        ))}
-      </div>
+      {tasks && <TaskFilter />}
+      {tasks ? (
+        <div
+          className={styles.tasksContainer}
+          style={{
+            display: sortedTasks?.length === 0 ? "flex" : "grid",
+            justifyContent: sortedTasks?.length === 0 && "center",
+          }}
+        >
+          {sortedTasks?.length > 0 ? (
+            sortedTasks.map((task, index) => (
+              <TaskCard key={index} task={task} />
+            ))
+          ) : (
+            <div className={styles.empty}>
+              Список задач пуст. <br /> Попробуйте{" "}
+              <strong>изменить фильтры</strong>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className={styles.empty}>
+          Список задач пуст. <br /> Нажмите <strong>"Добавить"</strong>, чтобы
+          создать первую задачу.
+        </div>
+      )}
     </div>
   );
 }

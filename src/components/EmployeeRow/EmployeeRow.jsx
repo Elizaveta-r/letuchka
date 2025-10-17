@@ -2,9 +2,9 @@ import { Contact, Pencil, Trash } from "lucide-react";
 import styles from "./EmployeeRow.module.scss";
 import { getInitials } from "../../utils/methods/getInitials";
 import { useSelector } from "react-redux";
+import Hint from "../../ui/Hint/Hint";
 
 export default function EmployeeRow({
-  id,
   departments,
   firstname,
   patronymic,
@@ -23,8 +23,8 @@ export default function EmployeeRow({
   );
   const allPositions = useSelector((state) => state?.positions?.positions);
 
-  const employeeDepartmentIdsSet = new Set(departments.map((dep) => dep.id));
-  const employeePositionIdsSet = new Set(positions.map((pos) => pos.id));
+  const employeeDepartmentIdsSet = new Set(departments?.map((dep) => dep.id));
+  const employeePositionIdsSet = new Set(positions?.map((pos) => pos.id));
 
   const getRoleName = () => {
     switch (role) {
@@ -61,9 +61,11 @@ export default function EmployeeRow({
 
       <div>
         {positionsForEmployee.map((position, index) => {
+          const isLast = index === positionsForEmployee.length - 1;
           return (
             <p key={`position-${index}`} className={styles.positionCol}>
               {position.name}
+              {!isLast && ", "}
             </p>
           );
         })}
@@ -73,9 +75,17 @@ export default function EmployeeRow({
 
       <div>
         {departmentsForEmployee.map((department, index) => {
+          // Определяем, является ли текущий элемент последним в массиве
+          const isLast = index === departmentsForEmployee.length - 1;
+
           return (
-            <p key={`department-${index}`} className={styles.department}>
+            <p
+              key={`department-${index}`}
+              className={styles.department}
+              // Добавляем запятую и пробел, если это не последний элемент
+            >
               {department.name}
+              {!isLast && ", "}
             </p>
           );
         })}
@@ -88,15 +98,25 @@ export default function EmployeeRow({
       </div>
 
       <div className={styles.actions}>
-        <div className={styles.edit} onClick={onShowContacts}>
-          <Contact size={16} />
-        </div>
-        <div className={styles.trash} onClick={onDelete}>
-          <Trash size={16} />
-        </div>
-        <div className={styles.edit} onClick={onEdit}>
-          <Pencil size={16} />
-        </div>
+        <Hint
+          hintContent="Посмотреть контактные данные"
+          hasIcon={false}
+          isMaxWidth
+        >
+          <div className={styles.contact} onClick={onShowContacts}>
+            <Contact size={16} />
+          </div>
+        </Hint>
+        <Hint hintContent="Редактировать" hasIcon={false} isMaxWidth>
+          <div className={styles.edit} onClick={onEdit}>
+            <Pencil size={16} />
+          </div>{" "}
+        </Hint>
+        <Hint hintContent="Удалить" hasIcon={false} isMaxWidth>
+          <div className={styles.trash} onClick={onDelete}>
+            <Trash size={16} />
+          </div>{" "}
+        </Hint>
       </div>
     </div>
   );

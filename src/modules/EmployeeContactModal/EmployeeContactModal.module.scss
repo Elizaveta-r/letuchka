@@ -1,9 +1,4 @@
-$color-primary: #16a34a;
-$color-accent-start: #22c55e;
-$color-accent-end: #06b6d4;
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-border: #e5e7eb;
+@use "../../styles/variables" as v;
 
 .content {
   display: flex;
@@ -34,7 +29,7 @@ $color-border: #e5e7eb;
   margin-bottom: 6px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   text-align: left;
 }
 
@@ -44,19 +39,26 @@ $color-border: #e5e7eb;
   justify-content: flex-end;
   gap: 10px;
   padding-top: 20px;
-  border-top: 1px solid $color-border;
+  border-top: 1px solid v.$color-border;
 }
 
 .buttonCancel {
   box-shadow: none;
   background: transparent;
-  color: $color-text-dark;
-  border: 1px solid $color-border;
+  color: v.$color-text-main;
+  border: 1px solid v.$color-border;
 
   &:hover {
     box-shadow: none;
-    background-color: #f3f4f6;
-    border-color: #d1d5db;
-    color: $color-text-dark;
+    background-color: v.$color-disabled;
+    border-color: v.$color-light-gray;
+    color: v.$color-text-main;
   }
+}
+
+.hint {
+  padding-top: 10px;
+  border-top: 1px solid v.$color-border;
+  color: v.$color-text-light;
+  font-size: 0.8rem;
 }

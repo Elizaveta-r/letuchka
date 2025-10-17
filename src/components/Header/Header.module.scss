@@ -1,3 +1,6 @@
+@use "../../styles/variables" as v;
+@use "sass:color";
+
 .header {
   display: flex;
   align-items: center;
@@ -17,14 +20,14 @@
 
   & .logoutButton {
     padding: 8px 24px;
-    background: #131313;
+    background: v.$exit-button;
     transition: all 0.3s ease-in;
     font-weight: 400;
     box-shadow: none;
     min-width: 123px;
 
     &:hover {
-      background: #333333;
+      background: color.adjust(v.$exit-button, $lightness: 10%);
       box-shadow: none;
       transform: none;
     }

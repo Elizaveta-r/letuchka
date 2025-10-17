@@ -10,6 +10,7 @@ import { useState } from "react";
 import Logo from "../Logo/Logo";
 import { revokeSession } from "../../utils/api/actions/sessions";
 import { logout } from "../../store/slices/userSlice";
+import { MobileLeftMenu } from "../MobileLeftMenu/MobileLeftMenu";
 
 export const Header = () => {
   const isMobile = useMediaQuery({
@@ -60,11 +61,7 @@ export const Header = () => {
       )}
 
       {isMobile ? (
-        <div className={styles.block}>
-          <div onClick={() => setIsMenuOpen(true)}>
-            <Menu />
-          </div>
-        </div>
+        <MobileLeftMenu />
       ) : (
         <div className={styles.block}>
           <div className={styles.buttons}>

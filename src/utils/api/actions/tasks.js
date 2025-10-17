@@ -7,7 +7,7 @@ export const getTasksList = (page, pageSize) => {
   return async (dispatch) => {
     try {
       const res = await $authHost.get(
-        `/v1/organization/task/list?page=${page}&page_size=${pageSize}`
+        `/organization/task/list?page=${page}&page_size=${pageSize}`
       );
       if (res.status === 200) {
         dispatch(setTasks(res.data.tasks));
@@ -25,7 +25,7 @@ export const createTask = (data) => {
   return async (dispatch) => {
     // dispatch(setEmployeesLoading(true));
     try {
-      const res = await $authHost.post(`/v1/organization/task`, data);
+      const res = await $authHost.post(`/organization/task`, data);
       if (res.status === 200) {
         dispatch(getTasksList(1, 10));
         toast.success("Задача успешно создана!");
@@ -44,7 +44,7 @@ export const updateTask = (data) => {
   return async (dispatch) => {
     // dispatch(setEmployeesLoading(true));
     try {
-      const res = await $authHost.put(`/v1/organization/task`, data);
+      const res = await $authHost.put(`/organization/task`, data);
       if (res.status === 200) {
         console.log("updateTask", res.data);
         dispatch(getTasksList(1, 10));
@@ -64,7 +64,7 @@ export const updateTask = (data) => {
 export const getTaskById = (id) => {
   return async (dispatch) => {
     try {
-      const res = await $authHost.get(`/v1/organization/task?task_id=${id}`);
+      const res = await $authHost.get(`/organization/task?task_id=${id}`);
       if (res.status === 200) {
         dispatch(setActiveTask(res.data.task));
       }

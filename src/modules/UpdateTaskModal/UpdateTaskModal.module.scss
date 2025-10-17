@@ -1,9 +1,4 @@
-$color-primary: #16a34a;
-$color-accent-start: #22c55e;
-$color-accent-end: #06b6d4;
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-border: #e5e7eb;
+@use "../../styles/variables" as v;
 
 .container {
   display: flex;
@@ -18,6 +13,7 @@ $color-border: #e5e7eb;
   max-height: 60vh;
   overflow: scroll;
   padding-right: 15px;
+  padding-left: 5px;
 }
 
 .section {
@@ -37,7 +33,7 @@ $color-border: #e5e7eb;
   display: block;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #1f2937;
+  color: v.$color-text-dark;
   text-align: left;
 }
 
@@ -61,7 +57,7 @@ $color-border: #e5e7eb;
 }
 
 .actions {
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid v.$color-border;
   padding-top: 20px;
   display: flex;
   justify-content: flex-end;
@@ -80,28 +76,27 @@ $color-border: #e5e7eb;
 }
 
 .buttonCancel {
-  background-color: #f9fafb;
-  color: $color-text-light;
-  border: 1px solid $color-border;
+  background-color: v.$color-bg-light;
+  color: v.$color-text-light;
+  border: 1px solid v.$color-border;
 
   &:hover {
-    background-color: #f3f4f6;
+    background-color: v.$color-disabled;
   }
 }
 
 .buttonConfirm {
-  // Градиент для кнопки создания
   background: linear-gradient(
     135deg,
-    $color-accent-start 0%,
-    $color-accent-end 100%
+    v.$color-accent-start 0%,
+    v.$color-accent-end 100%
   );
-  color: #ffffff;
-  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+  color: v.$color-white;
+  box-shadow: v.$color-shadow-primary;
 
   &:hover {
     opacity: 0.9;
-    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+    box-shadow: v.$color-shadow-primary-hover;
   }
 }
 
@@ -117,8 +112,8 @@ $color-border: #e5e7eb;
   justify-content: center;
   padding: 8px 18px;
   border-radius: 8px;
-  border: 1px solid $color-border;
-  color: $color-text-dark;
+  border: 1px solid v.$color-border;
+  color: v.$color-text-main;
   font-size: 0.9rem;
   font-weight: 500;
 
@@ -126,12 +121,12 @@ $color-border: #e5e7eb;
   transition: all 0.3s ease-in;
 
   &:hover {
-    background-color: #16a34a49;
+    background-color: v.$color-primary-900;
   }
 
   &.selected {
-    background-color: $color-primary;
-    color: #ffffff;
-    border: 1px solid $color-primary;
+    background-color: v.$color-primary;
+    color: v.$color-white;
+    border: 1px solid v.$color-primary;
   }
 }

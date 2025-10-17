@@ -1,0 +1,203 @@
+@use "../../styles/variables" as v;
+
+.card {
+  background: v.$color_white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid v.$color-border;
+  display: grid;
+  align-content: space-between;
+
+  &:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+}
+
+.headerAccent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: v.$gradient-primary;
+}
+
+.cardHeader {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  margin-top: 4px;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+
+  & svg {
+    flex-shrink: 0;
+  }
+}
+
+.cardName {
+  font-size: 18px;
+  font-weight: 600;
+  color: v.$color-text-main;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+
+.status {
+  width: max-content;
+  flex-shrink: 0;
+}
+
+.description {
+  color: v.$color-text-light;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+  min-height: 42px;
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: v.$color-bg-light;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &:first-child {
+    width: 100%;
+    align-self: center;
+    justify-content: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid v.$color-border;
+  }
+}
+
+.token {
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  color: v.$color-text-main;
+  background: v.$color_white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid v.$color-border;
+  word-break: break-all;
+  margin: 0;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: v.$color-primary;
+    background: rgba(22, 163, 74, 0.05);
+  }
+}
+
+.type,
+.use {
+  font-size: 13px;
+  color: v.$color-text-light;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: v.$color-primary;
+    flex-shrink: 0;
+  }
+}
+
+.cardActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.infoBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: v.$gradient-primary;
+  color: v.$color_white;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  justify-content: center;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.edit,
+.trash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid v.$color-border;
+  background: v.$color_white;
+}
+
+.edit {
+  color: v.$color-info;
+
+  &:hover {
+    background: v.$linear-edit-gradient;
+    border-color: v.$color-info;
+    transform: translateY(-1px);
+  }
+}
+
+.trash {
+  color: v.$color-mandatory;
+
+  &:hover {
+    background: v.$linear-trash-gradient;
+    border-color: v.$color-mandatory;
+    transform: translateY(-1px);
+  }
+}

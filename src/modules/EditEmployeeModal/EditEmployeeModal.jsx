@@ -14,6 +14,12 @@ import {
   mapSelectOptionsToIds,
 } from "../../utils/methods/formatDataForSelect";
 import { parseFullName } from "../../utils/methods/parseFullName";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
+import {
+  HintCheckIn,
+  HintCheckOut,
+  HintTimeZone,
+} from "../CreateDepartmentModal/CreateDepartmentModal";
 
 const roles = [
   { value: "employee", label: "Сотрудник" },
@@ -104,7 +110,7 @@ export default function EditEmployeeModal({
       telegramId:
         emp.contacts.find((c) => c.type === "telegram_id")?.value || "",
       telegramName:
-        emp.contacts.find((c) => c.type === "telegram_name")?.value || "",
+        emp.contacts.find((c) => c.type === "telegram_username")?.value || "",
     });
 
     setRole(getRoleValue(emp.role));
@@ -171,7 +177,7 @@ export default function EditEmployeeModal({
       patronymic,
       contacts: [
         { type: "telegram_id", value: input.telegramId },
-        { type: "telegram_name", value: input.telegramName },
+        { type: "telegram_username", value: input.telegramName },
       ],
       role: role.value,
       positions: positionIds,
@@ -323,14 +329,14 @@ export default function EditEmployeeModal({
               </div>
 
               <div className={styles.formItem} style={{ gap: 6 }}>
-                <Hint
-                  hintContent="Определяет время получения автоматических задач и уведомлений сотрудниками."
+                <HintWithPortal
+                  hintContent={<HintTimeZone text={"работает ваш сотрудник"} />}
                   minWidth="500px"
                 >
                   <p className={styles.formLabel} style={{ marginBottom: 0 }}>
                     Часовой пояс
                   </p>
-                </Hint>
+                </HintWithPortal>
 
                 <CustomSelect
                   placeholder="Выберите часовой пояс"
@@ -343,13 +349,11 @@ export default function EditEmployeeModal({
 
               <div className={styles.formRow}>
                 <div className={styles.formItem} style={{ gap: 6 }}>
-                  <Hint
-                    hintContent={`Сотрудник должен быть на рабочем месте и отметиться (сделать "чекин") не позднее указанного времени.`}
-                  >
+                  <HintWithPortal hintContent={<HintCheckIn />}>
                     <p className={styles.formLabel} style={{ marginBottom: 0 }}>
-                      Чекин (до)
+                      Чекин (в)
                     </p>
-                  </Hint>
+                  </HintWithPortal>
                   <CustomInput
                     id="checkInTime"
                     name="checkInTime"
@@ -359,13 +363,11 @@ export default function EditEmployeeModal({
                   />
                 </div>
                 <div className={styles.formItem} style={{ gap: 6 }}>
-                  <Hint
-                    hintContent={`Это самое раннее время, когда сотрудник может официально отметиться об уходе с работы (сделать "чекаут").`}
-                  >
+                  <HintWithPortal hintContent={<HintCheckOut />}>
                     <p className={styles.formLabel} style={{ marginBottom: 0 }}>
                       Чекаут (с)
                     </p>
-                  </Hint>
+                  </HintWithPortal>
                   <CustomInput
                     id="checkOutTime"
                     name="checkOutTime"

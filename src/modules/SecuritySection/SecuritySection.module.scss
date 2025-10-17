@@ -1,3 +1,6 @@
+@use "../../styles/variables" as v;
+@use "sass:color";
+
 .section {
   display: flex;
   flex-direction: column;
@@ -22,8 +25,7 @@
 }
 
 .sectionTitle {
-  color: #000;
-  font-family: Rubik;
+  color: v.$color-text-dark;
   font-size: 25px;
   font-style: normal;
   font-weight: 500;
@@ -40,11 +42,10 @@
 }
 
 .sectionDescription {
-  color: #6e6e6e;
-  font-family: Rubik;
+  color: v.$color-text-light;
   font-size: 16px;
   font-style: normal;
-  font-weight: 300;
+  font-weight: 400;
   line-height: normal;
   margin: 0;
 
@@ -64,7 +65,7 @@
   width: 100%;
   padding: 24px;
   border-radius: 12px;
-  border: 1px solid #ededed;
+  border: 1px solid v.$color-border;
 
   @media (max-width: 768px) {
     padding: 16px;
@@ -93,8 +94,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: black;
-  color: #fff;
+  background: v.$exit-button;
+  color: v.$color-white;
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 14px;
@@ -102,7 +103,7 @@
   transition: all 0.3s ease-in;
 
   &:hover {
-    background: #333333;
+    background: color.adjust(v.$exit-button, $lightness: 10%);
   }
 
   @media (max-width: 768px) {
@@ -118,7 +119,7 @@
 }
 
 .emptySessions {
-  color: #9aa0a6;
+  color: v.$color-text-light;
   font-size: 13px;
   padding: 8px 0;
 
@@ -166,14 +167,14 @@
 .sessionCard {
   padding: 20px 18px;
   border-radius: 12px;
-  border: 1px solid #ededed;
-  background: #fff;
+  border: 1px solid v.$color-border;
+  background: v.$color-white;
   display: flex;
   align-items: flex-start;
   gap: 14px;
 
   &.active {
-    border: 1px solid #3e68ff;
+    border: 1px solid v.$color-info;
   }
 
   @media (max-width: 768px) {
@@ -192,8 +193,8 @@
 
 .sessionIcon {
   border-radius: 4px;
-  border: 1px solid #ededed;
-  background: #fff;
+  border: 1px solid v.$color-border;
+  background: v.$color-white;
   width: 46px;
   height: 46px;
   flex-shrink: 0;
@@ -202,7 +203,11 @@
   align-items: center;
 
   &.active {
-    background: #3e68ff4c;
+    background: v.$linear-info-badge-gradient;
+
+    & svg {
+      stroke: v.$color-info;
+    }
   }
 
   @media (max-width: 768px) {
@@ -248,8 +253,7 @@
 .deviceName {
   padding: 0;
   margin: 0;
-  color: #000;
-  font-family: Rubik;
+  color: v.$color-text-dark;
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
@@ -270,9 +274,8 @@
   justify-content: center;
   align-items: center;
   border-radius: 130px;
-  background: #0052d4;
-  color: #fff;
-  font-family: Rubik;
+  background: v.$hover-resend;
+  color: v.$color-white;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
@@ -296,20 +299,19 @@
   justify-content: center;
   align-items: center;
   border-radius: 130px;
-  background: #dc2625;
-  color: #fff;
+  background: color.adjust(v.$color-mandatory, $lightness: 10%);
+  color: v.$color-white;
   font-family: Rubik;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  opacity: 0.8;
   cursor: pointer;
   transition: all 0.3s ease-in;
   min-width: 74px;
 
   &:hover {
-    opacity: 1;
+    background: v.$color-mandatory;
   }
 
   @media (max-width: 768px) {
@@ -340,8 +342,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #6e6e6e;
-  font-family: Rubik;
+  color: v.$color-text-light;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;

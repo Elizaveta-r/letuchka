@@ -1,34 +1,23 @@
-$color-primary: #16a34a;
-$color-accent-start: #22c55e;
-$color-accent-end: #06b6d4;
-$color-status-on: #10b981;
-$color-status-off: #777777;
+@use "../../styles/variables" as v;
 
-/* Цвета для текста и фона */
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-background: #f9fafb;
-$color-border: #e5e7eb;
-
-$grid-template-cols: 1.5fr 1.2fr 100px 1fr 80px auto;
+$grid-template-cols: 2fr 1fr 130px 1fr 80px auto;
 
 .dataItem {
   display: grid;
-  grid-template-columns: $grid-template-cols; /* ✅ НОВАЯ СЕТКА */
-  gap: 20px;
+  grid-template-columns: $grid-template-cols;
+  gap: 10px;
   align-items: center;
-  background-color: #ffffff;
+  background-color: v.$color-white;
   border-radius: 8px;
   padding: 16px 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #fcfdfe;
+    background-color: v.$color-bg-light;
   }
 }
 
-/* --- СТИЛИ ЗАГОЛОВКА --- */
 .headerRow {
   background-color: transparent !important;
   box-shadow: none !important;
@@ -38,18 +27,17 @@ $grid-template-cols: 1.5fr 1.2fr 100px 1fr 80px auto;
 
   background-image: linear-gradient(
     45deg,
-    $color-accent-start,
-    $color-accent-end
+    v.$color-accent-start,
+    v.$color-accent-end
   );
   background-clip: padding-box, border-box;
   background-position: 0 100%;
   background-size: 100% 1px;
   background-repeat: no-repeat;
 
-  /* Стиль текста заголовка */
   p {
     font-weight: 700;
-    color: $color-text-light;
+    color: v.$color-text-light;
     text-transform: uppercase;
     font-size: 0.8rem;
     letter-spacing: 0.5px;
@@ -60,8 +48,6 @@ $grid-template-cols: 1.5fr 1.2fr 100px 1fr 80px auto;
   }
 }
 
-/* --- СТИЛИ ЯЧЕЕК ДАННЫХ --- */
-
 .nameCell {
   display: flex;
   align-items: center;
@@ -70,7 +56,7 @@ $grid-template-cols: 1.5fr 1.2fr 100px 1fr 80px auto;
 
 .nameEmp {
   font-weight: 600;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   text-align: left;
 }
 
@@ -83,10 +69,14 @@ $grid-template-cols: 1.5fr 1.2fr 100px 1fr 80px auto;
   justify-content: center;
   font-size: 0.9rem;
   font-weight: 700;
-  color: #ffffff;
+  color: v.$color-white;
   flex-shrink: 0;
 
-  background: linear-gradient(45deg, $color-accent-start, $color-accent-end);
+  background: linear-gradient(
+    45deg,
+    v.$color-accent-start,
+    v.$color-accent-end
+  );
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   &.empty {
@@ -95,31 +85,27 @@ $grid-template-cols: 1.5fr 1.2fr 100px 1fr 80px auto;
   }
 }
 
-// Должность (Position)
 .positionCol {
   font-size: 0.9rem;
-  color: $color-text-dark;
+  color: v.$color-text-main;
   font-weight: 500;
   text-align: left;
 }
 
-// Роль (Role)
 .roleCol {
   font-size: 0.9rem;
   font-weight: 600;
-  color: $color-primary;
+  color: v.$color-primary;
   text-align: left;
 }
 
-// Подразделение (Department)
 .department {
   font-size: 0.9rem;
-  color: $color-text-light;
+  color: v.$color-text-light;
   font-weight: 400;
   text-align: left;
 }
 
-/* --- ИНДИКАТОР СТАТУСА --- */
 .statusIndicator {
   display: flex;
   justify-content: center;
@@ -132,17 +118,16 @@ $grid-template-cols: 1.5fr 1.2fr 100px 1fr 80px auto;
     transition: background-color 0.3s;
 
     &.on {
-      background-color: $color-status-on;
-      box-shadow: 0 0 5px $color-status-on;
+      background-color: v.$color-status-done;
+      box-shadow: 0 0 5px v.$color-status-done;
     }
 
     &.off {
-      background-color: $color-status-off;
+      background-color: v.$color-status-off;
     }
   }
 }
 
-/* --- ДЕЙСТВИЯ --- */
 .actions {
   display: flex;
   gap: 10px;
@@ -154,8 +139,8 @@ $grid-template-cols: 1.5fr 1.2fr 100px 1fr 80px auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
@@ -171,22 +156,22 @@ $grid-template-cols: 1.5fr 1.2fr 100px 1fr 80px auto;
 }
 
 .edit {
-  color: $color-primary;
-  border: 1px solid $color-primary;
+  color: v.$color-primary;
+  border: 1px solid v.$color-primary;
 
   &:hover {
-    background-color: $color-primary;
-    color: #ffffff;
+    background-color: v.$color-primary;
+    color: v.$color-white;
   }
 }
 
 .trash {
-  color: #ef4444;
-  border: 1px solid #ef4444;
+  color: v.$color-status-failed;
+  border: 1px solid v.$color-status-failed;
 
   &:hover {
-    background-color: #ef4444;
-    color: #ffffff;
+    background-color: v.$color-status-failed;
+    color: v.$color-white;
   }
 }
 

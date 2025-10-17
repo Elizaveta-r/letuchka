@@ -1,6 +1,4 @@
-$color-primary: #16a34a;
-$color-text-dark: #1f2937;
-$color-border: #e5e7eb;
+@use "../../../styles/variables" as v;
 
 .wrapper {
   display: flex;
@@ -20,7 +18,7 @@ $color-border: #e5e7eb;
   display: block;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #1f2937;
+  color: v.$color-text-dark;
   text-align: left;
 }
 
@@ -43,8 +41,8 @@ $color-border: #e5e7eb;
   justify-content: center;
   padding: 8px 18px;
   border-radius: 8px;
-  border: 1px solid $color-border;
-  color: $color-text-dark;
+  border: 1px solid v.$color-border;
+  color: v.$color-text-main;
   font-size: 0.9rem;
   font-weight: 500;
 
@@ -52,12 +50,12 @@ $color-border: #e5e7eb;
   transition: all 0.3s ease-in;
 
   &:hover {
-    background-color: #16a34a49;
+    background-color: v.$color-primary-900;
   }
 
   &.selected {
-    background-color: $color-primary;
-    color: #ffffff;
-    border: 1px solid $color-primary;
+    background-color: v.$color-primary;
+    color: v.$color-white;
+    border: 1px solid v.$color-primary;
   }
 }

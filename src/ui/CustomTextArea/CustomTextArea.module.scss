@@ -1,12 +1,5 @@
 @use "sass:color";
-
-/* Переменные */
-$color-primary: #16a34a;
-$color-text-dark: #1f2937;
-$color-text-light: #6b7280;
-$color-border: #e5e7eb;
-$color-shadow-light: rgba(0, 0, 0, 0.05);
-$color-shadow-focus: rgba(22, 163, 74, 0.3);
+@use "../../styles/variables" as v;
 
 .textarea {
   width: 100%;
@@ -14,12 +7,12 @@ $color-shadow-focus: rgba(22, 163, 74, 0.3);
   padding: 12px 16px;
   font-size: 1rem;
   line-height: 1.5;
-  color: $color-text-dark;
-  background-color: #ffffff;
+  color: v.$color-text-main;
+  background-color: v.$color-white;
 
-  border: 1px solid $color-border;
+  border: 1px solid v.$color-border;
   border-radius: 8px;
-  box-shadow: 0 1px 3px $color-shadow-light;
+  box-shadow: 0 1px 3px v.$color-shadow-light;
   outline: none;
 
   resize: vertical;
@@ -28,23 +21,23 @@ $color-shadow-focus: rgba(22, 163, 74, 0.3);
   transition: border-color 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
 
   &::placeholder {
-    color: $color-text-light;
+    color: v.$color-text-light;
     opacity: 0.8;
   }
 
   &:hover {
-    border-color: color.adjust($color-border, $lightness: -5%);
+    border-color: color.adjust(v.$color-border, $lightness: -5%);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   }
 
   &:focus {
-    border-color: $color-primary;
-    box-shadow: 0 0 0 3px color.adjust($color-primary, $lightness: 35%),
-      0 1px 3px rgba(0, 0, 0, 0.1); // Основная тень
+    border-color: v.$color-primary;
+    box-shadow: 0 0 0 3px color.adjust(v.$color-primary, $lightness: 35%),
+      0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   &.is-error {
-    border-color: #ef4444;
+    border-color: v.$color-danger;
 
     &:focus {
       box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3), 0 1px 3px rgba(0, 0, 0, 0.1);

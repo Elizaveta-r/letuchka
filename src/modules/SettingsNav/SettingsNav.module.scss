@@ -1,9 +1,11 @@
+@use "../../styles/variables" as v;
+
 .navigation {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: v.$color-white;
+  border: 1px solid v.$color-border;
   border-radius: 8px;
   padding: 8px;
   height: fit-content;
@@ -24,7 +26,7 @@
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #666;
+  color: v.$color-gray-50;
   cursor: pointer;
   text-align: left;
   white-space: nowrap;
@@ -32,16 +34,16 @@
   transition: all 0.3s ease-in;
 
   &:hover {
-    background-color: #f3f4f6;
-    color: #000;
+    background-color: v.$color-disabled;
+    color: v.$color-text-main;
   }
 
   &.active {
-    background-color: #131313;
-    color: white;
+    background: v.$exit-button;
+    color: v.$color-white;
 
     .navIcon {
-      color: white;
+      color: v.$color-white;
     }
   }
 }
