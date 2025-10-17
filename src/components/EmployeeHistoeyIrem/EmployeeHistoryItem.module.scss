@@ -54,6 +54,7 @@
 .contentArea {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 10px;
 }
 
@@ -137,12 +138,26 @@
 .photoContainer {
   width: 100%;
   height: auto;
+  border-radius: 12px;
   overflow: hidden;
-  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
   cursor: zoom-in;
 
   &.empty {
+    background-color: #e7f1ec;
+    border: 1px dashed #9fbca8;
+    color: #6a8572;
+    font-size: 14px;
+    font-weight: 500;
     cursor: default;
+    &:hover {
+      background-color: #dbe8e1;
+      border-color: #8aad96;
+      color: #5c7764;
+    }
   }
 }
 

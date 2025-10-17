@@ -11,8 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createEmployee,
   deleteEmployee,
-  getEmployeeById,
   getEmployeesList,
+  getEmployeeWithHistory,
   updateEmployee,
 } from "../../utils/api/actions/employees";
 import { setLoadingGetEmployee } from "../../store/slices/employeesSlice";
@@ -69,8 +69,10 @@ export default function EmployeePage() {
 
   const handleDetails = (id) => {
     dispatch(setLoadingGetEmployee(id));
-    dispatch(getEmployeeById(id)).then(() => {
-      navigate(`${id}`);
+    dispatch(getEmployeeWithHistory(id, 1, 1000)).then((res) => {
+      if (res.status === 200) {
+        navigate(`${id}`);
+      }
     });
   };
 

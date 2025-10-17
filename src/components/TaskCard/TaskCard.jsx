@@ -23,7 +23,7 @@ import {
   setDraftFromEditedTask,
   setIsEdit,
 } from "../../store/slices/tasksSlice";
-import { getTaskById } from "../../utils/api/actions/tasks";
+import { deleteTask, getTaskById } from "../../utils/api/actions/tasks";
 
 const getLabelDoneType = (type) => {
   switch (type) {
@@ -45,6 +45,8 @@ export const TaskCard = ({ task, isFull }) => {
   const { departments } = useSelector((state) => state?.departments);
 
   const department = departments?.find((dep) => dep.id === task?.department_id);
+
+  const { loadingTask } = useSelector((state) => state?.tasks);
 
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [visibleDeleteModal, setVisibleDeleteModal] = useState(false);
@@ -87,6 +89,17 @@ export const TaskCard = ({ task, isFull }) => {
     });
   };
 
+  const handleDeleteTask = () => {
+    dispatch(deleteTask(task?.id)).then((res) => {
+      if (res.status === 200) {
+        if (isFull) {
+          navigate(-1);
+        }
+        setVisibleDeleteModal(false);
+      }
+    });
+  };
+
   useEffect(() => {
     if (!department) {
       dispatch(getDepartmentById(task?.department_id)).then((res) => {
@@ -102,7 +115,9 @@ export const TaskCard = ({ task, isFull }) => {
         onClose={() => setVisibleDeleteModal(false)}
         message={<Message taskName={task?.name} />}
         buttonTitle="Удалить задачу"
+        onConfirm={handleDeleteTask}
         buttonIcon={<XCircle size={20} />}
+        loading={loadingTask}
       />
       <UpdateTaskModal
         isOpen={visibleUpdateModal}

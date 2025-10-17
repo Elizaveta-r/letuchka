@@ -7,6 +7,7 @@ const initialState = {
   employee: sessionStorage.getItem("employee")
     ? JSON.parse(sessionStorage.getItem("employee"))
     : null,
+
   loadingEmployee: false,
   loadingGetEmployee: "",
 };
@@ -19,7 +20,17 @@ const employeesSlice = createSlice({
       state.employees = action.payload;
     },
     setEmployee(state, action) {
-      state.employee = action.payload;
+      state.employee = {
+        ...action.payload,
+        history: action.payload?.history,
+      };
+      sessionStorage.setItem("employee", JSON.stringify(state.employee));
+    },
+    setEmployeeHistory(state, action) {
+      if (state.employee) {
+        state.employee.history = action.payload;
+        sessionStorage.setItem("employee", JSON.stringify(state.employee));
+      }
     },
     setEmployeesLoading(state, action) {
       state.loadingEmployee = action.payload;
@@ -37,6 +48,7 @@ const employeesSlice = createSlice({
 export const {
   setEmployees,
   setEmployee,
+  setEmployeeHistory,
   setEmployeesLoading,
   setLoadingGetEmployee,
   triggerContactAutosave,

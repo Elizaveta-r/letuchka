@@ -42,6 +42,7 @@ const initialState = {
     order: "asc", // 'asc' (по возрастанию) или 'desc' (по убыванию)
   },
   taskFilters: initialTaskFilters,
+  loadingTask: false,
 };
 
 const tasksSlice = createSlice({
@@ -55,6 +56,9 @@ const tasksSlice = createSlice({
     setActiveTask(state, action) {
       state.activeTask = action.payload;
       sessionStorage.setItem("activeTask", JSON.stringify(action.payload));
+    },
+    setLoadingTask(state, action) {
+      state.loadingTask = action.payload;
     },
     setTaskFilter(state, action) {
       const { key, value } = action.payload;
@@ -244,6 +248,7 @@ export const {
   setIsEdit,
   setActiveTask,
   setTaskFilter,
+  setLoadingTask,
   setTaskFilters,
   setSort,
   setDraftFromEditedTask,

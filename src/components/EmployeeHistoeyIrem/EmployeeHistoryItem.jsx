@@ -14,9 +14,13 @@ const formatDateTime = (isoString) => {
 };
 
 export default function EmployeeHistoryItem({ item, onPhotoClick }) {
-  const isDoneLate = item.status === "done_late";
-  const isFailed = item.status === "overdue";
-  const isPhotoRequired = item.is_photo_required;
+  const isDoneLate = item?.status_type === "late";
+  const isFailed = item?.status_type === "overdue";
+  const isPhotoRequired = item?.ai_comment ? true : false;
+
+  const aiComment = item?.ai_comment;
+
+  const historyType = item?.history_type;
 
   let Icon = CheckCircle;
   let statusClass = styles.done;
@@ -30,7 +34,7 @@ export default function EmployeeHistoryItem({ item, onPhotoClick }) {
   }
 
   // Используем дату в качестве ключа, если нет другого ID
-  const date = formatDateTime(item.date);
+  const date = formatDateTime(item.done_time);
 
   return (
     <div
@@ -46,44 +50,58 @@ export default function EmployeeHistoryItem({ item, onPhotoClick }) {
       {/* 2. Основное содержание */}
       <div className={styles.contentArea}>
         <div className={styles.titleRow}>
-          <p className={styles.taskTitle}>{item.task_title}</p>
+          <p className={styles.taskTitle}>
+            {historyType === "checkin"
+              ? "Чекин"
+              : historyType === "checkout"
+              ? "Чекаут"
+              : item.task_name}
+          </p>
           <span className={styles.date}>{date}</span>
         </div>
 
         {/* 3. Детали и фидбек */}
-        <div className={styles.feedbackSection}>
-          <p className={styles.criteria}>{item.task_acceptance_criteria}</p>
 
-          {item.comment && (
-            <p className={styles.comment}>
-              <Zap size={14} className={styles.iconTiny} />
-              Комментарий: {item.comment}
-            </p>
-          )}
+        {(item.task_condition || item.comment || item.ai_comment) && (
+          <div className={styles.feedbackSection}>
+            {item.task_condition && (
+              <p className={styles.criteria}>{item.task_condition}</p>
+            )}
 
-          {isPhotoRequired &&
-            (item.ai_feedback === "OK" ? (
+            {item.comment && (
+              <p className={styles.comment}>
+                <Zap size={14} className={styles.iconTiny} />
+                Комментарий: {item.comment}
+              </p>
+            )}
+
+            {item.ai_comment?.includes("OK") ? (
               <p className={`${styles.aiFeedback} ${styles.aiSuccess}`}>
                 <CheckCircle size={14} /> AI Анализ: Успешно
               </p>
             ) : (
-              <p className={`${styles.aiFeedback} ${styles.aiFail}`}>
-                <AlertTriangle size={14} /> AI Анализ: Неудача (
-                {item.ai_feedback})
-              </p>
-            ))}
-        </div>
+              aiComment && (
+                <p className={`${styles.aiFeedback} ${styles.aiFail}`}>
+                  <AlertTriangle size={14} /> AI Анализ: Неудача (
+                  {item.ai_comment})
+                </p>
+              )
+            )}
+          </div>
+        )}
       </div>
 
       {/* 4. Предпросмотр фотоотчета */}
       {isPhotoRequired &&
-        (item.photo_url ? (
+        (item.photo_link ? (
           <div
-            className={styles.photoContainer}
-            onClick={() => onPhotoClick(item.photo_url)}
+            className={`${styles.photoContainer} ${
+              isPhotoRequired && !item?.photo_link ? styles.photoNeed : ""
+            }`}
+            onClick={() => onPhotoClick(item?.photo_link)}
           >
             <img
-              src={item.photo_url}
+              src={item.photo_link}
               alt="Фотоотчет сотрудника"
               className={styles.photo}
             />

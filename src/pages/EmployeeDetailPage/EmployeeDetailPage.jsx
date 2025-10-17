@@ -12,11 +12,8 @@ import EmployeeDetailsCard from "../../modules/EmployeeDetailsCard/EmployeeDetai
 import { ru } from "date-fns/locale";
 import EmployeeHistoryItem from "../../components/EmployeeHistoeyIrem/EmployeeHistoryItem";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setEmployee,
-  setLoadingGetEmployee,
-} from "../../store/slices/employeesSlice";
-import { getEmployeeById } from "../../utils/api/actions/employees";
+import { setLoadingGetEmployee } from "../../store/slices/employeesSlice";
+import { getEmployeeWithHistory } from "../../utils/api/actions/employees";
 import { useParams } from "react-router-dom";
 
 const INITIAL_RANGE = {
@@ -25,74 +22,74 @@ const INITIAL_RANGE = {
   key: "selection",
 };
 
-const history = [
-  {
-    date: "2025-10-08 09:05:00",
-    task_title: "Прием рабочего места в начале смены",
-    task_acceptance_criteria:
-      "Рабочее место должно быть чистым, инструменты дезинфицированы.",
-    status: "done",
-    is_photo_required: true,
-    photo_url:
-      "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1760.jpg",
-    ai_feedback: "OK",
-    comment: "",
-    checkedIn: true,
-  },
-  {
-    date: "2025-10-07 15:30:00",
-    task_title: "Чистота мойки (Дневная проверка)",
-    task_acceptance_criteria:
-      "Мойка должна быть чистой, свободной от остатков пищи и загрязнений.",
-    status: "overdue", // ❌ Провал/Просрочка
-    is_photo_required: true,
-    photo_url:
-      "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1782.jpg",
-    ai_feedback:
-      "❌ На фото отсутствует мойка. Рекомендации: Сделайте фото мойки на кухне, демонстрируя её чистоту.",
-    comment: "Забыл сфотографировать мойку, исправлю.",
-    checkedIn: true,
-  },
-  {
-    date: "2025-10-06 09:13:50",
-    task_title: "Подготовка зоны выдачи",
-    task_acceptance_criteria:
-      "Проверка чистоты зоны выдачи, наличие салфеток, специй и соответствие выкладки стандартам.",
-    status: "done",
-    is_photo_required: true,
-    photo_url:
-      "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1762.jpg",
-    ai_feedback: "OK",
-    comment: "",
-    checkedIn: true,
-  },
-  {
-    date: "2025-10-05 08:50:00",
-    task_title: "Комментарии приемки рабочего места от прошлой смены",
-    task_acceptance_criteria:
-      "Проверка чистоты зоны выдачи, наличие салфеток, специй и соответствие выкладки стандартам.",
-    status: "done",
-    is_photo_required: false,
-    photo_url: "",
-    ai_feedback: "",
-    checkedIn: false,
-    comment: "Быстро проверил, место в порядке. Все заготовки на месте.",
-  },
-  {
-    checkedIn: false,
-    date: "2025-10-04 18:00:00",
-    task_title: "Сдача смены (Уборка)",
-    task_acceptance_criteria:
-      "Полная уборка рабочего места, дезинфекция поверхностей, замена мусорных пакетов.",
-    status: "done_late", // 🟡 Задержка
-    is_photo_required: true,
-    photo_url:
-      "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1800.jpg",
-    ai_feedback: "OK",
-    comment:
-      "Пришлось задержаться на 15 минут из-за срочного заказа. Сдал в 18:15:22.",
-  },
-];
+// const history = [
+//   {
+//     date: "2025-10-08 09:05:00",
+//     task_title: "Прием рабочего места в начале смены",
+//     task_acceptance_criteria:
+//       "Рабочее место должно быть чистым, инструменты дезинфицированы.",
+//     status: "done",
+//     is_photo_required: true,
+//     photo_url:
+//       "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1760.jpg",
+//     ai_feedback: "OK",
+//     comment: "",
+//     checkedIn: true,
+//   },
+//   {
+//     date: "2025-10-07 15:30:00",
+//     task_title: "Чистота мойки (Дневная проверка)",
+//     task_acceptance_criteria:
+//       "Мойка должна быть чистой, свободной от остатков пищи и загрязнений.",
+//     status: "overdue", // ❌ Провал/Просрочка
+//     is_photo_required: true,
+//     photo_url:
+//       "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1782.jpg",
+//     ai_feedback:
+//       "❌ На фото отсутствует мойка. Рекомендации: Сделайте фото мойки на кухне, демонстрируя её чистоту.",
+//     comment: "Забыл сфотографировать мойку, исправлю.",
+//     checkedIn: true,
+//   },
+//   {
+//     date: "2025-10-06 09:13:50",
+//     task_title: "Подготовка зоны выдачи",
+//     task_acceptance_criteria:
+//       "Проверка чистоты зоны выдачи, наличие салфеток, специй и соответствие выкладки стандартам.",
+//     status: "done",
+//     is_photo_required: true,
+//     photo_url:
+//       "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1762.jpg",
+//     ai_feedback: "OK",
+//     comment: "",
+//     checkedIn: true,
+//   },
+//   {
+//     date: "2025-10-05 08:50:00",
+//     task_title: "Комментарии приемки рабочего места от прошлой смены",
+//     task_acceptance_criteria:
+//       "Проверка чистоты зоны выдачи, наличие салфеток, специй и соответствие выкладки стандартам.",
+//     status: "done",
+//     is_photo_required: false,
+//     photo_url: "",
+//     ai_feedback: "",
+//     checkedIn: false,
+//     comment: "Быстро проверил, место в порядке. Все заготовки на месте.",
+//   },
+//   {
+//     checkedIn: false,
+//     date: "2025-10-04 18:00:00",
+//     task_title: "Сдача смены (Уборка)",
+//     task_acceptance_criteria:
+//       "Полная уборка рабочего места, дезинфекция поверхностей, замена мусорных пакетов.",
+//     status: "done_late", // 🟡 Задержка
+//     is_photo_required: true,
+//     photo_url:
+//       "https://api.telegram.org/file/bot8437135255:AAEQ3vDc8HKtvyD9n9fb3E21CXxH_Tuh8G0/photos/file_1800.jpg",
+//     ai_feedback: "OK",
+//     comment:
+//       "Пришлось задержаться на 15 минут из-за срочного заказа. Сдал в 18:15:22.",
+//   },
+// ];
 
 export default function EmployeeDetailPage() {
   const dispatch = useDispatch();
@@ -102,6 +99,8 @@ export default function EmployeeDetailPage() {
   const { employee, loadingGetEmployee } = useSelector(
     (state) => state?.employees
   );
+
+  const history = employee?.history;
 
   const [modalPhotoUrl, setModalPhotoUrl] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -136,11 +135,11 @@ export default function EmployeeDetailPage() {
 
     const endOfDay = addDays(endDate, 1);
 
-    return employee?.history?.filter((item) => {
-      const itemDate = new Date(item.date);
+    return history?.filter((item) => {
+      const itemDate = new Date(item?.done_time);
       return itemDate >= startDate && itemDate < endOfDay;
     });
-  }, [employee?.history, dateRange]);
+  }, [dateRange, history, employee?.history]);
 
   const rangeText = useMemo(() => {
     const { startDate, endDate } = dateRange[0];
@@ -161,19 +160,15 @@ export default function EmployeeDetailPage() {
   useEffect(() => {
     dispatch(setLoadingGetEmployee(""));
 
-    if (!employee) {
-      dispatch(getEmployeeById(id));
+    if (!employee || employee?.history?.length === 0) {
+      dispatch(getEmployeeWithHistory(id, 1, 1000));
     }
 
-    return () => {
-      dispatch(setEmployee(null));
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, id]);
 
   useEffect(() => {
     if (showCalendar) {
-      // Копируем текущий примененный диапазон во временный при открытии модального окна
       setTempDateRange(dateRange);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -251,27 +246,18 @@ export default function EmployeeDetailPage() {
           </div>
 
           <div className={styles.historyList}>
-            {/* {filteredHistory?.map((item, index) => (
-              <EmployeeHistoryItem
-                key={index}
-                item={item}
-                onPhotoClick={handleOpenPhotoModal}
-              />
-            ))} */}
-            {history?.map((item, index) => (
+            {filteredHistory?.map((item, index) => (
               <EmployeeHistoryItem
                 key={index}
                 item={item}
                 onPhotoClick={handleOpenPhotoModal}
               />
             ))}
-            {/* Сообщение, если история пуста */}
-            {filteredHistory?.length === 0 ||
-              (!filteredHistory && (
-                <p className={styles.noHistory}>
-                  Действий сотрудника не найдено в выбранном диапазоне.
-                </p>
-              ))}
+            {filteredHistory?.length === 0 && (
+              <p className={styles.noHistory}>
+                Действий сотрудника не найдено в выбранном диапазоне.
+              </p>
+            )}
           </div>
         </div>
         <ImageModal photoUrl={modalPhotoUrl} onClose={handleClosePhotoModal} />

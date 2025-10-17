@@ -1,7 +1,11 @@
 import { toast } from "sonner";
 import { logPostError } from "../helpers/logErrorHelper";
 import { $authHost } from "../http";
-import { setActiveTask, setTasks } from "../../../store/slices/tasksSlice";
+import {
+  setActiveTask,
+  setLoadingTask,
+  setTasks,
+} from "../../../store/slices/tasksSlice";
 
 export const getTasksList = (page, pageSize) => {
   return async (dispatch) => {
@@ -23,7 +27,7 @@ export const getTasksList = (page, pageSize) => {
 
 export const createTask = (data) => {
   return async (dispatch) => {
-    // dispatch(setEmployeesLoading(true));
+    dispatch(setLoadingTask(true));
     try {
       const res = await $authHost.post(`/organization/task`, data);
       if (res.status === 200) {
@@ -35,14 +39,14 @@ export const createTask = (data) => {
       logPostError(error);
       throw error;
     } finally {
-      //   dispatch(setEmployeesLoading(false));
+      dispatch(setLoadingTask(false));
     }
   };
 };
 
 export const updateTask = (data) => {
   return async (dispatch) => {
-    // dispatch(setEmployeesLoading(true));
+    dispatch(setLoadingTask(true));
     try {
       const res = await $authHost.put(`/organization/task`, data);
       if (res.status === 200) {
@@ -56,7 +60,7 @@ export const updateTask = (data) => {
       logPostError(error);
       throw error;
     } finally {
-      //   dispatch(setEmployeesLoading(false));
+      dispatch(setLoadingTask(false));
     }
   };
 };
@@ -72,6 +76,25 @@ export const getTaskById = (id) => {
     } catch (error) {
       logPostError(error);
       throw error;
+    }
+  };
+};
+
+export const deleteTask = (id) => {
+  return async (dispatch) => {
+    dispatch(setLoadingTask(true));
+    try {
+      const res = await $authHost.delete(`/organization/task?task_id=${id}`);
+      if (res.status === 200) {
+        dispatch(getTasksList(1, 10));
+        toast.success("Задача успешно удалена!");
+      }
+      return res;
+    } catch (error) {
+      logPostError(error);
+      throw error;
+    } finally {
+      dispatch(setLoadingTask(false));
     }
   };
 };

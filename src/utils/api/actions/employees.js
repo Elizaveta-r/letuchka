@@ -2,6 +2,7 @@ import { logPostError } from "../helpers/logErrorHelper";
 import { $authHost } from "../http";
 import {
   setEmployee,
+  setEmployeeHistory,
   setEmployees,
   setEmployeesLoading,
 } from "../../../store/slices/employeesSlice";
@@ -144,7 +145,6 @@ export const getEmployeeById = (id) => {
       );
       if (res.status === 200) {
         dispatch(setEmployee(res.data.employee));
-        sessionStorage.setItem("employee", JSON.stringify(res.data.employee));
       }
       return res;
     } catch (error) {
@@ -171,6 +171,24 @@ export const deleteEmployee = (id) => {
       throw error;
     } finally {
       dispatch(setEmployeesLoading(false));
+    }
+  };
+};
+
+export const getEmployeeWithHistory = (employeeId, page, pageSize) => {
+  return async (dispatch) => {
+    try {
+      const res = await $authHost.get(
+        `/organization/employee/history?employee_id=${employeeId}&page=${page}&page_size=${pageSize}`
+      );
+      if (res.status === 200) {
+        dispatch(setEmployee(res.data.employee));
+        dispatch(setEmployeeHistory(res.data.employee_history));
+      }
+      return res;
+    } catch (error) {
+      logPostError(error);
+      throw error;
     }
   };
 };
