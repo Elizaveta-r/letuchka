@@ -24,7 +24,7 @@ export const BasicTaskDetails = () => {
   const dispatch = useDispatch();
 
   const { isEdit } = useSelector((state) => state.tasks);
-  const { department_id, position_ids, name, done_type, accept_condition } =
+  const { department_id, position_ids, title, done_type, ai_prompt } =
     useSelector((state) => state.tasks.draftTask);
 
   const { departments } = useSelector((state) => state?.departments);
@@ -32,12 +32,12 @@ export const BasicTaskDetails = () => {
 
   const departmentOptions = departments?.map((dep) => ({
     value: dep.id,
-    label: dep.name,
+    label: dep.title,
   }));
 
   const positionOptions = positions?.map((pos) => ({
     value: pos.id,
-    label: pos.name,
+    label: pos.title,
   }));
 
   useEffect(() => {
@@ -47,15 +47,54 @@ export const BasicTaskDetails = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, isEdit]);
 
+  useEffect(() => {
+    if (!department_id || !departmentOptions?.length) return;
+
+    // поддержим оба варианта: {value} или просто строка id
+    const rawId =
+      typeof department_id === "string" ? department_id : department_id.value;
+    const match = departmentOptions.find((o) => o.value === rawId);
+
+    // если уже есть label — ничего не делаем
+    if (typeof department_id === "object" && department_id.label) return;
+
+    if (match) {
+      dispatch(setDepartmentId(match));
+    }
+  }, [department_id, departmentOptions, dispatch]);
+
+  useEffect(() => {
+    if (
+      !Array.isArray(position_ids) ||
+      !position_ids.length ||
+      !positionOptions?.length
+    )
+      return;
+
+    const needHydrate = position_ids.some((p) => !p?.label);
+    if (!needHydrate) return;
+
+    const mapped = position_ids
+      .map((p) => {
+        const rawId = typeof p === "string" ? p : p.value;
+        return positionOptions.find((o) => o.value === rawId);
+      })
+      .filter(Boolean); // убираем не найденные
+
+    if (mapped.length) {
+      dispatch(setPositionIds(mapped));
+    }
+  }, [position_ids, positionOptions, dispatch]);
+
   return (
     <div className={styles.basicTaskDetails}>
       <div className={styles.row}>
         <div className={styles.section}>
           <p className={styles.label}>Название задачи</p>
           <CustomInput
-            name="name"
+            name="title"
             placeholder="Название задачи"
-            value={name}
+            value={title}
             onChange={(e) => dispatch(setDraftName(e.target.value))}
           />
         </div>
@@ -114,10 +153,13 @@ export const BasicTaskDetails = () => {
           <Hint
             hintContent={
               <>
-                Опишите, <strong>что именно должно быть видно</strong> на
-                фотографии для успешного подтверждения задачи. <br /> Например:
-                "Чек расположен на видном месте, все товары в фокусе, отсутствие
-                посторонних предметов
+                Укажите, <b>что именно должно быть видно на фото</b>, чтобы ИИ
+                смог понять, что задача выполнена. <br />
+                <br /> Чем <b>точнее и подробнее</b> вы опишете критерии{" "}
+                <small>
+                  (что должно быть на снимке, в каком виде, при каких условиях)
+                </small>
+                , тем <b>лучше система распознает результат</b>.
               </>
             }
           >
@@ -125,7 +167,7 @@ export const BasicTaskDetails = () => {
           </Hint>
           <CustomTextArea
             placeholder={"Критерий приемки"}
-            value={accept_condition}
+            value={ai_prompt}
             onChange={(e) => dispatch(setAcceptCondition(e.target.value))}
           />
         </div>

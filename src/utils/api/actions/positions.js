@@ -49,6 +49,25 @@ export const createPosition = (data) => {
   };
 }; // rout: /organization/position (name, description)
 
+export const createPositionWithoutReload = (data) => {
+  return async (dispatch) => {
+    dispatch(setPositionsLoading(true));
+    try {
+      const res = await $authHost.post(`/organization/position`, data);
+      if (res.status === 200) {
+        toast.success("Должность успешно создана!");
+        return res.data; // возвращаем только созданную должность
+      }
+      return res;
+    } catch (error) {
+      logPostError("createPosition", error);
+      throw error;
+    } finally {
+      dispatch(setPositionsLoading(false));
+    }
+  };
+};
+
 export const updatePosition = (data) => {
   return async (dispatch) => {
     dispatch(setPositionsLoading(true));

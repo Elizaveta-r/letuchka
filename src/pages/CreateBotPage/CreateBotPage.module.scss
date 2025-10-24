@@ -1,0 +1,321 @@
+@use "../../styles/variables" as v;
+@use "sass:color";
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+  }
+
+  @media (max-width: 420px) {
+    padding: 1rem 0.75rem;
+  }
+}
+
+// /* Секция приветствия */
+// .welcome {
+//   background: linear-gradient(
+//     135deg,
+//     rgba(34, 197, 94, 0.03) 0%,
+//     rgba(6, 182, 212, 0.03) 100%
+//   );
+//   padding: 2.5rem 2rem;
+//   margin-bottom: 3rem;
+//   border-radius: 12px;
+//   border: 1px solid rgba(34, 197, 94, 0.1);
+//   position: relative;
+
+//   &::before {
+//     content: "";
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 4px;
+//     height: 100%;
+//     background: v.$gradient-primary;
+//     border-radius: 12px 0 0 12px;
+//   }
+
+//   @media (max-width: 768px) {
+//     padding: 2rem 1.5rem;
+//     margin-bottom: 2rem;
+//   }
+
+//   @media (max-width: 420px) {
+//     padding: 1.5rem 1rem;
+//     margin-bottom: 1.5rem;
+//   }
+// }
+
+// .title {
+//   font-size: 2rem;
+//   font-weight: 700;
+//   margin: 0 0 1rem 0;
+//   line-height: 1.2;
+//   color: v.$color-text-dark;
+//   display: flex;
+//   align-items: center;
+//   gap: 0.75rem;
+
+//   &::before {
+//     content: "👋";
+//     font-size: 2rem;
+//   }
+
+//   @media (max-width: 768px) {
+//     font-size: 1.75rem;
+
+//     &::before {
+//       font-size: 1.75rem;
+//     }
+//   }
+
+//   @media (max-width: 420px) {
+//     font-size: 1.5rem;
+
+//     &::before {
+//       font-size: 1.5rem;
+//     }
+//   }
+// }
+
+// .text {
+//   font-size: 1rem;
+//   line-height: 1.7;
+//   margin: 0 0 1rem 0;
+//   color: v.$color-text-secondary;
+
+//   &:last-child {
+//     margin-bottom: 0;
+//   }
+
+//   b {
+//     font-weight: 600;
+//     color: v.$color-primary;
+//     position: relative;
+
+//     &::after {
+//       content: "";
+//       position: absolute;
+//       bottom: -2px;
+//       left: 0;
+//       width: 100%;
+//       height: 2px;
+//       background: linear-gradient(
+//         90deg,
+//         v.$color-primary 0%,
+//         v.$color-accent-end 100%
+//       );
+//       opacity: 0.3;
+//       border-radius: 2px;
+//     }
+//   }
+
+//   @media (max-width: 768px) {
+//     font-size: 0.9375rem;
+//     line-height: 1.6;
+//   }
+
+//   @media (max-width: 420px) {
+//     font-size: 0.875rem;
+//     line-height: 1.5;
+//     margin-bottom: 0.875rem;
+//   }
+// }
+
+// /* Основной контент */
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: v.$color-text-dark;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.3;
+
+  @media (max-width: 768px) {
+    font-size: 1.625rem;
+  }
+
+  @media (max-width: 420px) {
+    font-size: 1.375rem;
+  }
+}
+
+.subtitle {
+  font-size: 1.0625rem;
+  color: v.$color-text-light;
+  margin: 0 0 2.5rem 0;
+  line-height: 1.6;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 420px) {
+    font-size: 0.9375rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Секция переключателя */
+.toggleSection {
+  margin-bottom: 2.5rem;
+
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 420px) {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.toggleWrapper {
+  display: inline-flex;
+  background: v.$color-bg-light;
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid v.$color-border;
+  margin-bottom: 1rem;
+
+  @media (max-width: 420px) {
+    display: flex;
+    width: 100%;
+  }
+}
+
+.toggleButton {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: v.$color-text-secondary;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: v.$color-text-dark;
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  &.active {
+    background: v.$color_white;
+    color: v.$color-primary;
+    font-weight: 600;
+    box-shadow: 0 2px 4px v.$color-shadow;
+  }
+
+  @media (max-width: 420px) {
+    flex: 1;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+.toggleDescriptions {
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggleText {
+  font-size: 0.9375rem;
+  color: v.$color-text-light;
+  margin: 0;
+  padding: 0.5rem 0;
+  line-height: 1.5;
+  animation: fadeIn 0.3s ease;
+
+  @media (max-width: 420px) {
+    font-size: 0.875rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Форма */
+.form {
+  background: v.$color_white;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid v.$color-border;
+  margin-top: 2.5rem;
+  box-shadow: 0 2px 8px v.$color-shadow;
+
+  label {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: v.$color-text-dark;
+    margin-bottom: 0.75rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 420px) {
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+    border-radius: 12px;
+  }
+}
+
+.button {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: v.$color_white;
+  background: v.$gradient-primary;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: all 0.2s ease;
+  box-shadow: v.$color-shadow-primary;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  &:hover {
+    box-shadow: v.$color-shadow-primary-hover;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  @media (max-width: 420px) {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9375rem;
+    margin-top: 1.25rem;
+  }
+}

@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./DepartmentCard.module.scss";
-import { formatTime } from "../../utils/methods/formatTime";
 import { getFormattedTimeZoneLabel } from "../../utils/methods/generateTimeZoneOptions";
 import { useDispatch, useSelector } from "react-redux";
 import { CardActions } from "../CardActions/CardActions";
@@ -49,16 +48,7 @@ const DepartmentCard = ({
 
       <div className={styles.content}>
         <div className={styles.header}>
-          <h2 className={styles.title}>{department?.name}</h2>
-          <HintWithPortal
-            hintContent={"Использовать по умолчанию"}
-            hasIcon={false}
-          >
-            <CustomCheckbox
-              checked={department.is_default}
-              onChange={handleIsDefaultChange}
-            />
-          </HintWithPortal>
+          <h2 className={styles.title}>{department?.title}</h2>
         </div>
 
         <p className={styles.description}>
@@ -77,7 +67,7 @@ const DepartmentCard = ({
 
             <HintWithPortal hintContent={<HintCheckIn />}>
               <span className={`${styles.dataValue} ${styles.checkIn}`}>
-                {formatTime(department?.check_in_time)}
+                {department?.check_in_time}
               </span>
             </HintWithPortal>
           </div>
@@ -90,7 +80,7 @@ const DepartmentCard = ({
 
             <HintWithPortal hintContent={<HintCheckOut />}>
               <span className={styles.dataValue}>
-                {formatTime(department?.check_out_time)}
+                {department?.check_out_time}
               </span>
             </HintWithPortal>
           </div>
@@ -118,6 +108,18 @@ const DepartmentCard = ({
         </div>
 
         {/* --- */}
+        <div className={styles.isDefault}>
+          <HintWithPortal
+            hintContent={"Использовать по умолчанию"}
+            hasIcon={false}
+          >
+            <CustomCheckbox
+              checked={department.is_default}
+              onChange={handleIsDefaultChange}
+              label={"Использовать по умолчанию"}
+            />
+          </HintWithPortal>
+        </div>
 
         {/* Кнопки с акцентами */}
         <CardActions

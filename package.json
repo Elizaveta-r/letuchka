@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.9.0",
     "axios": "^1.12.2",
     "date-fns": "^4.1.0",
+    "driver.js": "github:Elizaveta-r/driver.js",
     "lucide-react": "^0.544.0",
     "motion": "^12.23.22",
     "react": "^19.1.1",

@@ -106,6 +106,8 @@ const userSlice = createSlice({
 
       localStorage.removeItem("user");
       localStorage.removeItem("@storage_user_data");
+      localStorage.removeItem("tour-completed");
+      localStorage.removeItem("tour-step");
     },
   },
 });

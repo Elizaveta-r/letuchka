@@ -9,7 +9,6 @@ import CustomTextArea from "../../ui/CustomTextArea/CustomTextArea";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { RingLoader } from "react-spinners";
-import { formatTime } from "../../utils/methods/formatTime";
 import { setDepartment } from "../../store/slices/departmentsSlice";
 import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 import { CustomCheckbox } from "../../ui/CustomCheckbox/CustomCheckbox";
@@ -22,6 +21,7 @@ export default function CreateDepartmentModal({
   onUpdate,
 }) {
   const dispatch = useDispatch();
+
   const { loading, department } = useSelector((state) => state?.departments);
 
   const [formData, setFormData] = React.useState({
@@ -31,7 +31,7 @@ export default function CreateDepartmentModal({
     checkOutTime: "18:00",
   });
   const [timeZone, setTimeZone] = React.useState("");
-  const [isDefault, setIsDefault] = React.useState(false);
+  const [isDefault, setIsDefault] = React.useState(true);
 
   const handleInputChange = (event) => {
     setFormData({
@@ -60,18 +60,26 @@ export default function CreateDepartmentModal({
       toast.error("Пожалуйста, выберите часовой пояс.");
       return;
     }
+    window.dispatchEvent(new CustomEvent("tour:submit:clicked"));
 
-    onConfirm({ ...formData, timeZone, is_default: isDefault }).then((res) => {
-      if (res && res.status === 200) {
-        setFormData({
-          name: "",
-          description: "",
-          checkInTime: "09:00",
-          checkOutTime: "18:00",
-        });
-        handleClose();
-      }
-    });
+    onConfirm({ ...formData, timeZone, is_default: isDefault })
+      .then((res) => {
+        if (res && res.status === 200) {
+          window.dispatchEvent(new CustomEvent("tour:submit:success"));
+          setFormData({
+            name: "",
+            description: "",
+            checkInTime: "09:00",
+            checkOutTime: "18:00",
+          });
+          handleClose();
+        } else {
+          window.dispatchEvent(new CustomEvent("tour:submit:fail"));
+        }
+      })
+      .catch(() => {
+        window.dispatchEvent(new CustomEvent("tour:submit:fail"));
+      });
   };
 
   const handleUpdate = () => {
@@ -108,10 +116,10 @@ export default function CreateDepartmentModal({
   useEffect(() => {
     if (!isNew && department) {
       setFormData({
-        name: department.name || "",
+        name: department.title || "",
         description: department.description || "",
-        checkInTime: formatTime(department.check_in_time) || "09:00",
-        checkOutTime: formatTime(department.check_out_time) || "18:00",
+        checkInTime: department.check_in_time || "09:00",
+        checkOutTime: department.check_out_time || "18:00",
       });
       const tzOption =
         timeZoneOptions.find((t) => t.value === department.timezone) || null;
@@ -126,6 +134,7 @@ export default function CreateDepartmentModal({
         checkOutTime: "18:00",
       });
       setTimeZone("");
+      setIsDefault(true);
     }
   }, [isNew, isOpen, department]);
 
@@ -141,7 +150,7 @@ export default function CreateDepartmentModal({
         >
           <div className={styles.formContent}>
             {/* 1. Название и Описание */}
-            <div className={styles.section}>
+            <div className={styles.section} data-tour="modal.nameInput">
               <label className={styles.label} htmlFor="name">
                 Название подразделения
               </label>
@@ -155,7 +164,7 @@ export default function CreateDepartmentModal({
             </div>
 
             {/* 2. Таймзона  */}
-            <div className={styles.section}>
+            <div className={styles.section} data-tour="modal.timezone">
               <HintWithPortal hintContent={<HintTimeZone />}>
                 <label className={styles.label}>Часовой пояс</label>
               </HintWithPortal>
@@ -165,13 +174,14 @@ export default function CreateDepartmentModal({
                 options={timeZoneOptions}
                 onChange={setTimeZone}
                 value={timeZone}
+                dataTourId="modal.timezone"
                 isSearchable
               />
             </div>
 
             {/* 4. Время Check-in и Check-out */}
             <div className={styles.timeGrid}>
-              <div className={styles.section}>
+              <div className={styles.section} data-tour="modal.check-in-time">
                 <HintWithPortal hintContent={<HintCheckIn />}>
                   <label className={styles.label} htmlFor="checkInTime">
                     Чекин (в)
@@ -186,7 +196,7 @@ export default function CreateDepartmentModal({
                   onChange={handleInputChange}
                 />
               </div>
-              <div className={styles.section}>
+              <div className={styles.section} data-tour="modal.check-out-time">
                 <HintWithPortal hintContent={<HintCheckOut />}>
                   <label className={styles.label} htmlFor="checkOutTime">
                     Чекаут (с)
@@ -205,7 +215,7 @@ export default function CreateDepartmentModal({
           </div>
 
           {/* 3. Описание подразделения */}
-          <div className={styles.section}>
+          <div className={styles.section} data-tour="modal.description">
             <label className={styles.label} htmlFor="description">
               Описание подразделения
             </label>
@@ -219,7 +229,11 @@ export default function CreateDepartmentModal({
             />
           </div>
 
-          <div className={styles.section} style={{ margin: "20px 0" }}>
+          <div
+            className={styles.section}
+            style={{ margin: "20px 0" }}
+            data-tour="modal.default"
+          >
             <CustomCheckbox
               label="Сделать подразделением по умолчанию"
               checked={isDefault}
@@ -233,6 +247,7 @@ export default function CreateDepartmentModal({
               Отмена
             </button>
             <button
+              data-tour="modal.submit"
               className={styles.buttonConfirm}
               onClick={!isNew ? handleUpdate : handleConfirm}
             >

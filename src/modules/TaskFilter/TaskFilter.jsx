@@ -4,37 +4,44 @@ import { formatDataForSelect } from "../../utils/methods/formatDataForSelect";
 import {
   resetTaskFilters,
   areTaskFiltersChanged,
-  setSort,
+  // setSort,
   setTaskFilter,
+  setViewMode,
 } from "../../store/slices/tasksSlice";
 
 import styles from "./TaskFilter.module.scss";
 import { SearchInput } from "../../ui/SearchInput/SearchInput";
 import CustomSelect from "../../ui/CustomSelect/CustomSelect";
-import {
-  ArrowDownAZ,
-  ArrowDownWideNarrow,
-  ArrowUpAZ,
-  ArrowUpNarrowWide,
-  Calendar,
-  ChevronDown,
-  Clock,
-} from "lucide-react";
+import { ArrowDownAZ, Eye, LayoutGrid, LayoutList } from "lucide-react";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 
-const sortOptions = [
-  { value: "name_asc", label: "Название А-Я", key: "name", order: "asc" },
-  { value: "name_desc", label: "Название Я-А", key: "name", order: "desc" },
+// const sortOptions = [
+//   { value: "name_asc", label: "Название А-Я", key: "name", order: "asc" },
+//   { value: "name_desc", label: "Название Я-А", key: "name", order: "desc" },
+//   {
+//     value: "time_asc",
+//     label: "Время начала ↑",
+//     key: "start_time",
+//     order: "asc",
+//   },
+//   {
+//     value: "time_desc",
+//     label: "Время начала ↓",
+//     key: "start_time",
+//     order: "desc",
+//   },
+// ];
+
+const viewOptions = [
   {
-    value: "time_asc",
-    label: "Время начала ↑",
-    key: "start_time",
-    order: "asc",
+    value: "full",
+    label: "Стандартное отображение",
+    icon: <LayoutList size={12} />,
   },
   {
-    value: "time_desc",
-    label: "Время начала ↓",
-    key: "start_time",
-    order: "desc",
+    value: "short",
+    label: "Упрощённое отображение",
+    icon: <LayoutGrid size={12} />,
   },
 ];
 
@@ -43,15 +50,19 @@ export const TaskFilter = () => {
 
   const { positions } = useSelector((state) => state?.positions);
   const { departments } = useSelector((state) => state?.departments);
-  const { taskFilters, sort } = useSelector((state) => state?.tasks);
+  const { taskFilters, viewMode /* sort */ } = useSelector(
+    (state) => state?.tasks
+  );
 
   const filtersAreActive = useSelector(areTaskFiltersChanged);
 
   const { searchText, department_id, position_id } = taskFilters;
 
-  const currentSortOption = sortOptions.find(
-    (opt) => opt.key === sort.key && opt.order === sort.order
-  );
+  // const currentSortOption = sortOptions.find(
+  //   (opt) => opt.key === sort.key && opt.order === sort.order
+  // );
+
+  const currentOption = viewOptions.find((o) => o.value === viewMode);
 
   const positionsOptions = useMemo(
     () => formatDataForSelect(positions || []),
@@ -63,14 +74,18 @@ export const TaskFilter = () => {
     [departments]
   );
 
-  const handleSortChange = (selectedOption) => {
-    dispatch(
-      setSort({
-        key: selectedOption.key,
-        order: selectedOption.order,
-      })
-    );
+  // const handleSortChange = (selectedOption) => {
+  //   dispatch(
+  //     setSort({
+  //       key: selectedOption.key,
+  //       order: selectedOption.order,
+  //     })
+  //   );
+  // };
+  const handleViewModeChange = (option) => {
+    dispatch(setViewMode(option.value));
   };
+
   const handleSearchChange = (e) => {
     dispatch(
       setTaskFilter({
@@ -114,9 +129,9 @@ export const TaskFilter = () => {
       />
 
       <Sorting
-        value={currentSortOption}
-        options={sortOptions}
-        onChange={handleSortChange}
+        viewMode={currentOption}
+        options={viewOptions}
+        onChange={handleViewModeChange}
       />
 
       {filtersAreActive && (
@@ -131,21 +146,25 @@ export const TaskFilter = () => {
   );
 };
 
-const getSortIcon = (key, order) => {
+const getSortIcon = (key) => {
   // В зависимости от ключа, выбираем тип иконки
   switch (key) {
-    case "name":
-      return order === "asc" ? ArrowDownAZ : ArrowUpAZ;
-    case "start_time":
-    case "deadline_time":
-      return order === "asc" ? Clock : Calendar; // Пример: часы для времени
-    case "custom_field":
-      return order === "asc" ? ArrowDownWideNarrow : ArrowUpNarrowWide; // Пример: для пользовательских полей
+    // case "name":
+    //   return order === "asc" ? ArrowDownAZ : ArrowUpAZ;
+    // case "start_time":
+    // case "deadline_time":
+    //   return order === "asc" ? Clock : Calendar; // Пример: часы для времени
+    // case "custom_field":
+    //   return order === "asc" ? ArrowDownWideNarrow : ArrowUpNarrowWide; // Пример: для пользовательских полей
+    case "full":
+      return LayoutList;
+    case "short":
+      return LayoutGrid;
     default:
       return ArrowDownAZ;
   }
 };
-const Sorting = ({ value, options, onChange }) => {
+const Sorting = ({ viewMode, options, onChange }) => {
   const sortRef = useRef(null);
   const [visibleOptions, setVisibleOptions] = useState(false);
 
@@ -172,28 +191,32 @@ const Sorting = ({ value, options, onChange }) => {
   }, []);
 
   // 💡 Определяем текущую иконку для отображения в заголовке
-  const CurrentIcon = value?.key
-    ? getSortIcon(value.key, value.order)
-    : ArrowDownAZ;
+  const CurrentIcon = viewMode?.value ? getSortIcon(viewMode.value) : Eye;
 
   return (
     <div className={styles.sort} ref={sortRef}>
-      <div className={styles.sortHeader} onClick={handleToggle}>
-        {/* 💡 Отображаем ТОЛЬКО иконку текущего типа сортировки */}
-        <CurrentIcon size={18} className={styles.sortIcon} />
-      </div>
+      <HintWithPortal hasIcon={false} hintContent={"Тип отображения"}>
+        <div className={styles.sortHeader} onClick={handleToggle}>
+          {/* 💡 Отображаем ТОЛЬКО иконку текущего типа сортировки */}
+          <CurrentIcon size={18} className={styles.sortIcon} />
+        </div>
+      </HintWithPortal>
 
       {visibleOptions && (
         <div className={styles.sortOptions}>
           {options?.map((option) => (
-            <p
+            <div
               onClick={() => handleOptionClick(option)}
-              key={`${option.key}-${option.order}`}
-              className={styles.option}
+              key={`${option.value}`}
+              className={`${styles.optionContainer} ${
+                viewMode?.value === option.value ? styles.activeOption : ""
+              }`}
             >
+              <div className={styles.icon}>{option.icon}</div>
+
               {/* Отображаем полный текст опции */}
-              {option.label}
-            </p>
+              <p className={styles.option}>{option.label}</p>
+            </div>
           ))}
         </div>
       )}

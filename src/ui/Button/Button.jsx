@@ -4,6 +4,8 @@ import styles from "./Button.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
 
 export const Button = ({
+  dataTour,
+  id,
   title,
   onClick,
   className,
@@ -20,6 +22,8 @@ export const Button = ({
         secondary ? styles.secondary : ""
       }`}
       onClick={!loading && !disabled ? onClick : () => {}}
+      id={id}
+      data-tour={dataTour}
     >
       <AnimatePresence mode="wait" initial={false}>
         {loading ? (

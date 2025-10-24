@@ -13,8 +13,8 @@
 }
 
 .sortHeader {
-  width: 46px;
-  height: 46px;
+  width: 50px;
+  height: 50px;
   font-size: 14px;
   font-weight: 500;
   display: flex;
@@ -66,11 +66,15 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 10;
-  padding: 5px 0;
+  padding: 12px 0;
 }
 
-.option {
-  font-size: 14px;
+.optionContainer {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
   padding: 10px 15px;
   cursor: pointer;
   transition: background-color 0.2s;
@@ -78,6 +82,15 @@
   &:hover {
     background-color: v.$color-disabled;
   }
+
+  &.activeOption {
+    background-color: v.$color-primary;
+    color: white;
+  }
+}
+
+.option {
+  font-size: 14px;
 }
 
 .clearFiltersBtn {
@@ -86,7 +99,7 @@
   justify-content: center;
   padding: 8px 16px;
   border-radius: 8px;
-  height: 46px;
+  height: 50px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;

@@ -43,10 +43,10 @@ export default function EmployeeDetailsCard({ employee }) {
   const fullName = `${employee?.surname} ${employee?.firstname} ${employee?.patronymic}`;
 
   const initials = getInitials(fullName);
-  const statusText = employee?.checkedIn ? "На работе c 9:00" : "Нет на работе";
-  const positions = employee?.positions?.map((position) => position.name);
+  const statusText = employee?.checked_in ? "На работе" : "Нет на работе";
+  const positions = employee?.positions?.map((position) => position.title);
   const departments = employee?.departments?.map(
-    (department) => department.name
+    (department) => department.title
   );
 
   const positionsString = positions?.join(", ");
@@ -120,7 +120,7 @@ export default function EmployeeDetailsCard({ employee }) {
           <h2 className={styles.position}>{fullName}</h2>
           <div
             className={`${styles.statusPill} ${
-              employee?.checkedIn ? styles.on : styles.off
+              employee?.checked_in ? styles.on : styles.off
             }`}
           >
             <div className={styles.dot}></div>

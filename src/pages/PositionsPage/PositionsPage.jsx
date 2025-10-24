@@ -97,6 +97,7 @@ export default function PositionsPage() {
         title={"Должности"}
         hasButton
         onClick={handleOpenCreateModal}
+        dataTour="positions.add"
       />
       <JobTitleTable
         onEdit={handleOpenUpdateModal}

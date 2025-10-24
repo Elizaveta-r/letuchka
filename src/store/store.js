@@ -11,6 +11,9 @@ import tasksReducer from "./slices/tasksSlice";
 import { sessionStorageMiddleware } from "../utils/middleware/sessionStorageMiddleware";
 import { employeeContactListener } from "../utils/middleware/employeeContactListener";
 import integrationsReducer from "./slices/integrationsSlice";
+import onboardingReducer from "./slices/onboardingSlice";
+import dashboardReducer from "./slices/dashboardSlice";
+import { integrationsListener } from "../utils/middleware/integrationsListener";
 
 export const store = configureStore({
   reducer: {
@@ -23,9 +26,16 @@ export const store = configureStore({
     employees: employeesReducer,
     tasks: tasksReducer,
     integrations: integrationsReducer,
+    dashboard: dashboardReducer,
+    // onboarding
+    onboarding: onboardingReducer,
   },
   middleware: (gDM) =>
     gDM()
-      .prepend([billingListener.middleware, employeeContactListener.middleware])
+      .prepend([
+        billingListener.middleware,
+        employeeContactListener.middleware,
+        integrationsListener.middleware,
+      ])
       .concat(sessionStorageMiddleware),
 });

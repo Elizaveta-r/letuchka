@@ -10,6 +10,9 @@ import { UpdateIntegrationModal } from "../../modules/UpdateIntegrationModal/Upd
 import { IntegrationCard } from "../../components/IntegrationCard/IntegrationCard";
 import DeleteConfirmationModal from "../../modules/DeleteConfirmationModal/DeleteConfirmationModal";
 import { Trash } from "lucide-react";
+import { OnboardingModal } from "../../modules/OnboardingModal/OnboardingModal";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
+import { setEditedIntegration } from "../../store/slices/integrationsSlice";
 
 const IntegrationPage = () => {
   const dispatch = useDispatch();
@@ -23,6 +26,8 @@ const IntegrationPage = () => {
   const [visibleConfirmationDeleteModal, setVisibleConfirmationDeleteModal] =
     useState(false);
   const [selectedIntegration, setSelectedIntegration] = useState(null);
+
+  const [visibleOnboardingModal, setVisibleOnboardingModal] = useState(false);
 
   const handleOpenConfirmationDeleteModal = (selectedIntegration) => {
     setSelectedIntegration(selectedIntegration);
@@ -46,7 +51,8 @@ const IntegrationPage = () => {
     });
   };
 
-  const handleOpenUpdateModal = () => {
+  const handleOpenUpdateModal = (integration) => {
+    dispatch(setEditedIntegration(integration));
     setVisibleModal(true);
     setIsNew(false);
   };
@@ -55,9 +61,32 @@ const IntegrationPage = () => {
     dispatch(getIntegrationsList(1, 200));
   }, [dispatch]);
 
+  useEffect(() => {
+    const checkOnboarding = () => {
+      const value = sessionStorage.getItem("success_create_bot");
+      if (value === "true") {
+        setVisibleOnboardingModal(true);
+        sessionStorage.removeItem("success_create_bot");
+      }
+    };
+
+    checkOnboarding();
+
+    window.addEventListener("storage", checkOnboarding);
+
+    return () => {
+      window.removeEventListener("storage", checkOnboarding);
+    };
+  }, []);
+
   return (
     <div className={styles.page}>
-      <PageTitle title="Интеграции" hasButton onClick={handleOpenCreateModal} />
+      <PageTitle
+        title="Интеграции"
+        hasButton
+        onClick={handleOpenCreateModal}
+        dataTour="integration.add"
+      />
       <UpdateIntegrationModal
         isNew={isNew}
         isOpen={visibleModal}
@@ -72,6 +101,13 @@ const IntegrationPage = () => {
         buttonIcon={<Trash size={20} />}
         loading={isIntegrationLoading}
       />
+      <OnboardingModal
+        isOpen={visibleOnboardingModal}
+        onClose={() => {
+          setVisibleOnboardingModal(false);
+          sessionStorage.removeItem("success_create_bot");
+        }}
+      />
       {!integrations && (
         <div className={styles.empty}>
           Список интеграций пуст. <br /> Нажмите <strong>"Добавить"</strong>,
@@ -80,17 +116,31 @@ const IntegrationPage = () => {
       )}
 
       {integrations && (
-        <div className={styles.list}>
-          {integrations?.map((integration) => {
-            return (
-              <IntegrationCard
-                key={integration.id}
-                integration={integration}
-                onUpdate={handleOpenUpdateModal}
-                onDelete={() => handleOpenConfirmationDeleteModal(integration)}
-              />
-            );
-          })}
+        <div className={styles.header}>
+          <div className={styles.title}>
+            <div></div>
+            <div>НАЗВАНИЕ</div>
+            <div>ТОКЕН БОТА</div>
+            <HintWithPortal
+              hintContent={`Когда бот выключен — он не получает и не отвечает на сообщения. \n\n Включите его, чтобы снова принимать обращения пользователей.`}
+            >
+              <div>ВЫКЛ/ВКЛ</div>
+            </HintWithPortal>
+          </div>
+          <div className={styles.list}>
+            {integrations?.map((integration) => {
+              return (
+                <IntegrationCard
+                  key={integration.id}
+                  integration={integration}
+                  onUpdate={handleOpenUpdateModal}
+                  onDelete={() =>
+                    handleOpenConfirmationDeleteModal(integration)
+                  }
+                />
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

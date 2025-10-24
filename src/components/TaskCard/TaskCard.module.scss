@@ -28,6 +28,21 @@
   gap: 20px;
   padding-bottom: 20px;
   border-bottom: 1px solid v.$color-border;
+
+  &.short {
+    border: none;
+    padding-bottom: 0;
+
+    & .taskTitle {
+      height: calc(1 * 1.4rem * v.$line-height);
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
+      max-height: calc(1 * 1.4rem * v.$line-height);
+    }
+  }
 }
 
 .headerContent {

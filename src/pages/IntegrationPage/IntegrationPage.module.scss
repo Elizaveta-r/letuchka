@@ -6,9 +6,41 @@
   gap: 25px;
 }
 
-.list {
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: 30px 1fr 2fr 165px;
+  gap: 10px;
+
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 20px 11px 20px;
+  border-radius: 0;
+  margin-bottom: 5px;
+  background-image: linear-gradient(45deg, #22c55e, #06b6d4);
+  background-clip: padding-box, border-box;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  text-align: left;
+}
+
+.list {
+  // display: grid;
+  // grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 

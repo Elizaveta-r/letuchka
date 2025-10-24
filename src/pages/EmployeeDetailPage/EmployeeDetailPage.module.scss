@@ -179,6 +179,10 @@
   cursor: pointer;
   font-weight: 600;
   transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
   &:hover {
     opacity: 0.9;

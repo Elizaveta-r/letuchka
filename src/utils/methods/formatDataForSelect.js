@@ -7,7 +7,7 @@ export const formatDataForSelect = (data) => {
   // Используем .map() для преобразования каждого объекта
   return data.map((item) => ({
     value: item.id, // ID становится значением (value)
-    label: item.name, // Название становится отображаемым текстом (label)
+    label: item.title, // Название становится отображаемым текстом (label)
   }));
 };
 

@@ -20,6 +20,9 @@ import ReportsPage from "../pages/ReportsPage/ReportsPage";
 import { SettingsPage } from "../pages/SettimgsPage/SettingsPage";
 import UpdateTaskPage from "../pages/UpdateTaskPage/UpdateTaskPage";
 import IntegrationPage from "../pages/IntegrationPage/IntegrationPage";
+import CreateBotPage from "../pages/CreateBotPage/CreateBotPage";
+import { BaseLayout } from "../layout/BaseLayout/BaseLayout";
+import EditEmployeePage from "../pages/EditEmployeePage/EditEmployeePage";
 
 export default function AppRoutes() {
   const location = useLocation();
@@ -70,6 +73,14 @@ export default function AppRoutes() {
       },
     },
     {
+      path: "/create-bot",
+      element: (
+        <BaseLayout>
+          <CreateBotPage />
+        </BaseLayout>
+      ),
+    },
+    {
       path: "/billing",
       element: (
         <PageLayout>
@@ -97,6 +108,14 @@ export default function AppRoutes() {
           handle: {
             title: "Детали сотрудника | Летучка", // 👈 Заголовок
           },
+        },
+        {
+          path: ":id/update",
+          element: <EditEmployeePage />,
+        },
+        {
+          path: "new",
+          element: <EditEmployeePage />,
         },
       ],
     },

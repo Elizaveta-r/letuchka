@@ -2,12 +2,10 @@ import { Clock, Contact, Globe, Pencil, Trash, Users } from "lucide-react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import styles from "./DepartmentDetailPage.module.scss";
 import { useEffect, useState } from "react";
-import DeleteConfirmationModal from "../../modules/DeleteConfirmationModal/DeleteConfirmationModal";
 import Hint from "../../ui/Hint/Hint";
 import { getInitials } from "../../utils/methods/getInitials";
 import { useNavigate, useParams } from "react-router-dom";
 import EmployeeContactModal from "../../modules/EmployeeContactModal/EmployeeContactModal";
-import { formatTime } from "../../utils/methods/formatTime";
 import { getFormattedTimeZoneLabel } from "../../utils/methods/generateTimeZoneOptions";
 import { useDispatch, useSelector } from "react-redux";
 import { getDepartmentById } from "../../utils/api/actions/departments";
@@ -17,7 +15,13 @@ import {
   toggleDepartmentIsDefault,
 } from "../../store/slices/departmentsSlice";
 import { CustomCheckbox } from "../../ui/CustomCheckbox/CustomCheckbox";
-import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
+import { setEditedEmployee } from "../../store/slices/employeesSlice";
+import EditEmployeeModal from "../../modules/EditEmployeeModal/EditEmployeeModal";
+import {
+  getEmployeeWithHistory,
+  updateEmployee,
+} from "../../utils/api/actions/employees";
+import { RingLoader } from "react-spinners";
 
 export default function DepartmentDetailPage() {
   const navigate = useNavigate();
@@ -25,7 +29,7 @@ export default function DepartmentDetailPage() {
 
   const { id } = useParams();
 
-  const { department, loading } = useSelector((state) => state?.departments);
+  const { department } = useSelector((state) => state?.departments);
 
   const description = department?.description;
   const check_in_time = department?.check_in_time;
@@ -35,10 +39,13 @@ export default function DepartmentDetailPage() {
   const employees = department?.employees;
   const managers = department?.manager;
 
-  const [visibleConfirmDeleteModal, setVisibleConfirmDeleteModal] =
-    useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [visibleContactModal, setVisibleContactModal] = useState(false);
+  const [visibleUpdateModal, setVisibleUpdateModal] = useState(false);
+
+  const { editedEmployee, loadingGetEmployee } = useSelector(
+    (state) => state?.employees
+  );
 
   const handleIsDefaultChange = (newCheckedValue) => {
     if (!department || !department?.id) return; // Защита от отсутствия данных
@@ -52,14 +59,18 @@ export default function DepartmentDetailPage() {
     );
   };
 
-  const handleOpenConfirmDeleteModal = (employee) => {
-    setVisibleConfirmDeleteModal(true);
-    setSelectedEmployee(employee);
+  const handleUpdateEmployee = (data) => {
+    return dispatch(updateEmployee(data));
   };
 
-  const handleCloseConfirmDeleteModal = () => {
-    setVisibleConfirmDeleteModal(false);
-    setSelectedEmployee(null);
+  const handleOpenUpdateModal = (employee) => {
+    setVisibleUpdateModal(true);
+    dispatch(setEditedEmployee(employee));
+  };
+
+  const handleCloseUpdateModal = () => {
+    setVisibleUpdateModal(false);
+    dispatch(setEditedEmployee(null));
   };
 
   const handleOpenContactModal = (employee) => {
@@ -71,7 +82,13 @@ export default function DepartmentDetailPage() {
     setVisibleContactModal(false);
   };
 
-  const handleGetDetails = (id) => navigate(`/employees/${id}`);
+  const handleGetDetails = (id) => {
+    dispatch(getEmployeeWithHistory(id, 1, 1000)).then((res) => {
+      if (res.status === 200) {
+        navigate(`/employees/${id}`);
+      }
+    });
+  };
 
   useEffect(() => {
     dispatch(getDepartmentById(id));
@@ -92,7 +109,7 @@ export default function DepartmentDetailPage() {
 
   return (
     <div className={styles.pageContent}>
-      <PageTitle title={department?.name} />
+      <PageTitle title={department?.title} />
 
       <div className={styles.isDefault}>
         <CustomCheckbox
@@ -102,12 +119,11 @@ export default function DepartmentDetailPage() {
         />
       </div>
 
-      <DeleteConfirmationModal
-        isOpen={visibleConfirmDeleteModal}
-        onClose={handleCloseConfirmDeleteModal}
-        employeeName={selectedEmployee?.name}
-        message={<MessageDelete employeeName={selectedEmployee?.name} />}
-        loading={loading}
+      <EditEmployeeModal
+        isOpen={visibleUpdateModal}
+        onClose={handleCloseUpdateModal}
+        employee={editedEmployee}
+        onUpdate={handleUpdateEmployee}
       />
 
       {selectedEmployee && (
@@ -127,14 +143,14 @@ export default function DepartmentDetailPage() {
                 <Clock size={"0.85rem"} color="#6b7280" />
                 <p className={styles.label}>Чекин до:</p>
               </div>
-              <p className={styles.time}>{formatTime(check_in_time)}</p>
+              <p className={styles.time}>{check_in_time}</p>
             </div>
             <div className={styles.gridItem}>
               <div className={styles.headerCards}>
                 <Clock size={"0.85rem"} color="#6b7280" />{" "}
                 <p className={styles.label}>Чекаут с:</p>
               </div>
-              <p className={styles.time}>{formatTime(check_out_time)}</p>
+              <p className={styles.time}>{check_out_time}</p>
             </div>
             <div className={styles.gridItem}>
               <div className={styles.headerCards}>
@@ -167,9 +183,10 @@ export default function DepartmentDetailPage() {
                   name={`${emp.surname} ${emp.firstname} ${emp.patronymic}`}
                   post={emp.positions}
                   id={emp.id}
+                  loadingGetEmployee={loadingGetEmployee}
                   onShowContacts={() => handleOpenContactModal(emp)}
                   onGetDetails={() => handleGetDetails(emp.id)}
-                  onDelete={() => handleOpenConfirmDeleteModal(emp)}
+                  onEdit={() => handleOpenUpdateModal(emp)}
                 />
               ))
             ) : (
@@ -188,9 +205,10 @@ export default function DepartmentDetailPage() {
                   name={`${emp.surname} ${emp.firstname} ${emp.patronymic}`}
                   post={emp.positions}
                   id={emp.id}
+                  loadingGetEmployee={loadingGetEmployee}
                   onShowContacts={() => handleOpenContactModal(emp)}
                   onGetDetails={() => handleGetDetails(emp.id)}
-                  onDelete={() => handleOpenConfirmDeleteModal(emp)}
+                  onEdit={() => handleOpenUpdateModal(emp)}
                 />
               ))
             ) : (
@@ -206,36 +224,44 @@ export default function DepartmentDetailPage() {
 const EmployeeRow = ({
   name,
   post,
-  onDelete,
+  onEdit,
   onShowContacts,
   onGetDetails,
+  id,
+  loadingGetEmployee,
 }) => {
   const initials = getInitials(name);
   const positionNames = post?.map((pos) => pos.name);
   const positionsString = positionNames?.join(", ");
   return (
     <div className={styles.dataItem}>
-      <div className={styles.avatar}>{initials}</div>
+      <div className={styles.avatar}>
+        {loadingGetEmployee === id ? (
+          <RingLoader color="#fff" size={14} />
+        ) : (
+          initials
+        )}
+      </div>
       <p className={styles.nameEmp} onClick={onGetDetails}>
         {name}
       </p>
 
       <p className={styles.postEmp}>{positionsString}</p>
+
       <div className={styles.actions}>
-        <Hint hintContent="Посмотреть контактные данные" hasIcon={false}>
+        <Hint
+          hintContent="Посмотреть контактные данные"
+          hasIcon={false}
+          isMaxWidth
+        >
           <div className={styles.contact} onClick={onShowContacts}>
             <Contact size={16} />
           </div>
         </Hint>
-
-        <Hint hintContent="Удалить сотрудника из отдела" hasIcon={false}>
-          <div
-            className={styles.trash}
-            data-tooltip="Удалить"
-            onClick={onDelete}
-          >
-            <Trash size={16} />
-          </div>
+        <Hint hintContent="Редактировать" hasIcon={false} isMaxWidth>
+          <div className={styles.edit} onClick={onEdit}>
+            <Pencil size={16} />
+          </div>{" "}
         </Hint>
       </div>
     </div>

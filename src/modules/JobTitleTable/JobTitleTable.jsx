@@ -7,21 +7,23 @@ const JobTitleTable = ({ positions, onEdit, onDelete }) => {
     <div className={styles.tableContainer}>
       <table className={styles.jobTable}>
         {/* Заголовок таблицы */}
-        <thead>
-          <tr>
-            <th>Название должности</th>
-            <th>Описание</th>
-            <th>Сотрудников</th>
-            <th className={styles.actionsHeader}>Действия</th>
-          </tr>
-        </thead>
+        {positions && (
+          <thead>
+            <tr>
+              <th>Название должности</th>
+              <th>Описание</th>
+              <th>Сотрудников</th>
+              <th className={styles.actionsHeader}>Действия</th>
+            </tr>
+          </thead>
+        )}
 
         {/* Тело таблицы */}
         <tbody>
           {positions ? (
             positions?.map((job) => (
               <tr key={job.id}>
-                <td className={styles.jobName}>{job.name}</td>
+                <td className={styles.jobName}>{job.title}</td>
                 <td className={styles.jobDescription}>
                   {job.description ? job.description : "Описание отсутствует"}
                 </td>

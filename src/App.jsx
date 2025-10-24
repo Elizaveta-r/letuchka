@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { store } from "./store/store";
 import AppRoutes from "./routes/AppRoutes";
+import "driver.js/dist/driver.css";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <BrowserRouter>
         <Toaster position="top-center" />
         <ScrollToTop />
+
         <AppRoutes />
       </BrowserRouter>
     </Provider>

@@ -3,7 +3,6 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { Calendar, Trash2 } from "lucide-react";
-import { addDays } from "date-fns";
 
 import styles from "./EmployeeDetailPage.module.scss";
 import { ImageModal } from "../../ui/ImageModal/ImageModal";
@@ -15,11 +14,34 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoadingGetEmployee } from "../../store/slices/employeesSlice";
 import { getEmployeeWithHistory } from "../../utils/api/actions/employees";
 import { useParams } from "react-router-dom";
+import { RingLoader } from "react-spinners";
+
+// const INITIAL_RANGE = {
+//   startDate: addDays(new Date(), -7),
+//   endDate: new Date(),
+//   key: "selection",
+// };
 
 const INITIAL_RANGE = {
-  startDate: addDays(new Date(), -7),
+  startDate: new Date(),
   endDate: new Date(),
   key: "selection",
+};
+
+const formatDateLocal = (date) => {
+  if (!date || !(date instanceof Date) || isNaN(date.getTime())) return "";
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+const normalizeDate = (date) => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
 };
 
 // const history = [
@@ -117,29 +139,55 @@ export default function EmployeeDetailPage() {
   };
 
   const handleApplyDateFilter = () => {
-    setDateRange(tempDateRange);
-    setShowCalendar(false);
+    dispatch(
+      getEmployeeWithHistory(
+        id,
+        1,
+        1000,
+        formatDateLocal(tempDateRange[0].startDate),
+        formatDateLocal(tempDateRange[0].endDate)
+      )
+    ).then((res) => {
+      if (res.status === 200) {
+        setDateRange(tempDateRange);
+        setShowCalendar(false);
+      }
+    });
   };
 
   const handleReset = () => {
-    setDateRange([{ startDate: null, endDate: null, key: "selection" }]);
-    setShowCalendar(false);
+    dispatch(getEmployeeWithHistory(id, 1, 1000)).then((res) => {
+      if (res.status === 200) {
+        setDateRange([{ startDate: null, endDate: null, key: "selection" }]);
+        setShowCalendar(false);
+      }
+    });
   };
 
   const filteredHistory = useMemo(() => {
+    if (!history) return [];
+
     const { startDate, endDate } = dateRange[0];
 
-    if (!startDate || !endDate) {
-      return employee?.history;
-    }
-
-    const endOfDay = addDays(endDate, 1);
-
-    return history?.filter((item) => {
-      const itemDate = new Date(item?.done_time);
-      return itemDate >= startDate && itemDate < endOfDay;
+    const parsed = history.map((item) => {
+      const dateTimeStr = `${item.done_date}T${item.done_time}:00`;
+      return {
+        ...item,
+        _parsedDate: new Date(dateTimeStr),
+      };
     });
-  }, [dateRange, history, employee?.history]);
+
+    const filtered =
+      startDate && endDate
+        ? parsed.filter((i) => {
+            const d = normalizeDate(i._parsedDate);
+            return d >= normalizeDate(startDate) && d <= normalizeDate(endDate);
+          })
+        : parsed;
+
+    // сортировка по дате (сначала новые)
+    return filtered.sort((a, b) => b._parsedDate - a._parsedDate);
+  }, [dateRange, history]);
 
   const rangeText = useMemo(() => {
     const { startDate, endDate } = dateRange[0];
@@ -174,9 +222,9 @@ export default function EmployeeDetailPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showCalendar]);
 
-  if (loadingGetEmployee) {
-    return <div>Загрузка...</div>;
-  }
+  useEffect(() => {
+    dispatch(getEmployeeWithHistory(id, 1, 1000));
+  }, [dispatch, id]);
 
   return (
     <div className={styles.pageContent}>
@@ -200,7 +248,11 @@ export default function EmployeeDetailPage() {
                     onClick={handleReset}
                     title="Сбросить фильтр"
                   >
-                    <Trash2 size={18} />
+                    {loadingGetEmployee ? (
+                      <RingLoader size={18} />
+                    ) : (
+                      <Trash2 size={18} />
+                    )}
                   </button>
                 )}
 
@@ -231,8 +283,12 @@ export default function EmployeeDetailPage() {
                   <button
                     className={styles.applyFilterButton}
                     onClick={handleApplyDateFilter}
+                    disabled={loadingGetEmployee}
                   >
-                    Применить и Закрыть
+                    {loadingGetEmployee && (
+                      <RingLoader color="white" size={12} />
+                    )}
+                    {loadingGetEmployee ? "Загрузка..." : "Применить и Закрыть"}
                   </button>
                   <button
                     className={styles.resetFilterButton}
@@ -250,6 +306,7 @@ export default function EmployeeDetailPage() {
               <EmployeeHistoryItem
                 key={index}
                 item={item}
+                timezone={employee?.timezone}
                 onPhotoClick={handleOpenPhotoModal}
               />
             ))}

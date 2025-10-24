@@ -55,16 +55,18 @@ export const toggleIntegrationStatus = (integration_id, status) => {
     dispatch(setIsIntegrationLoading(true));
     try {
       const res = await $authHost.put(
-        `/integration/switch?integration_id=${integration_id}&status=${status}`
+        `/integration/enabled?integration_id=${integration_id}&enabled=${status}`
       );
       if (res.status === 200) {
         dispatch(getIntegrationsList(1, 200));
-        toast.success("Интеграция успешно обновлена!");
+        // toast.success("Интеграция успешно обновлена!");
+        return true;
       }
-      return res;
+      return false;
     } catch (error) {
       logPostError(error);
-      throw error;
+      // toast.error("Не удалось сохранить изменения");
+      return false;
     } finally {
       dispatch(setIsIntegrationLoading(false));
     }
@@ -99,11 +101,10 @@ export const updateIntegration = (data) => {
   };
 };
 export const getIntegrationById = (id) => {
-  return async (dispatch) => {
+  return async () => {
     try {
       const res = await $authHost.get(`/integration?integration_id=${id}`);
       if (res.status === 200) {
-        // dispatch(setActiveTask(res.data.task));
         console.log("getIntegrationById", res.data.task);
       }
       return res;

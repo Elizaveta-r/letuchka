@@ -120,7 +120,7 @@ export default function EmployeeContactModal({ isOpen, onClose, employee }) {
                 label="Телефон для связи"
               />
               <div className={styles.formItem}>
-                <p className={styles.formLabel}>Telegram</p>
+                <p className={styles.formLabel}>Телеграм</p>
                 <div className={styles.inputs}>
                   <CustomInput
                     placeholder={"Имя пользователя..."}
@@ -129,7 +129,7 @@ export default function EmployeeContactModal({ isOpen, onClose, employee }) {
                     onChange={handleContactChange}
                   />
                   <CustomInput
-                    placeholder={"Telegram ID..."}
+                    placeholder={"Телеграм ID..."}
                     value={input.telegramId}
                     name="telegramId"
                     onChange={handleContactChange}

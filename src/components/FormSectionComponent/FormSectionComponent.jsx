@@ -2,6 +2,7 @@ import Hint from "../../ui/Hint/Hint";
 import styles from "./FormSectionComponent.module.scss";
 
 export const FormSectionComponent = ({
+  dataTour,
   children,
   label,
   hintContent,
@@ -10,7 +11,7 @@ export const FormSectionComponent = ({
   isMaxWidth,
 }) => {
   return (
-    <div className={styles.section}>
+    <div className={styles.section} data-tour={dataTour}>
       {hintContent ? (
         <Hint
           hintContent={hintContent}

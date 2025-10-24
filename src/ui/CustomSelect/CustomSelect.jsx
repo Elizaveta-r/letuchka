@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./CustomSelect.module.scss";
 import { ChevronDown, Search, Plus, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { RingLoader } from "react-spinners";
 
 /**
  * Переиспользуемый компонент селекта с поддержкой одиночного и множественного выбора.
@@ -23,10 +24,22 @@ export default function CustomSelect({
   isSearchable = false,
   isCreatable = false,
   isMulti = false, // <-- Новый пропс
+  dataTourId,
+  dataTourHeader = "modal.timezone.header",
+  forceOpen,
+  onCreate,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
   const selectRef = useRef(null);
+
+  // синк внешнего открытия
+  useEffect(() => {
+    if (typeof forceOpen === "boolean") {
+      setIsOpen((prev) => forceOpen || prev);
+    }
+  }, [forceOpen]);
 
   // Проверка, является ли текущее значение массивом (для isMulti)
   const isValueArray = Array.isArray(value);
@@ -67,28 +80,60 @@ export default function CustomSelect({
         : [...(isValueArray ? value : []), option]; // Добавить
 
       onChange(newValue);
-      // В мультиселекте список не закрывается, чтобы пользователь мог выбрать еще
       if (!isSearchable) {
-        setIsOpen(false); // Закрываем, если нет поиска
+        setIsOpen(false);
       }
+      window.dispatchEvent(
+        new CustomEvent("tour:select:chosen", {
+          detail: { option, multi: true },
+        })
+      );
     } else {
       // Логика для сингл-селекта
       onChange(option);
       setIsOpen(false);
       setSearchTerm("");
+      window.dispatchEvent(
+        new CustomEvent("tour:select:chosen", {
+          detail: { option, multi: false },
+        })
+      );
     }
   };
 
-  const handleCreate = () => {
-    if (canCreate) {
-      const newOption = { value: searchTerm, label: searchTerm };
-      // В зависимости от режима (isMulti) передаем либо объект, либо массив
+  const handleCreate = async () => {
+    if (!canCreate || isCreating) return;
+
+    setIsCreating(true);
+
+    try {
+      // Ждём, пока dispatch вернёт результат (res.data)
+      const created = await onCreate({ value: searchTerm, label: searchTerm });
+
+      // Проверяем, что сервер действительно вернул позицию
+      const createdPosition = created?.position;
+      if (!createdPosition || !createdPosition.id) {
+        throw new Error("Некорректный ответ при создании должности");
+      }
+
+      // Готовим новую опцию для селекта
+      const newOption = {
+        value: createdPosition.id,
+        label: createdPosition.title,
+      };
+
+      // Добавляем её в выбранные значения
       onChange(
         isMulti ? [...(isValueArray ? value : []), newOption] : newOption
       );
 
+      // Очищаем и закрываем
       setIsOpen(false);
       setSearchTerm("");
+    } catch (error) {
+      console.error("Ошибка при создании должности:", error);
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -112,9 +157,17 @@ export default function CustomSelect({
   };
 
   return (
-    <div className={styles.selectContainer} ref={selectRef}>
+    <div
+      className={styles.selectContainer}
+      ref={selectRef}
+      data-tour={dataTourId /* например "modal.timezone" */}
+    >
       {/* Шапка селекта (кнопка) */}
-      <div className={styles.selectHeader} onClick={handleHeaderClick}>
+      <div
+        className={styles.selectHeader}
+        data-tour={dataTourHeader}
+        onClick={handleHeaderClick}
+      >
         {/* Отображение выбранного значения / тегов */}
         {isMulti && isValueArray && value.length > 0 ? (
           <div className={styles.multiValueWrapper}>
@@ -158,6 +211,7 @@ export default function CustomSelect({
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            data-tour={dataTourId ? `${dataTourId}.menu` : undefined}
             className={styles.dropdown}
             variants={dropdownVariants}
             initial="hidden"
@@ -188,8 +242,15 @@ export default function CustomSelect({
                 className={`${styles.option} ${styles.createOption}`}
                 onClick={handleCreate}
               >
-                <Plus size={16} />
-                Создать: <strong>{`"${searchTerm}"`}</strong>
+                <div className={styles.createLabel}>
+                  {isCreating ? (
+                    <RingLoader size={16} color="#16a34a" />
+                  ) : (
+                    <Plus size={16} />
+                  )}
+                  <p>{isCreating ? "Создание..." : "Создать:"}</p>
+                </div>
+                <strong>{`"${searchTerm}"`}</strong>
               </div>
             )}
 

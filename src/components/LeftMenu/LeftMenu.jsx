@@ -13,15 +13,32 @@ import {
 
 const renderItemsData = [
   { name: "Обзор", path: "/", icon: <Home size={18} /> },
-  { name: "Биллинг", path: "/billing", icon: <CreditCard size={18} /> },
   { name: "Отчеты", path: "/reports", icon: <FileBarChart size={18} /> },
+  // { name: "Биллинг", path: "/billing", icon: <CreditCard size={18} /> },
+
   { name: "Задачи", path: "/tasks", icon: <AlarmClockCheck size={18} /> },
-  { name: "Должности", path: "/positions", icon: <Briefcase size={18} /> },
-  { name: "Сотрудники", path: "/employees", icon: <IdCardLanyard size={18} /> },
-  { name: "Интеграции", path: "/integrations", icon: <Cable size={18} /> },
+  {
+    name: "Должности",
+    path: "/positions",
+    icon: <Briefcase size={18} />,
+    dataTour: "menu.positions",
+  },
+  {
+    name: "Сотрудники",
+    path: "/employees",
+    dataTour: "menu.employees",
+    icon: <IdCardLanyard size={18} />,
+  },
+  {
+    name: "Интеграции",
+    path: "/integrations",
+    icon: <Cable size={18} />,
+    dataTour: "menu.integrations",
+  },
   {
     name: "Подразделения",
     path: "/departments",
+    dataTour: `menu.departments`,
     icon: <Building2 size={18} />,
   },
 ];
@@ -49,7 +66,10 @@ export const LeftMenu = () => {
     <nav className={styles.leftMenu} aria-label="Главное меню">
       {renderItemsData?.map((item, index) => {
         return (
-          <div key={`left-menu-${item.name}-${index}`}>
+          <div
+            key={`left-menu-${item.name}-${index}`}
+            data-tour={item.dataTour}
+          >
             <div
               role="button"
               tabIndex={0}
@@ -64,8 +84,8 @@ export const LeftMenu = () => {
                 <span className={styles.label}>{item.name}</span>
               </div>
             </div>
-            {item.name === "Биллинг" && <div className={styles.line} />}
-            {item.name === "Статистика" && <div className={styles.line} />}
+            {/* {item.name === "Биллинг" && <div className={styles.line} />} */}
+            {item.name === "Отчеты" && <div className={styles.line} />}
           </div>
         );
       })}

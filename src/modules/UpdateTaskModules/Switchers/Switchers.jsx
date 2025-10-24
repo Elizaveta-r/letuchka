@@ -8,17 +8,13 @@ import {
   setToFinalReport,
 } from "../../../store/slices/tasksSlice";
 import { useEffect } from "react";
+import { HintWithPortal } from "../../../ui/HintWithPortal/HintWithPortal";
 
 export const Switchers = () => {
   const dispatch = useDispatch();
 
-  const {
-    need_photo,
-    photo_required,
-    expired_notify,
-    to_final_report,
-    done_type,
-  } = useSelector((state) => state.tasks.draftTask);
+  const { photo_need, photo_required, late_push, to_report, done_type } =
+    useSelector((state) => state.tasks.draftTask);
 
   useEffect(() => {
     if (done_type.value === "photo") {
@@ -28,18 +24,30 @@ export const Switchers = () => {
 
   return (
     <div className={styles.switchers}>
-      <ToggleSwitch
-        labelStyle={styles.switcherLabel}
-        label="Уведомить о просрочке"
-        checked={expired_notify}
-        onChange={() => dispatch(setExpiredNotify(!expired_notify))}
-      />
+      <HintWithPortal
+        hasIcon={false}
+        hintContent={
+          <>
+            Включите, чтобы <b>руководитель тоже</b> получал уведомления о{" "}
+            <b>просрочках</b>. <br />
+            <br /> <small>Сотрудник получает уведомления всегда.</small>
+          </>
+        }
+      >
+        <ToggleSwitch
+          labelStyle={styles.switcherLabel}
+          label="Уведомить о просрочке"
+          checked={late_push}
+          onChange={() => dispatch(setExpiredNotify(!late_push))}
+        />
+      </HintWithPortal>
+
       {done_type.value === "photo" && (
         <ToggleSwitch
           labelStyle={styles.switcherLabel}
           label="Требуется фото"
-          checked={need_photo}
-          onChange={() => dispatch(setNeedPhoto(!need_photo))}
+          checked={photo_need}
+          onChange={() => dispatch(setNeedPhoto(!photo_need))}
         />
       )}
       {done_type.value === "photo" && (
@@ -50,12 +58,24 @@ export const Switchers = () => {
           onChange={() => dispatch(setPhotoRequired(!photo_required))}
         />
       )}
-      <ToggleSwitch
-        labelStyle={styles.switcherLabel}
-        label="В итоговый отчет"
-        checked={to_final_report}
-        onChange={() => dispatch(setToFinalReport(!to_final_report))}
-      />
+      <HintWithPortal
+        hasIcon={false}
+        hintContent={
+          <>
+            Включите, чтобы добавить задачу <b>в итоговый отчёт в Телеграм</b>.{" "}
+            <br />
+            <br />
+            <small>В веб-отчёте она отображается всегда.</small>
+          </>
+        }
+      >
+        <ToggleSwitch
+          labelStyle={styles.switcherLabel}
+          label="В итоговый отчет"
+          checked={to_report}
+          onChange={() => dispatch(setToFinalReport(!to_report))}
+        />
+      </HintWithPortal>
     </div>
   );
 };

@@ -5,6 +5,8 @@ import {
   setEmployeeHistory,
   setEmployees,
   setEmployeesLoading,
+  setEmployeesWithHistory,
+  setLoadingGetEmployee,
 } from "../../../store/slices/employeesSlice";
 import { toast } from "sonner";
 import {
@@ -77,7 +79,7 @@ export const updateEmployee = (data) => {
       const res = await $authHost.put(`/organization/employee`, data);
       if (res.status === 200) {
         dispatch(getEmployeesList(1, 10));
-        dispatch(getEmployeeById(data.employee_id));
+        dispatch(getEmployeeWithHistory(data.employee_id, 1, 1000));
         toast.success("Сотрудник успешно обновлен!");
       }
       return res;
@@ -139,6 +141,7 @@ export const createEmployeeContact = (data) => {
 
 export const getEmployeeById = (id) => {
   return async (dispatch) => {
+    dispatch(setLoadingGetEmployee(id));
     try {
       const res = await $authHost.get(
         `/organization/employee?employee_id=${id}`
@@ -150,6 +153,8 @@ export const getEmployeeById = (id) => {
     } catch (error) {
       console.error("getEmployeeById", error);
       throw error;
+    } finally {
+      dispatch(setLoadingGetEmployee(null));
     }
   };
 };
@@ -175,20 +180,110 @@ export const deleteEmployee = (id) => {
   };
 };
 
-export const getEmployeeWithHistory = (employeeId, page, pageSize) => {
+// export const getEmployeeWithHistory = (
+//   employeeId,
+//   page,
+//   pageSize,
+//   startDate = "",
+//   endDate = ""
+// ) => {
+//   return async (dispatch) => {
+//     dispatch(setLoadingGetEmployee(employeeId));
+//     try {
+//       const res = await $authHost.get(
+//         `/organization/employee/history?employee_id=${employeeId}&page=${page}&page_size=${pageSize}&start_date=${startDate}&end_date=${endDate}`
+//       );
+//       if (res.status === 200) {
+//         dispatch(setEmployee(res.data.employee));
+//         dispatch(setEmployeeHistory(res.data.employee_history));
+//       }
+//       return res;
+//     } catch (error) {
+//       logPostError(error);
+//       throw error;
+//     } finally {
+//       dispatch(setLoadingGetEmployee(null));
+//     }
+//   };
+// };
+
+export const getEmployeeWithHistory = (
+  employeeId,
+  page,
+  pageSize,
+  startDate = "",
+  endDate = ""
+) => {
   return async (dispatch) => {
+    dispatch(setLoadingGetEmployee(employeeId));
+
     try {
+      const params = new URLSearchParams({
+        employee_id: employeeId,
+        page,
+        page_size: pageSize,
+      });
+
+      if (startDate) params.append("start_date", startDate);
+      if (endDate) params.append("end_date", endDate);
+
       const res = await $authHost.get(
-        `/organization/employee/history?employee_id=${employeeId}&page=${page}&page_size=${pageSize}`
+        `/organization/employee/history?${params.toString()}`
       );
+
       if (res.status === 200) {
         dispatch(setEmployee(res.data.employee));
         dispatch(setEmployeeHistory(res.data.employee_history));
       }
+
       return res;
     } catch (error) {
       logPostError(error);
       throw error;
+    } finally {
+      dispatch(setLoadingGetEmployee(null));
+    }
+  };
+};
+
+export const getAllEmployeesWithHistory = (
+  page = 1,
+  pageSize = 1000,
+  startDate = "",
+  endDate = ""
+) => {
+  return async (dispatch) => {
+    try {
+      // 1️⃣ Получаем список сотрудников
+      const listRes = await dispatch(getEmployeesList(page, pageSize));
+
+      if (listRes?.status === 200 && listRes.data?.employees) {
+        const employees = listRes.data.employees;
+
+        // 2️⃣ Загружаем историю для каждого сотрудника (с учётом диапазона)
+        const results = await Promise.all(
+          employees.map(async (emp) => {
+            try {
+              const histRes = await dispatch(
+                getEmployeeWithHistory(emp.id, 1, 100, startDate, endDate)
+              );
+
+              return {
+                ...emp,
+                employee_history: histRes?.data?.employee_history || [],
+              };
+            } catch {
+              return { ...emp, employee_history: [] };
+            }
+          })
+        );
+
+        // 3️⃣ Сохраняем итог в Redux
+        dispatch(setEmployeesWithHistory(results));
+        return results;
+      }
+    } catch (error) {
+      console.error("Ошибка при получении сотрудников с историей:", error);
     }
   };
 };

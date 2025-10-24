@@ -1,21 +1,40 @@
 @use "../../styles/variables" as v;
+@use "sass:color";
 
 .card {
-  background: v.$color_white;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid v.$color-border;
   display: grid;
-  align-content: space-between;
+  grid-template-columns: 30px 1fr 2fr 165px;
+  gap: 10px;
+  align-items: center;
+  background-color: v.$color-bg-light;
+  border-radius: 8px;
+  padding: 16px 20px;
+  transition: background-color 0.2s;
+  word-wrap: break-word;
+
+  // background: v.$color_white;
+  // border-radius: 16px;
+  // padding: 24px;
+  // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  // transition: all 0.3s ease;
+  // position: relative;
+  // overflow: hidden;
+  // border: 1px solid v.$color-border;
+  // display: grid;
+  // align-content: space-between;
 
   &:hover {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
+    // box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.08);
+    // transform: translateY(-2px);
+    background-color: color.adjust(v.$color-bg-light, $lightness: 2%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
+}
+
+.cardIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .headerAccent {
@@ -33,8 +52,8 @@
   gap: 10px;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  margin-top: 4px;
+  // margin-bottom: 16px;
+  // margin-top: 4px;
 }
 
 .cardTitle {
@@ -49,9 +68,9 @@
 }
 
 .cardName {
-  font-size: 18px;
-  font-weight: 600;
-  color: v.$color-text-main;
+  font-size: 16px;
+  font-weight: 700;
+  color: color.adjust(v.$color-info, $lightness: -25%);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -76,42 +95,82 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 16px;
-  background: v.$color-bg-light;
-  border-radius: 12px;
-  margin-bottom: 20px;
+  // padding: 16px;
+  // background: v.$color-bg-light;
+  // border-radius: 12px;
+  // margin-bottom: 20px;
 }
 
 .info {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  justify-content: flex-start;
+  // flex-direction: column;
+  gap: 12px;
 
   &:first-child {
     width: 100%;
     align-self: center;
     justify-content: center;
-    padding-bottom: 12px;
-    border-bottom: 1px solid v.$color-border;
+    // padding-bottom: 12px;
+    // border-bottom: 1px solid v.$color-border;
   }
 }
 
-.token {
-  font-family: "Courier New", monospace;
-  font-size: 13px;
-  color: v.$color-text-main;
-  background: v.$color_white;
-  padding: 8px 12px;
+.toggleToken {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 8px;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
   border: 1px solid v.$color-border;
-  word-break: break-all;
-  margin: 0;
+  cursor: pointer;
   transition: all 0.2s ease;
+
+  & svg {
+    transition: all 0.25s ease;
+  }
 
   &:hover {
     border-color: v.$color-primary;
     background: rgba(22, 163, 74, 0.05);
+    transform: translateY(-1px);
+
+    & svg {
+      transform: scale(1.1);
+      color: v.$color-primary;
+    }
   }
+}
+
+.token {
+  // font-family: "Courier New", monospace;
+  // font-size: 13px;
+  // width: 420px;
+  text-align: left;
+  font-size: 14px;
+  color: v.$color-gray-50;
+  font-weight: 700;
+  // background: v.$color_white;
+  // padding: 8px 12px;
+  // border-radius: 8px;
+  // border: 1px solid v.$color-border;
+  // word-wrap: break-word;
+  // word-break: break-all;
+  margin: 0;
+  // transition: all 0.2s ease;
+
+  // &:hover {
+  //   border-color: v.$color-primary;
+  //   background: rgba(22, 163, 74, 0.05);
+  // }
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .type,
@@ -134,38 +193,10 @@
 }
 
 .cardActions {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
   gap: 8px;
   align-items: center;
-}
-
-.infoBtn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background: v.$gradient-primary;
-  color: v.$color_white;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex: 1;
-  justify-content: center;
-
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  p {
-    margin: 0;
-  }
 }
 
 .edit,
@@ -183,6 +214,7 @@
 }
 
 .edit {
+  margin-left: 20px;
   color: v.$color-info;
 
   &:hover {

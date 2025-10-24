@@ -117,50 +117,6 @@
   padding-right: 20px;
 }
 
-.actions {
-  display: flex;
-  gap: 10px;
-}
-
-.trash,
-.contact {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.contact {
-  color: v.$color-primary;
-  border: 1px solid v.$color-primary;
-
-  &:hover {
-    background-color: v.$color-primary;
-    color: v.$color-white;
-  }
-}
-
-.trash {
-  color: v.$color-danger;
-  border: 1px solid v.$color-danger;
-
-  &:hover {
-    background-color: v.$color-danger;
-    color: v.$color-white;
-  }
-}
-
-.trash svg,
-.edit svg {
-  width: 18px;
-  height: 18px;
-  stroke-width: 2;
-}
-
 .avatar {
   width: 36px;
   height: 36px;
@@ -185,4 +141,62 @@
   text-align: left;
   color: v.$color-text-light;
   font-size: 0.9rem;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-self: end;
+}
+
+.contact,
+.edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid v.$color-border;
+  background: v.$color-white;
+
+  svg {
+    transition: transform 0.25s ease;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.contact {
+  color: v.$color-attention;
+
+  &:hover {
+    background: v.$linear-contact-gradient;
+    border-color: v.$contact-border;
+    transform: translateY(-1px);
+
+    svg {
+      transform: scale(1.1) rotate(2deg);
+    }
+  }
+}
+
+.edit {
+  color: v.$color-info;
+  &:hover {
+    background: v.$linear-edit-gradient;
+    border-color: v.$edit-border;
+    transform: translateY(-1px);
+    svg {
+      transform: scale(1.1) rotate(-5deg);
+    }
+  }
+}
+
+.edit svg {
+  stroke-width: 2;
 }

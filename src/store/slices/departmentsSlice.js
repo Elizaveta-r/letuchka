@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { updateDepartment } from "../../utils/api/actions/departments";
 import { toast } from "sonner";
-import { formatTime } from "../../utils/methods/formatTime";
 
 const initialDepartmentState = {
   // Базовые поля отдела
@@ -93,11 +92,11 @@ export const toggleDepartmentIsDefault = createAsyncThunk(
     // 2. ФОРМИРОВАНИЕ ДАННЫХ
     const dataForServer = {
       department_id: department.id,
-      name: department.name,
+      title: department.title,
       description: department.description,
       timezone: department.timezone,
-      check_in_time: formatTime(department.check_in_time),
-      check_out_time: formatTime(department.check_out_time),
+      check_in_time: department.check_in_time,
+      check_out_time: department.check_out_time,
       is_default: newValue,
     };
 

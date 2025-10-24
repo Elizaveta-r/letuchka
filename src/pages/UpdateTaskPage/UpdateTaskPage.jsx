@@ -78,29 +78,29 @@ export default function UpdateTaskPage() {
   };
 
   const handleConfirm = () => {
-    if (draftTask?.disposable_date) {
-      const isoString = draftTask?.disposable_date;
+    if (draftTask?.onetime_date) {
+      const isoString = draftTask?.onetime_date;
       disposableDateString = isoString.split("T")[0];
     }
 
     const taskDataToSend = {
       ...draftTask,
-      time_type: draftTask?.time_type.value,
+      task_type: draftTask?.task_type.value,
       week_days: draftTask?.week_days?.map((d) => d.value),
       department_id: draftTask?.department_id?.value,
       done_type: draftTask?.done_type.value,
-      disposable_date: disposableDateString,
+      onetime_date: disposableDateString,
       position_ids: draftTask?.position_ids?.map((p) => p.value),
     };
 
     const taskDataToEdit = {
       ...draftTask,
       task_id: draftTask?.id,
-      time_type: draftTask?.time_type.value,
+      task_type: draftTask?.task_type.value,
       week_days: draftTask?.week_days?.map((d) => d.value),
       department_id: draftTask?.department_id?.value,
       done_type: draftTask?.done_type.value,
-      disposable_date: disposableDateString,
+      onetime_date: disposableDateString,
       position_ids: draftTask?.position_ids?.map((p) => p.value),
     };
 

@@ -3,8 +3,10 @@ import styles from "./EmployeeRow.module.scss";
 import { getInitials } from "../../utils/methods/getInitials";
 import { useSelector } from "react-redux";
 import Hint from "../../ui/Hint/Hint";
+import { RingLoader } from "react-spinners";
 
 export default function EmployeeRow({
+  id,
   departments,
   firstname,
   patronymic,
@@ -22,6 +24,7 @@ export default function EmployeeRow({
     (state) => state?.departments?.departments
   );
   const allPositions = useSelector((state) => state?.positions?.positions);
+  const { loadingGetEmployee } = useSelector((state) => state?.employees);
 
   const employeeDepartmentIdsSet = new Set(departments?.map((dep) => dep.id));
   const employeePositionIdsSet = new Set(positions?.map((pos) => pos.id));
@@ -55,20 +58,30 @@ export default function EmployeeRow({
         onClick={onShowDetails}
         style={{ cursor: "pointer" }}
       >
-        <div className={styles.avatar}>{initials}</div>
+        <div className={styles.avatar}>
+          {loadingGetEmployee === id ? (
+            <RingLoader color="#fff" size={14} />
+          ) : (
+            initials
+          )}
+        </div>
         <p className={styles.nameEmp}>{fullName}</p>
       </div>
 
       <div>
-        {positionsForEmployee?.map((position, index) => {
-          const isLast = index === positionsForEmployee?.length - 1;
-          return (
-            <p key={`position-${index}`} className={styles.positionCol}>
-              {position?.name}
-              {!isLast && ", "}
-            </p>
-          );
-        })}
+        {positionsForEmployee?.length > 0 ? (
+          positionsForEmployee?.map((position, index) => {
+            const isLast = index === positionsForEmployee?.length - 1;
+            return (
+              <p key={`position-${index}`} className={styles.positionCol}>
+                {position?.title ? position?.title : "Должность не назначена"}
+                {!isLast && ", "}
+              </p>
+            );
+          })
+        ) : (
+          <p className={styles.positionCol}>Должность не назначена</p>
+        )}
       </div>
 
       <p className={styles.roleCol}>{getRoleName()}</p>
@@ -84,7 +97,7 @@ export default function EmployeeRow({
               className={styles.department}
               // Добавляем запятую и пробел, если это не последний элемент
             >
-              {department?.name}
+              {department?.title}
               {!isLast && ", "}
             </p>
           );

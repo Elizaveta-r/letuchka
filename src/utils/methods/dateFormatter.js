@@ -7,6 +7,11 @@ export function convertGoDateToISO(goDateStr) {
   return `${date}T${time}Z`; // ISO 8601
 }
 
+export const formatDateToISO = (date) => {
+  if (!date || !(date instanceof Date) || isNaN(date.getTime())) return "";
+  return date.toISOString().split("T")[0];
+};
+
 export function formatDateLocal(string) {
   const isoString = convertGoDateToISO(string);
   if (!isoString || isoString.startsWith("0001-01-01")) return "—";

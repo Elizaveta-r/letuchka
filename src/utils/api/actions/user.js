@@ -4,6 +4,7 @@ import { setLoadingCode } from "../../../store/slices/authSlice";
 import { setUser, setUser_data } from "../../../store/slices/userSlice";
 import { getPositionsList } from "./positions";
 import { getDepartmentsList } from "./departments";
+import { getIntegrationsList } from "./integrations";
 
 export const signUp = (setLoading, navigate, data) => {
   return async () => {
@@ -11,8 +12,11 @@ export const signUp = (setLoading, navigate, data) => {
     await $host
       .post("/user/registration", data)
       .then((res) => {
-        navigate("/code-verify");
-        localStorage.setItem("success_registration", "true");
+        if (res.status === 200) {
+          navigate("/code-verify");
+          sessionStorage.setItem("success_registration", "true");
+        }
+
         return res.data;
       })
       .catch((err) => {
@@ -131,6 +135,15 @@ export const signIn = (setLoading, navigate, data) => {
         localStorage.setItem("@storage_token", res.data.token);
         localStorage.removeItem("email");
         localStorage.removeItem("step");
+
+        dispatch(getIntegrationsList(1, 1)).then((res) => {
+          if (res.status === 200) {
+            if (res.data.integrations === null) {
+              localStorage.setItem("hasIntegrations", "no");
+              navigate("/create-bot");
+            }
+          }
+        });
         // получение необходимых данных для селектов
         dispatch(getPositionsList(1, 10));
         dispatch(getDepartmentsList(1, 10));

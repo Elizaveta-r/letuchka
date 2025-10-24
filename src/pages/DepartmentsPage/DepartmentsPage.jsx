@@ -70,7 +70,7 @@ export default function DepartmentsPage() {
 
   const handleCreateDepartment = (data) => {
     const dataForServer = {
-      name: data?.name,
+      title: data?.name,
       description: data?.description,
       timezone: data?.timeZone.value,
       check_in_time: data?.checkInTime,
@@ -84,13 +84,15 @@ export default function DepartmentsPage() {
   const handleUpdateDepartment = (data) => {
     const dataForServer = {
       department_id: data?.id,
-      name: data?.name,
+      title: data?.name,
       description: data?.description,
       timezone: data?.timeZone.value,
       check_in_time: data?.checkInTime,
       check_out_time: data?.checkOutTime,
       is_default: data?.is_default,
     };
+
+    console.log(dataForServer);
 
     return dispatch(updateDepartment(dataForServer));
   };
@@ -165,6 +167,7 @@ export default function DepartmentsPage() {
         title="Ваши подразделения"
         hasButton
         onClick={handleOpenCreateModal}
+        dataTour={"departments.add"}
       />
       <DeleteConfirmationModal
         isOpen={openConfirmationModal}

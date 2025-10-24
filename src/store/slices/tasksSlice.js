@@ -1,19 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialDraftTask = {
-  name: "",
-  time_type: { value: "daily", label: "Ежедневно" }, // Передаем на бек строку value
-  week_days: [],
+  title: "",
+  task_type: { value: "daily", label: "Ежедневно" }, // Передаем на бек строку value
+  week_days: [], // int
   month_days: [],
   start_time: "",
   deadline_time: "",
-  disposable_date: "", // Единоразовая дата
-  need_photo: false, // фото требуется
+  onetime_date: "", // Единоразовая дата
+  photo_need: false, // фото требуется
   photo_required: false, // фото обязательно
-  expired_notify: false, // просрочка
-  to_final_report: false, // в итоговый отчет
+  late_push: false, // просрочка
+  to_report: false, // в итоговый отчет
   done_type: "", // Тип подтверждения
-  accept_condition: "", // Критерий приемки
+  ai_prompt: "", // Критерий приемки
   department_id: "",
   position_ids: [],
 };
@@ -37,10 +37,14 @@ const initialState = {
   activeTask: sessionStorage.getItem("activeTask")
     ? JSON.parse(sessionStorage.getItem("activeTask"))
     : null,
-  sort: {
-    key: "name", // 'name', 'start_time' или другой ключ
-    order: "asc", // 'asc' (по возрастанию) или 'desc' (по убыванию)
-  },
+  // sort оставляем на будущее
+  // sort: {
+  //   key: "name",
+  //   order: "asc",
+  // },
+
+  // 🔹 Новый параметр — режим отображения
+  viewMode: localStorage.getItem("viewMode") || "full", // "full" | "short"
   taskFilters: initialTaskFilters,
   loadingTask: false,
 };
@@ -70,34 +74,39 @@ const tasksSlice = createSlice({
     resetTaskFilters(state) {
       state.taskFilters = initialTaskFilters;
     },
-    setSort(state, action) {
-      const { key, order } = action.payload;
-      state.sort.key = key;
-      state.sort.order = order;
+    // setSort(state, action) {
+    //   const { key, order } = action.payload;
+    //   state.sort.key = key;
+    //   state.sort.order = order;
+    // },
+    setViewMode(state, action) {
+      state.viewMode = action.payload; // "full" или "short"
+      localStorage.setItem("viewMode", action.payload);
     },
+
     setDraftFromEditedTask(state, action) {
       const serverTask = action.payload;
 
-      // Конвертация поля time_type
-      const timeTypeOptions = [
+      // Конвертация поля task_type
+      const taskTypeOptions = [
         { value: "daily", label: "Ежедневно" },
         { value: "weekly", label: "Еженедельно" },
         { value: "monthly", label: "Ежемесячно" },
-        { value: "disposable", label: "Единоразово" },
+        { value: "onetime", label: "Единоразово" },
       ];
-      const timeType = timeTypeOptions.find(
-        (o) => o.value === serverTask.time_type
-      ) || { value: serverTask.time_type, label: "Неизвестно" };
+      const taskType = taskTypeOptions.find(
+        (o) => o.value === serverTask.task_type
+      ) || { value: serverTask.task_type, label: "Неизвестно" };
 
       // Конвертация week_days
       const weekDaysOptions = [
-        { value: "monday", label: "Понедельник" },
-        { value: "tuesday", label: "Вторник" },
-        { value: "wednesday", label: "Среда" },
-        { value: "thursday", label: "Четверг" },
-        { value: "friday", label: "Пятница" },
-        { value: "saturday", label: "Суббота" },
-        { value: "sunday", label: "Воскресенье" },
+        { value: 1, label: "Понедельник" },
+        { value: 2, label: "Вторник" },
+        { value: 3, label: "Среда" },
+        { value: 4, label: "Четверг" },
+        { value: 5, label: "Пятница" },
+        { value: 6, label: "Суббота" },
+        { value: 7, label: "Воскресенье" },
       ];
       const weekDays = serverTask.week_days
         ? serverTask.week_days.map(
@@ -126,13 +135,6 @@ const tasksSlice = createSlice({
         ? serverTask.positions.map((p) => ({ value: p.id, label: p.name }))
         : [];
 
-      const getFormattedTime = (fullTime) => {
-        if (!fullTime || fullTime === "0000-01-01 00:00:00 +0000 UTC")
-          return "";
-        const match = fullTime.match(/(\d{2}:\d{2}):\d{2}/);
-        return match ? match[1] : "";
-      };
-
       const getFormattedDate = (dateString) => {
         if (!dateString || dateString === "0001-01-01 00:00:00 +0000 UTC")
           return "";
@@ -142,22 +144,22 @@ const tasksSlice = createSlice({
       state.draftTask = {
         ...state.draftTask,
 
-        name: serverTask.name,
-        time_type: timeType,
+        title: serverTask.title,
+        task_type: taskType,
         week_days: weekDays,
         month_days: serverTask.month_days || [],
 
-        start_time: getFormattedTime(serverTask.start_time),
-        deadline_time: getFormattedTime(serverTask.deadline_time),
-        disposable_date: getFormattedDate(serverTask.disposable_date),
+        start_time: serverTask.start_time,
+        deadline_time: serverTask.deadline_time,
+        onetime_date: getFormattedDate(serverTask.onetime_date),
 
-        isPhotoRequired: serverTask.need_photo,
-        isPhotoMandatory: serverTask.photo_required,
-        isNotification: serverTask.expired_notify, // Предполагаем обратное соответствие
-        isReport: serverTask.to_final_report, // Предполагаем обратное соответствие
+        photo_need: serverTask.photo_need,
+        photo_required: serverTask.photo_required,
+        late_push: serverTask.late_push, // Предполагаем обратное соответствие
+        to_report: serverTask.to_report, // Предполагаем обратное соответствие
 
         done_type: doneType,
-        accept_condition: serverTask.accept_condition,
+        ai_prompt: serverTask.ai_prompt,
 
         department_id: department,
         position_ids: positionIds,
@@ -179,10 +181,10 @@ const tasksSlice = createSlice({
       state.draftTask = { ...initialDraftTask, ...action.payload };
     },
     setDraftName(state, action) {
-      state.draftTask.name = action.payload;
+      state.draftTask.title = action.payload;
     },
     setTimeType(state, action) {
-      state.draftTask.time_type = action.payload;
+      state.draftTask.task_type = action.payload;
     },
     setWeekDays(state, action) {
       state.draftTask.week_days = action.payload;
@@ -197,25 +199,25 @@ const tasksSlice = createSlice({
       state.draftTask.deadline_time = action.payload;
     },
     setDisposableDate(state, action) {
-      state.draftTask.disposable_date = action.payload;
+      state.draftTask.onetime_date = action.payload;
     },
     setNeedPhoto(state, action) {
-      state.draftTask.need_photo = action.payload;
+      state.draftTask.photo_need = action.payload;
     },
     setPhotoRequired(state, action) {
       state.draftTask.photo_required = action.payload;
     },
     setExpiredNotify(state, action) {
-      state.draftTask.expired_notify = action.payload;
+      state.draftTask.late_push = action.payload;
     },
     setToFinalReport(state, action) {
-      state.draftTask.to_final_report = action.payload;
+      state.draftTask.to_report = action.payload;
     },
     setDoneType(state, action) {
       state.draftTask.done_type = action.payload;
     },
     setAcceptCondition(state, action) {
-      state.draftTask.accept_condition = action.payload;
+      state.draftTask.ai_prompt = action.payload;
     },
     setDepartmentId(state, action) {
       state.draftTask.department_id = action.payload;
@@ -251,6 +253,7 @@ export const {
   setLoadingTask,
   setTaskFilters,
   setSort,
+  setViewMode,
   setDraftFromEditedTask,
   setDepartmentIdToDraft,
   setTasks,

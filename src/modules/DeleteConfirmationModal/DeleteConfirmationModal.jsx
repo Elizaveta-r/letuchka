@@ -36,7 +36,7 @@ export default function DeleteConfirmationModal({
               <AlertTriangle size={48} className={styles.warningIcon} />
             </div>
 
-            <p className={styles.message}>{message}</p>
+            <div className={styles.message}>{message}</div>
 
             <div className={styles.actions}>
               {/* Кнопка "Отмена" (второстепенная, использует стиль из карточки) */}

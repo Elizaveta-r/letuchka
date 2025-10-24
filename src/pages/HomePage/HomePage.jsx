@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CheckCircle, // Выполнено
   Clock, // Просрочено
@@ -6,7 +6,8 @@ import {
   TrendingUp, // График
   ArrowRight, // Быстрые ссылки
   XCircle,
-  ThumbsUp, // Провалено
+  ThumbsUp,
+  ChevronDown, // Провалено
 } from "lucide-react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import styles from "./HomePage.module.scss";
@@ -21,63 +22,19 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useMediaQuery } from "react-responsive";
+import { getDashboard } from "../../utils/api/actions/dashboard";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getEmployeeWithHistory } from "../../utils/api/actions/employees";
+import { getTaskById } from "../../utils/api/actions/tasks";
 
 // ======================================================================
 // МОКОВЫЕ ДАННЫЕ
 // ======================================================================
 
-const kpiData = {
-  tasksCompleted: 85,
-  tasksOverdue: 7,
-  aiChecksOK: 110,
-  aiChecksFAIL: 15,
-  activeEmployees: 18,
-  totalEmployees: 25,
-};
-
-const chartData = [
-  { name: "Пн", Выполнено: 40, Проблемные: 4 },
-  { name: "Вт", Выполнено: 55, Проблемные: 8 },
-  { name: "Ср", Выполнено: 70, Проблемные: 5 },
-  { name: "Чт", Выполнено: 85, Проблемные: 10 },
-  { name: "Пт", Выполнено: 90, Проблемные: 6 },
-  { name: "Сб", Выполнено: 35, Проблемные: 2 },
-  { name: "Вс", Выполнено: 30, Проблемные: 1 },
-];
-
-const problematicTasks = [
-  {
-    id: 101,
-    task: "Прием рабочего места",
-    employee: "Иван Иванов",
-    status: { name: "FAIL", value: "Просрочена" },
-    time: "10:30",
-  },
-  {
-    id: 102,
-    task: "Выслать списания в чат",
-    employee: "Ольга Петрова",
-    status: { name: "LATE", value: "С опозданием" },
-    time: "08:58",
-  },
-  {
-    id: 103,
-    task: "Подготовка зоны выдачи",
-    employee: "Светлана Кузнецова",
-    status: { name: "FAIL", value: "Просрочена" },
-    time: "09:00",
-  },
-  {
-    id: 104,
-    task: "Чистота мойки",
-    employee: "Иван Иванов",
-    status: { name: "LATE", value: "С опозданием" },
-    time: "08:58",
-  },
-];
-
 const quickLinks = [
   { title: "Список сотрудников", path: "/employees" },
+  { title: "Создать задачу", path: "/tasks/new" },
   { title: "Создать должность", path: "/positions?action=create" },
   { title: "Аналитические отчеты", path: "/reports" },
 ];
@@ -119,51 +76,154 @@ const KpiCardMobile = ({ title, value, icon, colorClass }) => {
 };
 
 // ======================================================================
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// ======================================================================
+
+const formatChartData = (data) => {
+  const dayMap = {
+    Monday: "Пн",
+    Tuesday: "Вт",
+    Wednesday: "Ср",
+    Thursday: "Чт",
+    Friday: "Пт",
+    Saturday: "Сб",
+    Sunday: "Вс",
+  };
+
+  // Все дни недели, чтобы в графике были даже пустые
+  const weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+  // Базовая структура: все дни с нулями
+  const result = weekDays.map((day) => ({
+    name: day,
+    Выполнено: 0,
+    Проблемные: 0,
+  }));
+
+  if (!Array.isArray(data)) return result;
+
+  // Группируем данные по дню недели
+  data.forEach((item) => {
+    const name = dayMap[item.weekday] || item.weekday;
+
+    const found = result.find((d) => d.name === name);
+    if (!found) return;
+
+    if (item.is_done) {
+      found.Выполнено += 1;
+    } else {
+      found.Проблемные += 1;
+    }
+  });
+
+  return result;
+};
+
+const getStatusLabel = (status) => {
+  switch (status) {
+    case "late":
+      return "C опозданием";
+    case "not_done":
+      return "Не выполнено";
+    default:
+      return;
+  }
+};
+
+// ======================================================================
 // ГЛАВНЫЙ КОМПОНЕНТ ДАШБОРДА
 // ======================================================================
 
 export default function HomePage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [scrollPosition, setScrollPosition] = useState("top"); // 'top', 'middle', 'bottom'
+  const tableRef = useRef(null);
+
+  const {
+    ai_success_rate,
+    checked_in_count,
+    day_stats,
+    done_tasks,
+    employees_count,
+    need_attention,
+    not_done_tasks,
+  } = useSelector((state) => state.dashboard);
+
   const isMobile = useMediaQuery({
     query: "(max-width: 1023px)",
   });
-  const totalAIChecks = kpiData.aiChecksOK + kpiData.aiChecksFAIL;
 
-  const aiSuccessRate = totalAIChecks
-    ? Math.round((kpiData.aiChecksOK / totalAIChecks) * 100)
-    : 0;
+  const employeeProgress = (checked_in_count / employees_count) * 100;
 
-  const employeeProgress =
-    (kpiData.activeEmployees / kpiData.totalEmployees) * 100;
+  const chartData = useMemo(() => formatChartData(day_stats), [day_stats]);
+
+  const goToEmployee = (id) => {
+    dispatch(getEmployeeWithHistory(id, 1, 1000)).then((res) => {
+      if (res.status === 200) {
+        navigate("/employees/" + id);
+      }
+    });
+  };
+
+  const goToTask = (id) => {
+    dispatch(getTaskById(id, 1, 1000)).then((res) => {
+      if (res.status === 200) {
+        navigate("/tasks/" + id);
+      }
+    });
+  };
+
+  const handleScroll = (e) => {
+    const element = e.currentTarget;
+    const { scrollTop, scrollHeight, clientHeight } = element;
+
+    if (scrollTop === 0) {
+      setScrollPosition("top");
+    } else if (Math.abs(scrollHeight - scrollTop - clientHeight) < 5) {
+      setScrollPosition("bottom");
+    } else {
+      setScrollPosition("middle");
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getDashboard());
+  }, [dispatch]);
 
   return (
     <div className={styles.dashboardPage}>
-      <PageTitle title={"Дашборд"} />
+      <PageTitle
+        title={"Дашборд"}
+        hint={"Информация отображается за текущий день"}
+      />
 
       {/* 1. СВОДКА KPI (ВЕРХНИЙ БЛОК) */}
       <div className={styles.kpiGrid}>
         <KpiCard
-          title="Выполнено задач (сегодня)"
-          value={kpiData.tasksCompleted}
+          title="Задач выполнено"
+          value={done_tasks}
           icon={CheckCircle}
           colorClass="green"
         />
         <KpiCard
-          title="Просрочено"
-          value={kpiData.tasksOverdue}
+          title="Задач не выполнено"
+          value={not_done_tasks}
           icon={Clock}
           colorClass="red"
         />
         {isMobile ? (
           <KpiCardMobile
             title="Успешность AI-проверок"
-            value={`${aiSuccessRate}%`}
+            value={`${Number(ai_success_rate.toFixed(0))}%`}
             icon={ThumbsUp}
             colorClass="gradient"
           />
         ) : (
           <KpiCard
             title="Успешность AI-проверок"
-            value={`${aiSuccessRate}%`}
+            value={`${Number(ai_success_rate.toFixed(0))}%`}
             icon={ThumbsUp}
             colorClass="gradient"
           />
@@ -172,9 +232,11 @@ export default function HomePage() {
         <div className={`${styles.kpiCard} ${styles.blue}`}>
           <div className={styles.content}>
             <span className={styles.kpiValue}>
-              {kpiData.activeEmployees} из {kpiData.totalEmployees}
+              {checked_in_count} из {employees_count}
             </span>
-            <span className={styles.kpiTitle}>Активных сотрудников</span>
+            <span className={styles.kpiTitle}>
+              Сотрудников на рабочем месте
+            </span>
           </div>
           <div className={styles.progressBar}>
             <div
@@ -191,42 +253,78 @@ export default function HomePage() {
         <div className={styles.problemTasksSection}>
           <h2 className={styles.sectionTitle}>
             <AlertTriangle size={20} className={styles.alertIcon} />
-            Требуется внимание ({problematicTasks.length})
+            Требуется внимание (
+            {need_attention?.length ? need_attention?.length : 0})
           </h2>
 
-          <div className={styles.tasksTable}>
-            {/* Заголовки */}
-            <div className={`${styles.taskRow} ${styles.headerRow}`}>
+          <div className={styles.tableWrapper}>
+            {/* Заголовки вынесены отдельно для sticky */}
+            <div className={styles.tableHeader}>
               <span>Задача</span>
               <span>Сотрудник</span>
-              <span className={`${styles.statusCell} ${styles.title}`}>
-                Статус
-              </span>
-              <span className={`${styles.timeCell} ${styles.title}`}>
-                Время
-              </span>
+              <span>Статус</span>
             </div>
 
-            {/* Строки данных */}
-            {problematicTasks?.map((task) => (
-              <div key={task.id} className={styles.taskRow}>
-                <span className={styles.taskName}>{task.task}</span>
-                <span className={styles.employeeName}>{task.employee}</span>
-                <span
-                  className={`${styles.statusCell} ${
-                    styles[task.status.name.toLowerCase()]
-                  }`}
-                >
-                  {task.status.name === "FAIL" ? (
-                    <XCircle size={14} />
-                  ) : (
-                    <Clock size={14} />
-                  )}
-                  {task.status.value}
-                </span>
-                <span className={styles.timeCell}>{task.time}</span>
+            <div
+              className={styles.tasksTable}
+              ref={tableRef}
+              onScroll={handleScroll}
+            >
+              {/* Строки данных */}
+              {need_attention &&
+                need_attention?.map((task) => (
+                  <div key={task.id} className={styles.taskRow}>
+                    <span
+                      className={styles.taskName}
+                      onClick={() => goToTask(task.task_id)}
+                    >
+                      {task.task_title}
+                    </span>
+                    <span
+                      className={styles.employeeName}
+                      onClick={() => goToEmployee(task.employee_id)}
+                    >
+                      {task.employee_name}
+                    </span>
+                    <span
+                      className={`${styles.statusCell} ${
+                        styles[task.task_status_type.toLowerCase()]
+                      }`}
+                    >
+                      {task.task_status_type === "not_done" ? (
+                        <XCircle size={14} />
+                      ) : (
+                        <Clock size={14} />
+                      )}
+                      {getStatusLabel(task.task_status_type)}
+                    </span>
+                  </div>
+                ))}
+            </div>
+
+            {need_attention?.length > 5 && (
+              <div
+                className={`${styles.scrollIndicator} ${
+                  scrollPosition === "bottom"
+                    ? styles.scrollUp
+                    : styles.scrollDown
+                }`}
+                onClick={() => {
+                  if (tableRef.current) {
+                    const scrollTo =
+                      scrollPosition === "top"
+                        ? tableRef.current.scrollHeight
+                        : 0;
+                    tableRef.current.scrollTo({
+                      top: scrollTo,
+                      behavior: "smooth",
+                    });
+                  }
+                }}
+              >
+                <ChevronDown size={28} strokeWidth={3} />
               </div>
-            ))}
+            )}
           </div>
         </div>
 
@@ -243,20 +341,13 @@ export default function HomePage() {
                   data={chartData}
                   margin={{ top: 10, right: 10, left: -2, bottom: 5 }}
                 >
-                  {/* Легкая, сдержанная сетка */}
                   <CartesianGrid
                     strokeDasharray="3 3"
                     stroke="#f0f0f0"
                     vertical={false}
                   />
-
-                  {/* Ось X (Дни недели) */}
                   <XAxis dataKey="name" stroke="#a0a0a0" tickLine={false} />
-
-                  {/* Ось Y (Значения) - без меток для чистоты */}
-                  <YAxis hide={true} />
-
-                  {/* Tooltip (подсказка при наведении) - кастомизация стилей */}
+                  <YAxis hide />
                   <Tooltip
                     contentStyle={{
                       borderRadius: "8px",
@@ -265,14 +356,10 @@ export default function HomePage() {
                     }}
                     labelStyle={{ fontWeight: "bold", color: "#1f2937" }}
                   />
-
-                  {/* Легенда */}
                   <Legend
                     wrapperStyle={{ paddingTop: "10px" }}
                     iconType="circle"
                   />
-
-                  {/* Столбцы */}
                   <Bar
                     dataKey="Выполнено"
                     fill="#16a34a"

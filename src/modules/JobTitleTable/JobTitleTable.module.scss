@@ -97,14 +97,14 @@ tr {
   font-weight: 600;
   color: v.$color-text-main;
   max-width: 250px;
-  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .jobDescription {
   color: v.$color-text-light;
   font-style: italic;
   max-width: 350px;
-  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .employeeCell {
@@ -175,9 +175,10 @@ tr {
   font-size: 16px;
   text-align: center;
   color: v.$color-text-light;
-  padding: 40px !important;
+  padding: 72px !important;
   background-color: v.$color-white !important;
   border-radius: 8px;
   margin-top: 20px;
+  font-weight: 400;
   box-shadow: none !important;
 }

@@ -1,7 +1,6 @@
 import PageTitle from "../../components/PageTitle/PageTitle";
 import styles from "./EmployeePage.module.scss";
 import { useEffect, useState } from "react";
-import EditEmployeeModal from "../../modules/EditEmployeeModal/EditEmployeeModal";
 import EmployeeRow from "../../components/EmployeeRow/EmployeeRow";
 import EmployeeRowHeader from "../../modules/EmployeeRowHeader/EmployeeRowHeader";
 import { useNavigate } from "react-router-dom";
@@ -9,23 +8,20 @@ import DeleteConfirmationModal from "../../modules/DeleteConfirmationModal/Delet
 import EmployeeContactModal from "../../modules/EmployeeContactModal/EmployeeContactModal";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  createEmployee,
   deleteEmployee,
   getEmployeesList,
   getEmployeeWithHistory,
-  updateEmployee,
 } from "../../utils/api/actions/employees";
-import { setLoadingGetEmployee } from "../../store/slices/employeesSlice";
+import { setEditedEmployee } from "../../store/slices/employeesSlice";
 
 export default function EmployeePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { employees } = useSelector((state) => state?.employees);
+  const { editedEmployee, employees } = useSelector(
+    (state) => state?.employees
+  );
 
-  const [isNewEmployee, setIsNewEmployee] = useState(false);
-  const [editedEmployee, setEditedEmployee] = useState(null);
-  const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
   const [visibleConfirmDeleteModal, setVisibleConfirmDeleteModal] =
     useState(false);
   const [visibleContactModal, setVisibleContactModal] = useState(false);
@@ -33,25 +29,18 @@ export default function EmployeePage() {
   const fullName = `${editedEmployee?.surname} ${editedEmployee?.firstname} ${editedEmployee?.patronymic}`;
 
   const handleOpenNewEmployeeModal = () => {
-    setIsNewEmployee(true);
-    setEditedEmployee(null);
-    setIsEmployeeModalOpen(true);
+    dispatch(setEditedEmployee(null));
+    navigate("new");
   };
 
   const handleOpenEmployeeModal = (employee) => {
-    setIsNewEmployee(false);
-    setEditedEmployee(employee);
-    setIsEmployeeModalOpen(true);
-  };
-
-  const handleCloseEmployeeModal = () => {
-    setIsNewEmployee(false);
-    setIsEmployeeModalOpen(false);
+    navigate(`${employee?.id}/update`);
+    dispatch(setEditedEmployee(employee));
   };
 
   const handleOpenConfirmDeleteModal = (employee) => {
     setVisibleConfirmDeleteModal(true);
-    setEditedEmployee(employee);
+    dispatch(setEditedEmployee(employee));
   };
 
   const handleCloseConfirmDeleteModal = () => {
@@ -59,8 +48,8 @@ export default function EmployeePage() {
   };
 
   const handleOpenContactModal = (employee) => {
-    setEditedEmployee(employee);
     setVisibleContactModal(true);
+    dispatch(setEditedEmployee(employee));
   };
 
   const handleCloseContactModal = () => {
@@ -68,20 +57,16 @@ export default function EmployeePage() {
   };
 
   const handleDetails = (id) => {
-    dispatch(setLoadingGetEmployee(id));
     dispatch(getEmployeeWithHistory(id, 1, 1000)).then((res) => {
       if (res.status === 200) {
         navigate(`${id}`);
       }
     });
-  };
-
-  const handleCreateEmployee = (data) => {
-    return dispatch(createEmployee(data));
-  };
-
-  const handleUpdateEmployee = (data) => {
-    return dispatch(updateEmployee(data));
+    // dispatch(getEmployeeById(id, 1, 1000)).then((res) => {
+    //   if (res.status === 200) {
+    //     navigate(`${id}`);
+    //   }
+    // });
   };
 
   const handleDeleteEmployee = () => {
@@ -98,17 +83,18 @@ export default function EmployeePage() {
 
   return (
     <div className={styles.pageContent}>
-      <EditEmployeeModal
+      {/* <EditEmployeeModal
         isOpen={isEmployeeModalOpen}
         isNew={isNewEmployee}
         employee={editedEmployee}
         onClose={handleCloseEmployeeModal}
         onConfirm={handleCreateEmployee}
         onUpdate={handleUpdateEmployee}
-      />
+      /> */}
       <PageTitle
         title="Ваши сотрудники"
         hasButton
+        dataTour="employees.add"
         onClick={handleOpenNewEmployeeModal}
       />
 
@@ -119,13 +105,11 @@ export default function EmployeePage() {
         message={<MessageDelete employeeName={fullName} />}
       />
 
-      {editedEmployee && (
-        <EmployeeContactModal
-          isOpen={visibleContactModal}
-          onClose={handleCloseContactModal}
-          employee={editedEmployee}
-        />
-      )}
+      <EmployeeContactModal
+        isOpen={visibleContactModal}
+        onClose={handleCloseContactModal}
+        employee={editedEmployee}
+      />
 
       <div className={styles.content}>
         {employees && <EmployeeRowHeader />}
@@ -135,6 +119,7 @@ export default function EmployeePage() {
           employees?.map((employee) => (
             <EmployeeRow
               key={employee.id}
+              checkedIn={employee.checked_in}
               {...employee}
               onShowDetails={() => handleDetails(employee.id)}
               onShowContacts={() => handleOpenContactModal(employee)}
@@ -155,10 +140,10 @@ export default function EmployeePage() {
 
 const MessageDelete = ({ employeeName }) => {
   return (
-    <>
+    <div>
       Вы уверены, что хотите <strong>удалить</strong> сотрудника <br />
       <span className={styles.employeeName}>{employeeName}</span>? <br /> Это
       действие <strong>необратимо</strong>.
-    </>
+    </div>
   );
 };

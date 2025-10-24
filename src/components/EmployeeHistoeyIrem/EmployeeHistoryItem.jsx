@@ -1,26 +1,66 @@
-import { AlertTriangle, CheckCircle, Clock, Zap } from "lucide-react";
+import {
+  AlarmClock,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  TriangleAlert,
+  Zap,
+} from "lucide-react";
 import styles from "./EmployeeHistoryItem.module.scss";
+import { getFormattedTimeZoneLabel } from "../../utils/methods/generateTimeZoneOptions";
 
-const formatDateTime = (isoString) => {
-  const date = new Date(isoString);
-  const options = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
-  return date.toLocaleString("ru-RU", options);
+const formatDateTimeString = (datePart, timePart) => {
+  // если передан один аргумент — как раньше
+  if (timePart === undefined && typeof datePart === "string") {
+    const date = new Date(datePart);
+    return date.toLocaleString("ru-RU", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  // если пришли отдельные дата и время
+  if (datePart && timePart) {
+    // безопасно собираем ISO-строку
+    const combined = `${datePart}T${
+      timePart.length === 5 ? timePart + ":00" : timePart
+    }`;
+    const date = new Date(combined);
+    if (isNaN(date.getTime())) return "-";
+
+    return date.toLocaleString("ru-RU", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  return "-";
 };
 
-export default function EmployeeHistoryItem({ item, onPhotoClick }) {
+const formatTimeToWords = (timeStr) => {
+  if (!timeStr) return "-";
+
+  const [hours, minutes] = timeStr.split(":").map(Number);
+
+  if (isNaN(hours) || isNaN(minutes)) return "-";
+
+  return `${hours} ч ${minutes} мин`;
+};
+
+export default function EmployeeHistoryItem({ timezone, item, onPhotoClick }) {
   const isDoneLate = item?.status_type === "late";
-  const isFailed = item?.status_type === "overdue";
+  const isFailed = item?.status_type === "not_done";
   const isPhotoRequired = item?.ai_comment ? true : false;
 
   const aiComment = item?.ai_comment;
 
-  const historyType = item?.history_type;
+  const historyType = item?.action_type;
 
   let Icon = CheckCircle;
   let statusClass = styles.done;
@@ -34,7 +74,7 @@ export default function EmployeeHistoryItem({ item, onPhotoClick }) {
   }
 
   // Используем дату в качестве ключа, если нет другого ID
-  const date = formatDateTime(item.done_time);
+  const date = formatDateTimeString(item.done_date, item.done_time);
 
   return (
     <div
@@ -51,21 +91,46 @@ export default function EmployeeHistoryItem({ item, onPhotoClick }) {
       <div className={styles.contentArea}>
         <div className={styles.titleRow}>
           <p className={styles.taskTitle}>
-            {historyType === "checkin"
+            {historyType === "check_in"
               ? "Чекин"
-              : historyType === "checkout"
+              : historyType === "check_out"
               ? "Чекаут"
-              : item.task_name}
+              : item.title}
           </p>
-          <span className={styles.date}>{date}</span>
+          <span className={styles.date}>
+            {date} ({getFormattedTimeZoneLabel(timezone)})
+          </span>
+        </div>
+
+        <div className={styles.deadlineContainer}>
+          <div className={styles.deadline}>
+            <AlarmClock color="#6b7280" size={12} />{" "}
+            {item?.action_type === "check_in"
+              ? "Ожидаемое время чекина"
+              : item?.action_type === "check_out"
+              ? "Ожидаемое время чекаута"
+              : "Дедлайн"}
+            : {item.deadline_time}
+          </div>
+          {item?.late_time && item?.late_time !== "00:00" && (
+            <div className={styles.late}>
+              <TriangleAlert color="#f59e0b" size={12} />
+              {item?.action_type === "check_in"
+                ? "Выполнен с опозданием на"
+                : item?.action_type === "check_out"
+                ? "Выполнен раньше на"
+                : "Выполнена с опозданием на"}
+              : {formatTimeToWords(item.late_time)}
+            </div>
+          )}
         </div>
 
         {/* 3. Детали и фидбек */}
 
-        {(item.task_condition || item.comment || item.ai_comment) && (
+        {(item.ai_prompt || item.comment || item.ai_comment) && (
           <div className={styles.feedbackSection}>
-            {item.task_condition && (
-              <p className={styles.criteria}>{item.task_condition}</p>
+            {item.ai_prompt && (
+              <p className={styles.criteria}>{item.ai_prompt}</p>
             )}
 
             {item.comment && (

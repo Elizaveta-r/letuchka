@@ -15,7 +15,8 @@ export default function TasksPage() {
   const {
     taskFilters,
     data: tasks,
-    sort,
+    // sort,
+    viewMode,
   } = useSelector((state) => state?.tasks);
 
   const { searchText, department_id, position_id } = taskFilters;
@@ -28,8 +29,8 @@ export default function TasksPage() {
     return tasks?.filter((task) => {
       const matchesSearch = normalizedSearchText
         ? [
-            task?.name,
-            task?.accept_condition,
+            task?.title,
+            task?.ai_prompt,
             task?.positions?.map((p) => p.name).join(" "),
           ]
             .filter(Boolean)
@@ -50,41 +51,41 @@ export default function TasksPage() {
     });
   }, [tasks, searchText, department_id, position_id]);
 
-  const sortedTasks = useMemo(() => {
-    if (filteredTasks.length === 0) return [];
+  // const sortedTasks = useMemo(() => {
+  //   if (filteredTasks.length === 0) return [];
 
-    // Создаем копию уже отфильтрованного массива для сортировки
-    const sortableTasks = [...filteredTasks];
-    const { key, order } = sort;
+  //   // Создаем копию уже отфильтрованного массива для сортировки
+  //   const sortableTasks = [...filteredTasks];
+  //   const { key, order } = sort;
 
-    // ... (функция compare остается без изменений) ...
-    const compare = (a, b) => {
-      let valA, valB;
+  //   // ... (функция compare остается без изменений) ...
+  //   const compare = (a, b) => {
+  //     let valA, valB;
 
-      if (key === "name") {
-        valA = a.name.toLowerCase();
-        valB = b.name.toLowerCase();
-      } else if (key === "start_time") {
-        // Извлекаем HH:mm для сравнения
-        const getTimePart = (fullTime) =>
-          fullTime?.split(" ")[1]?.substring(0, 5) || "00:00";
-        valA = getTimePart(a.start_time);
-        valB = getTimePart(b.start_time);
-      } else {
-        return 0;
-      }
+  //     if (key === "title") {
+  //       valA = a.title.toLowerCase();
+  //       valB = b.title.toLowerCase();
+  //     } else if (key === "start_time") {
+  //       // Извлекаем HH:mm для сравнения
+  //       const getTimePart = (fullTime) =>
+  //         fullTime?.split(" ")[1]?.substring(0, 5) || "00:00";
+  //       valA = getTimePart(a.start_time);
+  //       valB = getTimePart(b.start_time);
+  //     } else {
+  //       return 0;
+  //     }
 
-      if (valA < valB) {
-        return order === "asc" ? -1 : 1;
-      }
-      if (valA > valB) {
-        return order === "asc" ? 1 : -1;
-      }
-      return 0;
-    };
+  //     if (valA < valB) {
+  //       return order === "asc" ? -1 : 1;
+  //     }
+  //     if (valA > valB) {
+  //       return order === "asc" ? 1 : -1;
+  //     }
+  //     return 0;
+  //   };
 
-    return sortableTasks?.sort(compare);
-  }, [filteredTasks, sort]);
+  //   return sortableTasks?.sort(compare);
+  // }, [filteredTasks, sort]);
 
   const handleGoToNewTask = () => {
     dispatch(setIsEdit(false));
@@ -104,13 +105,17 @@ export default function TasksPage() {
         <div
           className={styles.tasksContainer}
           style={{
-            display: sortedTasks?.length === 0 ? "flex" : "grid",
-            justifyContent: sortedTasks?.length === 0 && "center",
+            display: filteredTasks?.length === 0 ? "flex" : "grid",
+            justifyContent: filteredTasks?.length === 0 && "center",
           }}
         >
-          {sortedTasks?.length > 0 ? (
-            sortedTasks?.map((task, index) => (
-              <TaskCard key={index} task={task} />
+          {filteredTasks?.length > 0 ? (
+            filteredTasks?.map((task, index) => (
+              <TaskCard
+                key={index}
+                task={task}
+                isViewShort={viewMode === "short"}
+              />
             ))
           ) : (
             <div className={styles.empty}>

@@ -18,23 +18,23 @@ const frequency = [
   { value: "daily", label: "Ежедневно" },
   { value: "weekly", label: "Еженедельно" },
   { value: "monthly", label: "Ежемесячно" },
-  { value: "disposable", label: "Единоразово" },
+  { value: "onetime", label: "Единоразово" },
 ];
 
 const weekDays = [
-  { value: "monday", label: "Понедельник" },
-  { value: "tuesday", label: "Вторник" },
-  { value: "wednesday", label: "Среда" },
-  { value: "thursday", label: "Четверг" },
-  { value: "friday", label: "Пятница" },
-  { value: "saturday", label: "Суббота" },
-  { value: "sunday", label: "Воскресенье" },
+  { value: 1, label: "Понедельник" },
+  { value: 2, label: "Вторник" },
+  { value: 3, label: "Среда" },
+  { value: 4, label: "Четверг" },
+  { value: 5, label: "Пятница" },
+  { value: 6, label: "Суббота" },
+  { value: 7, label: "Воскресенье" },
 ];
 
 export const FrequencySelector = () => {
   const dispatch = useDispatch();
 
-  const { time_type, week_days, start_time, deadline_time, disposable_date } =
+  const { task_type, week_days, start_time, deadline_time, onetime_date } =
     useSelector((state) => state?.tasks?.draftTask);
 
   return (
@@ -45,14 +45,14 @@ export const FrequencySelector = () => {
         </Hint>
         <CustomSelect
           options={frequency}
-          value={time_type}
+          value={task_type}
           onChange={(selectedOption) => dispatch(setTimeType(selectedOption))}
           placeholder="Выберите периодичность"
         />
       </div>
 
       <div className={styles.timeSection}>
-        {time_type.value === "weekly" && (
+        {task_type.value === "weekly" && (
           <div className={styles.timeSection}>
             <div className={styles.section}>
               <p className={styles.label}>Выберите дни неделни</p>
@@ -83,18 +83,18 @@ export const FrequencySelector = () => {
           </div>
         )}
 
-        {time_type.value === "monthly" && (
+        {task_type.value === "monthly" && (
           <div className={styles.section}>
             <p className={styles.label}>Выберите дни месяца</p>
             <DaysGrid />
           </div>
         )}
 
-        {time_type.value === "disposable" && (
+        {task_type.value === "onetime" && (
           <div className={styles.section}>
             <p className={styles.label}>Выберите дату выполнения</p>
             <Calendar
-              date={disposable_date}
+              date={onetime_date}
               onChange={(date) => {
                 const dateUTC = new Date(
                   Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
