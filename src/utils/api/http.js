@@ -3,9 +3,9 @@ import { store } from "../../store/store";
 import { logout } from "../../store/slices/userSlice";
 
 // export const API_URL = "http://192.168.0.121:6443/v1"; // local test home
-export const API_URL = "http://192.168.3.94:6443/v1"; // local test
+// export const API_URL = "http://192.168.3.94:6443/v1"; // local test
 // export const API_URL = "https://digital.tab-is.com:7082"; // dev
-// export const API_URL = "https://pulse.tab-is.com:6443/v1"; // prod
+export const API_URL = "https://pulse.tab-is.com:6443/v1"; // prod
 
 const $host = axios.create({
   baseURL: API_URL,
