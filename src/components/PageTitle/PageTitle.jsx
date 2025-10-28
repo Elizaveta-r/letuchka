@@ -20,7 +20,7 @@ export default function PageTitle({
   checkboxLabel,
 }) {
   const isMobile = useMediaQuery({
-    query: "(max-width: 395px)",
+    query: "(max-width: 430px)",
   });
   return (
     <div className={styles.container}>
