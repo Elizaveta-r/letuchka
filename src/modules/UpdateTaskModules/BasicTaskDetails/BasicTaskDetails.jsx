@@ -13,6 +13,7 @@ import {
 } from "../../../store/slices/tasksSlice";
 import Hint from "../../../ui/Hint/Hint";
 import { useEffect } from "react";
+import { HintWithPortal } from "../../../ui/HintWithPortal/HintWithPortal";
 
 const confirmationTypes = [
   { value: "photo", label: "Фото" },
@@ -99,7 +100,7 @@ export const BasicTaskDetails = () => {
           />
         </div>
         <div className={styles.section}>
-          <Hint
+          <HintWithPortal
             hintContent={
               <>
                 Укажите, как исполнитель будет подтверждать выполнение:{" "}
@@ -110,7 +111,7 @@ export const BasicTaskDetails = () => {
             }
           >
             <p className={styles.label}>Тип подтверждения</p>
-          </Hint>
+          </HintWithPortal>
           <CustomSelect
             placeholder="Выберите тип подтверждения"
             options={confirmationTypes}
@@ -150,7 +151,7 @@ export const BasicTaskDetails = () => {
 
       {done_type.value === "photo" && (
         <div className={styles.section}>
-          <Hint
+          <HintWithPortal
             hintContent={
               <>
                 Укажите, <b>что именно должно быть видно на фото</b>, чтобы ИИ
@@ -164,7 +165,7 @@ export const BasicTaskDetails = () => {
             }
           >
             <p className={styles.label}>Критерий приемки</p>
-          </Hint>
+          </HintWithPortal>
           <CustomTextArea
             placeholder={"Критерий приемки"}
             value={ai_prompt}

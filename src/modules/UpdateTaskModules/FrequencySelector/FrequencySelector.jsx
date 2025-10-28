@@ -3,7 +3,6 @@ import CustomSelect from "../../../ui/CustomSelect/CustomSelect";
 import DaysGrid from "../../../components/DaysGrid/DaysGrid";
 import { Calendar } from "react-date-range";
 import CustomInput from "../../../ui/CustomInput/CustomInput";
-import Hint from "../../../ui/Hint/Hint";
 import { ru } from "date-fns/locale";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,6 +12,7 @@ import {
   setTimeType,
   setWeekDays,
 } from "../../../store/slices/tasksSlice";
+import { HintWithPortal } from "../../../ui/HintWithPortal/HintWithPortal";
 
 const frequency = [
   { value: "daily", label: "Ежедневно" },
@@ -40,9 +40,9 @@ export const FrequencySelector = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.section}>
-        <Hint hintContent="Установите, как часто должна повторяться задача: каждый день, по определенным дням недели, раз в месяц или единоразово">
+        <HintWithPortal hintContent="Установите, как часто должна повторяться задача: каждый день, по определенным дням недели, раз в месяц или единоразово">
           <p className={styles.label}>Периодичность</p>
-        </Hint>
+        </HintWithPortal>
         <CustomSelect
           options={frequency}
           value={task_type}
@@ -116,9 +116,9 @@ export const FrequencySelector = () => {
         </div>
 
         <div className={styles.section}>
-          <Hint hintContent="Время, до которого должна быть выполнена задача">
+          <HintWithPortal hintContent="Время, до которого должна быть выполнена задача">
             <p className={styles.label}>Дедлайн задачи</p>
-          </Hint>
+          </HintWithPortal>
           <CustomInput
             type="time"
             name="deadline"

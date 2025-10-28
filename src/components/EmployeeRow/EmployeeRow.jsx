@@ -2,8 +2,8 @@ import { Contact, Pencil, Trash } from "lucide-react";
 import styles from "./EmployeeRow.module.scss";
 import { getInitials } from "../../utils/methods/getInitials";
 import { useSelector } from "react-redux";
-import Hint from "../../ui/Hint/Hint";
 import { RingLoader } from "react-spinners";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 
 export default function EmployeeRow({
   id,
@@ -111,7 +111,7 @@ export default function EmployeeRow({
       </div>
 
       <div className={styles.actions}>
-        <Hint
+        <HintWithPortal
           hintContent="Посмотреть контактные данные"
           hasIcon={false}
           isMaxWidth
@@ -119,17 +119,17 @@ export default function EmployeeRow({
           <div className={styles.contact} onClick={onShowContacts}>
             <Contact size={16} />
           </div>
-        </Hint>
-        <Hint hintContent="Редактировать" hasIcon={false} isMaxWidth>
+        </HintWithPortal>
+        <HintWithPortal hintContent="Редактировать" hasIcon={false} isMaxWidth>
           <div className={styles.edit} onClick={onEdit}>
             <Pencil size={16} />
           </div>{" "}
-        </Hint>
-        <Hint hintContent="Удалить" hasIcon={false} isMaxWidth>
+        </HintWithPortal>
+        <HintWithPortal hintContent="Удалить" hasIcon={false} isMaxWidth>
           <div className={styles.trash} onClick={onDelete}>
             <Trash size={16} />
           </div>{" "}
-        </Hint>
+        </HintWithPortal>
       </div>
     </div>
   );

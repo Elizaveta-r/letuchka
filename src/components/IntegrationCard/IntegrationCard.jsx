@@ -6,7 +6,7 @@ import ToggleSwitch from "../../ui/ToggleSwitch/ToggleSwitch";
 import { useState } from "react";
 import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 // eslint-disable-next-line no-unused-vars
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "framer-motion";
 import { copyToClipboard } from "../../utils/methods/copyToClipboard";
 import { toggleIntegration } from "../../store/slices/integrationsSlice";
 import { useMediaQuery } from "react-responsive";
@@ -103,7 +103,7 @@ export const IntegrationCard = ({ integration, onUpdate, onDelete }) => {
           <p className={styles.token}>
             {visibleToken
               ? integration.perpetual_token
-              : maskToken(integration.perpetual_token)}{" "}
+              : maskToken(integration.perpetual_token)}
           </p>
         ) : (
           <HintWithPortal
@@ -115,7 +115,7 @@ export const IntegrationCard = ({ integration, onUpdate, onDelete }) => {
             <p className={styles.token}>
               {visibleToken
                 ? integration.perpetual_token
-                : maskToken(integration.perpetual_token)}{" "}
+                : maskToken(integration.perpetual_token)}
             </p>
           </HintWithPortal>
         )}
@@ -137,7 +137,7 @@ export const IntegrationCard = ({ integration, onUpdate, onDelete }) => {
                   {visibleToken ? <EyeOff size={16} /> : <Eye size={16} />}
                 </motion.div>
               </AnimatePresence>
-            </div>{" "}
+            </div>
           </HintWithPortal>
           <HintWithPortal
             hasIcon={false}

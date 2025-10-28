@@ -1,4 +1,4 @@
-import Hint from "../../ui/Hint/Hint";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 import styles from "./EmployeeRowHeader.module.scss";
 
 export default function EmployeeRowHeader() {
@@ -16,9 +16,9 @@ export default function EmployeeRowHeader() {
       <p className={styles.department}>ПОДРАЗДЕЛЕНИЕ(-Я)</p>
 
       <div className={`${styles.statusIndicator}`}>
-        <Hint hintContent="Отметился ли сотрудник о приходе на работу">
+        <HintWithPortal hintContent="Отметился ли сотрудник о приходе на работу">
           <p className={styles.status}>ЧЕКИН</p>
-        </Hint>
+        </HintWithPortal>
       </div>
 
       <div className={styles.actions}>

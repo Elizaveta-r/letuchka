@@ -1,6 +1,6 @@
 import { Pencil, Trash, Users } from "lucide-react";
 import styles from "./JobTitleTable.module.scss";
-import Hint from "../../ui/Hint/Hint";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 
 const JobTitleTable = ({ positions, onEdit, onDelete }) => {
   return (
@@ -37,7 +37,7 @@ const JobTitleTable = ({ positions, onEdit, onDelete }) => {
                 {/* Кнопки действий */}
                 <td>
                   <div className={styles.actionsCell}>
-                    <Hint
+                    <HintWithPortal
                       hintContent="Редактировать"
                       hasIcon={false}
                       isMaxWidth
@@ -45,15 +45,19 @@ const JobTitleTable = ({ positions, onEdit, onDelete }) => {
                       <div className={styles.edit} onClick={() => onEdit(job)}>
                         <Pencil size={16} />
                       </div>{" "}
-                    </Hint>
-                    <Hint hintContent="Удалить" hasIcon={false} isMaxWidth>
+                    </HintWithPortal>
+                    <HintWithPortal
+                      hintContent="Удалить"
+                      hasIcon={false}
+                      isMaxWidth
+                    >
                       <div
                         className={styles.trash}
                         onClick={() => onDelete(job.id)}
                       >
                         <Trash size={16} />
                       </div>{" "}
-                    </Hint>
+                    </HintWithPortal>
                   </div>
                 </td>
               </tr>

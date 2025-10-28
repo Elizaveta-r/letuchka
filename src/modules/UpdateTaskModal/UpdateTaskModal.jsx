@@ -6,12 +6,12 @@ import CustomSelect from "../../ui/CustomSelect/CustomSelect";
 import CustomInput from "../../ui/CustomInput/CustomInput";
 import ToggleSwitch from "../../ui/ToggleSwitch/ToggleSwitch";
 import CustomTextArea from "../../ui/CustomTextArea/CustomTextArea";
-import Hint from "../../ui/Hint/Hint";
 import DaysGrid from "../../components/DaysGrid/DaysGrid";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { ru } from "date-fns/locale";
 import { Calendar } from "react-date-range";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 
 const positions = [
   { value: "Повар", label: "Повар" },
@@ -215,9 +215,9 @@ export default function UpdateTaskModal({ isOpen, handleClose, isNew, task }) {
                 </div>
 
                 <div className={styles.section}>
-                  <Hint hintContent="Время, до которого должна быть выполнена задача">
+                  <HintWithPortal hintContent="Время, до которого должна быть выполнена задача">
                     <p className={styles.label}>Дедлайн задачи</p>
-                  </Hint>
+                  </HintWithPortal>
                   <CustomInput
                     type="time"
                     name="deadline"

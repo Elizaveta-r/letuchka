@@ -1,4 +1,4 @@
-import Hint from "../../ui/Hint/Hint";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 import styles from "./FormSectionComponent.module.scss";
 
 export const FormSectionComponent = ({
@@ -13,14 +13,14 @@ export const FormSectionComponent = ({
   return (
     <div className={styles.section} data-tour={dataTour}>
       {hintContent ? (
-        <Hint
+        <HintWithPortal
           hintContent={hintContent}
           position={hintPosition}
           hasIcon={hasHintIcon}
           isMaxWidth={isMaxWidth}
         >
           <p className={styles.label}>{label}</p>
-        </Hint>
+        </HintWithPortal>
       ) : (
         <p className={styles.label}>{label}</p>
       )}
