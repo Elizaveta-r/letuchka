@@ -11,11 +11,17 @@ import {
   deletePosition,
   getPositionsList,
 } from "../../utils/api/actions/positions";
+import { useMediaQuery } from "react-responsive";
+import { PositionsCard } from "../../components/PositionsCard/PositionsCard";
 
 export default function PositionsPage() {
   const dispatch = useDispatch();
 
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const isMobile = useMediaQuery({
+    query: "(max-width: 723px)",
+  });
 
   const { positions, loading } = useSelector((state) => state?.positions);
 
@@ -99,11 +105,35 @@ export default function PositionsPage() {
         onClick={handleOpenCreateModal}
         dataTour="positions.add"
       />
-      <JobTitleTable
-        onEdit={handleOpenUpdateModal}
-        onDelete={handleConfirmDelete}
-        positions={positions}
-      />
+      {isMobile ? (
+        positions ? (
+          <div className={styles.cardsContainer}>
+            {positions.map((position) => {
+              return (
+                <PositionsCard
+                  key={position.id}
+                  onEdit={handleOpenUpdateModal}
+                  onDelete={handleConfirmDelete}
+                  position={position}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <tr>
+            <td colSpan="4" className={styles.noData}>
+              Список должностей пуст. <br /> Нажмите <strong>"Добавить"</strong>
+              , чтобы создать первую должность.
+            </td>
+          </tr>
+        )
+      ) : (
+        <JobTitleTable
+          onEdit={handleOpenUpdateModal}
+          onDelete={handleConfirmDelete}
+          positions={positions}
+        />
+      )}
     </div>
   );
 }

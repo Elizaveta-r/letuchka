@@ -13,6 +13,9 @@ import {
 } from "../../utils/api/actions/employees";
 import CustomSelect from "../../ui/CustomSelect/CustomSelect";
 import { RingLoader } from "react-spinners";
+import { useMediaQuery } from "react-responsive";
+import EmployeeHistoryItemMobile from "../../components/EmployeeHistoeyIremMobile/EmployeeHistoryItemMobile";
+import { useNavigate } from "react-router-dom";
 
 const getTodayRange = () => [
   {
@@ -37,9 +40,15 @@ const DEFAULT_EMPLOYEE_ID = 0;
 
 export default function ReportsPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { employeesWithHistory, employee, loadingGetEmployee } = useSelector(
     (state) => state.employees
   );
+
+  const isMobile = useMediaQuery({
+    query: "(max-width: 576px)",
+  });
 
   const [modalPhotoUrl, setModalPhotoUrl] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -140,6 +149,14 @@ export default function ReportsPage() {
   }, [dateRange]);
 
   const showDateFilter = currentEmployeeValue?.label !== "Все сотрудники";
+
+  const handleGoToEmployee = (id) => {
+    dispatch(getEmployeeWithHistory(id, 1, 100)).then((res) => {
+      if (res.status === 200) {
+        navigate(`/employees/${id}`);
+      }
+    });
+  };
 
   // 🔹 Готовим данные для рендера
   const renderedEmployees = useMemo(() => {
@@ -257,19 +274,31 @@ export default function ReportsPage() {
           {renderedEmployees?.length > 0 ? (
             renderedEmployees.map((employee) => (
               <div className={styles.employees} key={employee.id}>
-                <p className={styles.title}>
+                <p
+                  className={styles.title}
+                  onClick={() => handleGoToEmployee(employee.id)}
+                >
                   {`${employee.surname} ${employee.firstname} ${employee.patronymic}`}
                 </p>
 
                 <div className={styles.employeeGrid}>
-                  {employee.filteredHistory.map((history, index) => (
-                    <EmployeeHistoryItem
-                      key={`${employee.id}-${history.id || index}`}
-                      item={history}
-                      timezone={employee.timezone}
-                      onPhotoClick={handleOpenPhotoModal}
-                    />
-                  ))}
+                  {employee.filteredHistory.map((history, index) =>
+                    isMobile ? (
+                      <EmployeeHistoryItemMobile
+                        key={`${employee.id}-${history.id || index}`}
+                        item={history}
+                        timezone={employee.timezone}
+                        onPhotoClick={handleOpenPhotoModal}
+                      />
+                    ) : (
+                      <EmployeeHistoryItem
+                        key={`${employee.id}-${history.id || index}`}
+                        item={history}
+                        timezone={employee.timezone}
+                        onPhotoClick={handleOpenPhotoModal}
+                      />
+                    )
+                  )}
 
                   {selectedEmployeeId !== DEFAULT_EMPLOYEE_ID &&
                     employee.filteredHistory.length >= 100 && (

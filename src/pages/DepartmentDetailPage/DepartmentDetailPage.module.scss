@@ -13,6 +13,10 @@
 
 .content {
   margin-top: 24px;
+
+  @media screen and (max-width: 553px) {
+    margin-top: 15px;
+  }
 }
 
 .desc {
@@ -22,6 +26,10 @@
   padding-bottom: 24px;
   border-bottom: 1px solid v.$color-border;
   text-align: left;
+
+  @media screen and (max-width: 553px) {
+    font-size: 0.9rem;
+  }
 }
 
 .title {
@@ -32,16 +40,29 @@
   border-left: 4px solid v.$color-primary;
   padding-left: 12px;
   text-align: left;
+
+  @media screen and (max-width: 553px) {
+    font-size: 1rem;
+  }
 }
 
 .details {
   margin-bottom: 40px;
+
+  @media screen and (max-width: 553px) {
+    margin-bottom: 20px;
+  }
 }
 
 .detailsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
+
+  @media screen and (max-width: 553px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
 }
 
 .gridItem {
@@ -68,16 +89,28 @@
   color: v.$color-text-light;
   margin-bottom: 4px;
   margin: 0;
+
+  @media screen and (max-width: 553px) {
+    font-size: 0.8rem;
+  }
 }
 
 .time {
   font-size: 1.4rem;
   font-weight: 700;
   color: v.$color-primary;
+
+  @media screen and (max-width: 553px) {
+    font-size: 1.1rem;
+  }
 }
 
 .employees {
   margin-bottom: 40px;
+
+  @media screen and (max-width: 553px) {
+    margin-bottom: 20px;
+  }
 }
 
 .employeeGrid {
@@ -99,6 +132,17 @@
   &:hover {
     background-color: #fcfdfe;
   }
+
+  @media screen and (max-width: 553px) {
+    flex-direction: column;
+  }
+}
+
+.nameCell {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .nameEmp {
@@ -115,6 +159,11 @@
   width: 200px;
   text-align: left;
   padding-right: 20px;
+
+  @media screen and (max-width: 553px) {
+    width: 100%;
+    padding: 0;
+  }
 }
 
 .avatar {
@@ -147,6 +196,13 @@
   display: flex;
   gap: 10px;
   justify-self: end;
+
+  @media screen and (max-width: 553px) {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
 }
 
 .contact,
@@ -168,6 +224,10 @@
 
   &:active {
     transform: scale(0.95);
+  }
+
+  @media screen and (max-width: 553px) {
+    width: 100%;
   }
 }
 

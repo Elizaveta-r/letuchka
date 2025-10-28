@@ -1,6 +1,8 @@
 import { Plus } from "lucide-react";
 import { Button } from "../../ui/Button/Button";
 import styles from "./PageTitle.module.scss";
+import { useMediaQuery } from "react-responsive";
+import { CustomCheckbox } from "../../ui/CustomCheckbox/CustomCheckbox";
 
 export default function PageTitle({
   dataTour,
@@ -12,12 +14,19 @@ export default function PageTitle({
   onClick,
   buttonTitle = "Добавить",
   hint,
+  hasCheckbox,
+  checked,
+  onChange,
+  checkboxLabel,
 }) {
+  const isMobile = useMediaQuery({
+    query: "(max-width: 395px)",
+  });
   return (
     <div className={styles.container}>
       <div className={styles.title} id={id}>
         {title}
-        <p className={styles.info}>{hint}</p>
+        {hint && <p className={styles.info}>{hint}</p>}
       </div>
       {hasButton && (
         <Button
@@ -25,8 +34,16 @@ export default function PageTitle({
           id={btnId}
           secondary
           leftIcon={leftIcon}
-          title={buttonTitle}
+          title={isMobile ? "" : buttonTitle}
           onClick={onClick}
+          className={styles.button}
+        />
+      )}
+      {hasCheckbox && (
+        <CustomCheckbox
+          checked={checked}
+          onChange={onChange}
+          label={checkboxLabel}
         />
       )}
     </div>

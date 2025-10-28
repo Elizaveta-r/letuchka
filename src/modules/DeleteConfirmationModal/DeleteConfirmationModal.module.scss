@@ -23,6 +23,10 @@
   line-height: 1.5;
   margin-bottom: 30px;
   white-space: pre-line;
+
+  @media screen and (max-width: 767px) {
+    font-size: 0.9rem;
+  }
 }
 
 .employeeName {
@@ -51,6 +55,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+
+  @media screen and (max-width: 767px) {
+    font-size: 0.9rem;
+  }
 }
 
 .buttonCancel {

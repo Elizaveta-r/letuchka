@@ -19,6 +19,7 @@ import {
   updateEmployee,
 } from "../../utils/api/actions/employees";
 import { useNavigate } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 
 const displayedRole = (role) => {
   switch (role) {
@@ -34,6 +35,10 @@ const displayedRole = (role) => {
 export default function EmployeeDetailsCard({ employee }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const isMobile = useMediaQuery({
+    query: "(max-width: 620px)",
+  });
 
   const [visibleConfirmDeleteModal, setVisibleConfirmDeleteModal] =
     useState(false);
@@ -168,23 +173,19 @@ export default function EmployeeDetailsCard({ employee }) {
       </div>
 
       {/* Кнопки действий */}
-      <div className={styles.actions}>
-        <button
-          className={styles.contactButton}
-          onClick={handleOpenContactModal}
-        >
-          <Contact size={18} /> Контактные данные
-        </button>
-        <button className={styles.editButton} onClick={handleOpenEditModal}>
-          <Pencil size={18} /> Редактировать
-        </button>
-        <button
-          className={styles.deleteButton}
-          onClick={handleOpenConfirmDeleteModal}
-        >
-          <Trash size={18} /> Удалить
-        </button>
-      </div>
+      {isMobile ? (
+        <ActionsMobile
+          handleOpenContactModal={handleOpenContactModal}
+          handleOpenEditModal={handleOpenEditModal}
+          handleOpenConfirmDeleteModal={handleOpenConfirmDeleteModal}
+        />
+      ) : (
+        <Actions
+          handleOpenContactModal={handleOpenContactModal}
+          handleOpenEditModal={handleOpenEditModal}
+          handleOpenConfirmDeleteModal={handleOpenConfirmDeleteModal}
+        />
+      )}
     </div>
   );
 }
@@ -196,5 +197,58 @@ const MessageDelete = ({ employeeName }) => {
       <span className={styles.employeeName}>{employeeName}</span>? <br /> Это
       действие <strong>необратимо</strong>.
     </>
+  );
+};
+
+const Actions = ({
+  handleOpenContactModal,
+  handleOpenEditModal,
+  handleOpenConfirmDeleteModal,
+}) => {
+  return (
+    <div className={styles.actions}>
+      <button className={styles.contactButton} onClick={handleOpenContactModal}>
+        <Contact size={18} /> Контактные данные
+      </button>
+      <button className={styles.editButton} onClick={handleOpenEditModal}>
+        <Pencil size={18} /> Редактировать
+      </button>
+      <button
+        className={styles.deleteButton}
+        onClick={handleOpenConfirmDeleteModal}
+      >
+        <Trash size={18} /> Удалить
+      </button>
+    </div>
+  );
+};
+
+const ActionsMobile = ({
+  handleOpenContactModal,
+  handleOpenEditModal,
+  handleOpenConfirmDeleteModal,
+}) => {
+  const isSmallScreen = useMediaQuery({
+    query: "(max-width: 400px)",
+  });
+
+  return (
+    <div className={styles.actions}>
+      <button className={styles.contactButton} onClick={handleOpenContactModal}>
+        <Contact size={isSmallScreen ? 14 : 18} /> Контактные данные
+      </button>
+      <div className={styles.editDelete}>
+        <button className={styles.editButton} onClick={handleOpenEditModal}>
+          <Pencil size={isSmallScreen ? 14 : 18} />{" "}
+          {isSmallScreen ? "Изменить" : "Редактировать"}
+        </button>
+        <button
+          className={styles.deleteButton}
+          onClick={handleOpenConfirmDeleteModal}
+        >
+          <Trash size={isSmallScreen ? 14 : 18} /> Удалить
+        </button>
+      </div>
+    </div>
   );
 };

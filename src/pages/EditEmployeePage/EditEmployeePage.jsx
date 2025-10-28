@@ -385,7 +385,6 @@ export default function EditEmployeePage() {
                 dataTourHeader="form.employee.role.header"
                 dataTourId="form.employee.role"
                 placeholder="Выберите роль..."
-                isSearchable
               />
             </div>
           </div>

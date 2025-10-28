@@ -13,10 +13,16 @@ import {
   getEmployeeWithHistory,
 } from "../../utils/api/actions/employees";
 import { setEditedEmployee } from "../../store/slices/employeesSlice";
+import { useMediaQuery } from "react-responsive";
+import { EmployeeCard } from "../../components/EmployeeCard/EmployeeCard";
 
 export default function EmployeePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const isMobile = useMediaQuery({
+    query: "(max-width: 1334px)",
+  });
 
   const { editedEmployee, employees } = useSelector(
     (state) => state?.employees
@@ -83,14 +89,6 @@ export default function EmployeePage() {
 
   return (
     <div className={styles.pageContent}>
-      {/* <EditEmployeeModal
-        isOpen={isEmployeeModalOpen}
-        isNew={isNewEmployee}
-        employee={editedEmployee}
-        onClose={handleCloseEmployeeModal}
-        onConfirm={handleCreateEmployee}
-        onUpdate={handleUpdateEmployee}
-      /> */}
       <PageTitle
         title="Ваши сотрудники"
         hasButton
@@ -112,27 +110,50 @@ export default function EmployeePage() {
       />
 
       <div className={styles.content}>
-        {employees && <EmployeeRowHeader />}
+        {employees && !isMobile && <EmployeeRowHeader />}
 
         {/* СТРОКИ ДАННЫХ */}
-        {employees ? (
-          employees?.map((employee) => (
-            <EmployeeRow
-              key={employee.id}
-              checkedIn={employee.checked_in}
-              {...employee}
-              onShowDetails={() => handleDetails(employee.id)}
-              onShowContacts={() => handleOpenContactModal(employee)}
-              onEdit={() => handleOpenEmployeeModal(employee)}
-              onDelete={() => handleOpenConfirmDeleteModal(employee)}
-            />
-          ))
-        ) : (
-          <div className={styles.empty}>
-            Список сотрудников пуст. <br /> Нажмите <strong>"Добавить"</strong>,
-            чтобы добавить первого сотрудника.
-          </div>
-        )}
+        {!isMobile &&
+          (employees ? (
+            employees?.map((employee) => (
+              <EmployeeRow
+                key={employee.id}
+                checkedIn={employee.checked_in}
+                {...employee}
+                onShowDetails={() => handleDetails(employee.id)}
+                onShowContacts={() => handleOpenContactModal(employee)}
+                onEdit={() => handleOpenEmployeeModal(employee)}
+                onDelete={() => handleOpenConfirmDeleteModal(employee)}
+              />
+            ))
+          ) : (
+            <div className={styles.empty}>
+              Список сотрудников пуст. <br /> Нажмите{" "}
+              <strong>"Добавить"</strong>, чтобы добавить первого сотрудника.
+            </div>
+          ))}
+
+        {isMobile &&
+          (employees ? (
+            <div className={styles.mobileCards}>
+              {employees?.map((employee) => (
+                <EmployeeCard
+                  key={employee.id}
+                  checkedIn={employee.checked_in}
+                  {...employee}
+                  onShowDetails={() => handleDetails(employee.id)}
+                  onShowContacts={() => handleOpenContactModal(employee)}
+                  onEdit={() => handleOpenEmployeeModal(employee)}
+                  onDelete={() => handleOpenConfirmDeleteModal(employee)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className={styles.empty}>
+              Список сотрудников пуст. <br /> Нажмите{" "}
+              <strong>"Добавить"</strong>, чтобы добавить первого сотрудника.
+            </div>
+          ))}
       </div>
     </div>
   );

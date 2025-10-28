@@ -17,6 +17,10 @@
     display: grid;
     grid-template-columns: 2.5fr auto;
     gap: 15px;
+
+    @media screen and (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
   }
 }
 
@@ -103,6 +107,7 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 14px;
 }
 
 .resetFilterButton {
@@ -116,6 +121,7 @@
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s;
+  font-size: 14px;
 
   &:hover {
     background-color: v.$color-bg-light;
@@ -141,6 +147,11 @@
   border-left: 4px solid v.$color-primary;
   padding-left: 12px;
   text-align: left;
+  cursor: pointer;
+
+  @media screen and (max-width: 767px) {
+    font-size: 1.1rem;
+  }
 }
 
 .employeeGrid {

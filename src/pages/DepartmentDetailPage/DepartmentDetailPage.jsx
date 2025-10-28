@@ -22,10 +22,16 @@ import {
   updateEmployee,
 } from "../../utils/api/actions/employees";
 import { RingLoader } from "react-spinners";
+import { useMediaQuery } from "react-responsive";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 
 export default function DepartmentDetailPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const isMobile = useMediaQuery({
+    query: "(max-width: 553px)",
+  });
 
   const { id } = useParams();
 
@@ -109,15 +115,21 @@ export default function DepartmentDetailPage() {
 
   return (
     <div className={styles.pageContent}>
-      <PageTitle title={department?.title} />
+      <PageTitle
+        title={department?.title}
+        hasCheckbox
+        checked={department.is_default}
+        onChange={handleIsDefaultChange}
+        checkboxLabel={"Использовать по умолчанию"}
+      />
 
-      <div className={styles.isDefault}>
+      {/* <div className={styles.isDefault}>
         <CustomCheckbox
           checked={department.is_default}
           onChange={handleIsDefaultChange}
           label={"Использовать по умолчанию"}
         />
-      </div>
+      </div> */}
 
       <EditEmployeeModal
         isOpen={visibleUpdateModal}
@@ -177,18 +189,31 @@ export default function DepartmentDetailPage() {
           <p className={styles.title}>Руководители:</p>
           <div className={styles.employeeGrid}>
             {managers ? (
-              managers?.map((emp) => (
-                <EmployeeRow
-                  key={emp.id}
-                  name={`${emp.surname} ${emp.firstname} ${emp.patronymic}`}
-                  post={emp.positions}
-                  id={emp.id}
-                  loadingGetEmployee={loadingGetEmployee}
-                  onShowContacts={() => handleOpenContactModal(emp)}
-                  onGetDetails={() => handleGetDetails(emp.id)}
-                  onEdit={() => handleOpenUpdateModal(emp)}
-                />
-              ))
+              managers?.map((emp) =>
+                isMobile ? (
+                  <EmployeeRowMobile
+                    key={emp.id}
+                    name={`${emp.surname} ${emp.firstname} ${emp.patronymic}`}
+                    post={emp.positions}
+                    id={emp.id}
+                    loadingGetEmployee={loadingGetEmployee}
+                    onShowContacts={() => handleOpenContactModal(emp)}
+                    onGetDetails={() => handleGetDetails(emp.id)}
+                    onEdit={() => handleOpenUpdateModal(emp)}
+                  />
+                ) : (
+                  <EmployeeRow
+                    key={emp.id}
+                    name={`${emp.surname} ${emp.firstname} ${emp.patronymic}`}
+                    post={emp.positions}
+                    id={emp.id}
+                    loadingGetEmployee={loadingGetEmployee}
+                    onShowContacts={() => handleOpenContactModal(emp)}
+                    onGetDetails={() => handleGetDetails(emp.id)}
+                    onEdit={() => handleOpenUpdateModal(emp)}
+                  />
+                )
+              )
             ) : (
               <p className={styles.empty}>Нет руководителей</p>
             )}
@@ -199,18 +224,31 @@ export default function DepartmentDetailPage() {
           <p className={styles.title}>Сотрудники:</p>
           <div className={styles.employeeGrid}>
             {employees ? (
-              employees?.map((emp) => (
-                <EmployeeRow
-                  key={emp.id}
-                  name={`${emp.surname} ${emp.firstname} ${emp.patronymic}`}
-                  post={emp.positions}
-                  id={emp.id}
-                  loadingGetEmployee={loadingGetEmployee}
-                  onShowContacts={() => handleOpenContactModal(emp)}
-                  onGetDetails={() => handleGetDetails(emp.id)}
-                  onEdit={() => handleOpenUpdateModal(emp)}
-                />
-              ))
+              employees?.map((emp) =>
+                isMobile ? (
+                  <EmployeeRowMobile
+                    key={emp.id}
+                    name={`${emp.surname} ${emp.firstname} ${emp.patronymic}`}
+                    post={emp.positions}
+                    id={emp.id}
+                    loadingGetEmployee={loadingGetEmployee}
+                    onShowContacts={() => handleOpenContactModal(emp)}
+                    onGetDetails={() => handleGetDetails(emp.id)}
+                    onEdit={() => handleOpenUpdateModal(emp)}
+                  />
+                ) : (
+                  <EmployeeRow
+                    key={emp.id}
+                    name={`${emp.surname} ${emp.firstname} ${emp.patronymic}`}
+                    post={emp.positions}
+                    id={emp.id}
+                    loadingGetEmployee={loadingGetEmployee}
+                    onShowContacts={() => handleOpenContactModal(emp)}
+                    onGetDetails={() => handleGetDetails(emp.id)}
+                    onEdit={() => handleOpenUpdateModal(emp)}
+                  />
+                )
+              )
             ) : (
               <p className={styles.empty}>Нет сотрудников</p>
             )}
@@ -231,7 +269,7 @@ const EmployeeRow = ({
   loadingGetEmployee,
 }) => {
   const initials = getInitials(name);
-  const positionNames = post?.map((pos) => pos.name);
+  const positionNames = post?.map((pos) => pos.title);
   const positionsString = positionNames?.join(", ");
   return (
     <div className={styles.dataItem}>
@@ -249,7 +287,7 @@ const EmployeeRow = ({
       <p className={styles.postEmp}>{positionsString}</p>
 
       <div className={styles.actions}>
-        <Hint
+        <HintWithPortal
           hintContent="Посмотреть контактные данные"
           hasIcon={false}
           isMaxWidth
@@ -257,23 +295,63 @@ const EmployeeRow = ({
           <div className={styles.contact} onClick={onShowContacts}>
             <Contact size={16} />
           </div>
-        </Hint>
-        <Hint hintContent="Редактировать" hasIcon={false} isMaxWidth>
+        </HintWithPortal>
+        <HintWithPortal hintContent="Редактировать" hasIcon={false} isMaxWidth>
           <div className={styles.edit} onClick={onEdit}>
             <Pencil size={16} />
           </div>{" "}
-        </Hint>
+        </HintWithPortal>
       </div>
     </div>
   );
 };
 
-const MessageDelete = ({ employeeName }) => {
+const EmployeeRowMobile = ({
+  name,
+  post,
+  onEdit,
+  onShowContacts,
+  onGetDetails,
+  id,
+  loadingGetEmployee,
+}) => {
+  console.log("post, post", post);
+  const initials = getInitials(name);
+  const positionNames = post?.map((pos) => pos.title);
+  const positionsString = positionNames?.join(", ");
   return (
-    <>
-      Вы уверены, что хотите <strong>удалить</strong> сотрудника
-      <span className={styles.employeeName}> {employeeName}</span> из отдела?
-      Это действие необратимо.
-    </>
+    <div className={styles.dataItem}>
+      <div className={styles.nameCell}>
+        <div className={styles.avatar}>
+          {loadingGetEmployee === id ? (
+            <RingLoader color="#fff" size={14} />
+          ) : (
+            initials
+          )}
+        </div>
+        <p className={styles.nameEmp} onClick={onGetDetails}>
+          {name}
+        </p>
+      </div>
+
+      <p className={styles.postEmp}>{positionsString}</p>
+
+      <div className={styles.actions}>
+        <HintWithPortal
+          hintContent="Посмотреть контактные данные"
+          hasIcon={false}
+          isMaxWidth
+        >
+          <div className={styles.contact} onClick={onShowContacts}>
+            <Contact size={16} />
+          </div>
+        </HintWithPortal>
+        <HintWithPortal hintContent="Редактировать" hasIcon={false} isMaxWidth>
+          <div className={styles.edit} onClick={onEdit}>
+            <Pencil size={16} />
+          </div>{" "}
+        </HintWithPortal>
+      </div>
+    </div>
   );
 };

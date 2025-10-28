@@ -53,32 +53,28 @@ export const FrequencySelector = () => {
 
       <div className={styles.timeSection}>
         {task_type.value === "weekly" && (
-          <div className={styles.timeSection}>
-            <div className={styles.section}>
-              <p className={styles.label}>Выберите дни неделни</p>
-              <div className={styles.weekDays}>
-                {weekDays?.map((day) => (
-                  <div
-                    className={`${styles.day} ${
-                      week_days.some((d) => d.value === day.value)
-                        ? styles.selected
-                        : ""
-                    }`}
-                    key={day.value}
-                    onClick={() => {
-                      if (week_days?.includes(day)) {
-                        dispatch(
-                          setWeekDays(week_days.filter((d) => d !== day))
-                        );
-                      } else {
-                        dispatch(setWeekDays([...week_days, day]));
-                      }
-                    }}
-                  >
-                    {day.label}
-                  </div>
-                ))}
-              </div>
+          <div className={styles.section}>
+            <p className={styles.label}>Выберите дни недели</p>
+            <div className={styles.weekDays}>
+              {weekDays?.map((day) => (
+                <div
+                  className={`${styles.day} ${
+                    week_days.some((d) => d.value === day.value)
+                      ? styles.selected
+                      : ""
+                  }`}
+                  key={day.value}
+                  onClick={() => {
+                    if (week_days?.includes(day)) {
+                      dispatch(setWeekDays(week_days.filter((d) => d !== day)));
+                    } else {
+                      dispatch(setWeekDays([...week_days, day]));
+                    }
+                  }}
+                >
+                  {day.label}
+                </div>
+              ))}
             </div>
           </div>
         )}

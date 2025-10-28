@@ -10,6 +10,7 @@ export const HintWithPortal = ({
   hintContent,
   position = "top",
   hasIcon = true,
+  styleHintWrapper,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
@@ -81,9 +82,9 @@ export const HintWithPortal = ({
   );
 
   return (
-    <div className={styles.hintContainer}>
+    <div className={styles.hintContainer} style={styleHintWrapper}>
       {hasIcon ? (
-        <div className={styles.hintTarget}>
+        <div className={styles.hintTarget} style={styleHintWrapper}>
           {children}
           <div ref={triggerRef} className={styles.hintTriggerWrapper}>
             {AnimatedIcon}
@@ -93,6 +94,7 @@ export const HintWithPortal = ({
         <div
           ref={triggerRef}
           className={styles.hintTarget}
+          style={styleHintWrapper}
           onMouseEnter={() => setIsVisible(true)}
           onMouseLeave={() => setIsVisible(false)}
         >

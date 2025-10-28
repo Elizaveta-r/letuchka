@@ -193,3 +193,9 @@ ul {
   height: 10px;
   margin: 0 !important;
 }
+
+@media screen and (max-width: 1023px) {
+  .rdrMonth {
+    width: 100% !important;
+  }
+}

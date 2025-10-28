@@ -10,6 +10,16 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 8px;
+
+  @media screen and (max-width: 1439px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @media screen and (max-width: 610px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
 .empty {

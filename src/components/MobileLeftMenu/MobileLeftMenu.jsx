@@ -12,21 +12,23 @@ import {
   FileBarChart,
   Home,
   IdCardLanyard,
+  LogOut,
   Menu,
   Settings,
   X,
 } from "lucide-react";
+import { Button } from "../../ui/Button/Button";
 
 const mainMenuItems = [
+  { name: "Задачи", path: "/tasks", icon: <AlarmClockCheck size={18} /> },
+  { name: "Сотрудники", path: "/employees", icon: <IdCardLanyard size={20} /> },
   { name: "Обзор", path: "/", icon: <Home size={20} /> },
   { name: "Отчеты", path: "/reports", icon: <FileBarChart size={20} /> },
-  { name: "Интеграции", path: "/integrations", icon: <Cable size={20} /> },
-  { name: "Сотрудники", path: "/employees", icon: <IdCardLanyard size={20} /> },
 ];
 
 const burgerMenuItems = [
-  { name: "Биллинг", path: "/billing", icon: <CreditCard size={18} /> },
-  { name: "Задачи", path: "/tasks", icon: <AlarmClockCheck size={18} /> },
+  // { name: "Биллинг", path: "/billing", icon: <CreditCard size={18} /> },
+  { name: "Интеграции", path: "/integrations", icon: <Cable size={20} /> },
   { name: "Должности", path: "/positions", icon: <Briefcase size={18} /> },
   {
     name: "Подразделения",
@@ -42,7 +44,7 @@ const burgerMenuItems = [
 
 const allMenuItems = [
   { name: "Обзор", path: "/", icon: <Home size={18} /> },
-  { name: "Биллинг", path: "/billing", icon: <CreditCard size={18} /> },
+  // { name: "Биллинг", path: "/billing", icon: <CreditCard size={18} /> },
   { name: "Отчеты", path: "/reports", icon: <FileBarChart size={18} /> },
   { name: "Задачи", path: "/tasks", icon: <AlarmClockCheck size={18} /> },
   { name: "Должности", path: "/positions", icon: <Briefcase size={18} /> },
@@ -171,31 +173,45 @@ export const MobileLeftMenu = () => {
                   <X size={24} />
                 </button>
 
-                {burgerMenuItems?.map((item, index) => (
-                  <motion.div
-                    key={`burger-menu-${item.name}-${index}`}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 + 0.1 }}
-                  >
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      className={`${styles.item} ${
-                        isParentActive(item) ? styles.active : ""
-                      }`}
-                      onClick={() => handleItemClick(item)}
-                      onKeyDown={(e) => handleKey(e, item)}
+                <div className={styles.burgerItems}>
+                  {burgerMenuItems?.map((item, index) => (
+                    <motion.div
+                      key={`burger-menu-${item.name}-${index}`}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 + 0.1 }}
                     >
-                      <div className={styles.labelContainer}>
-                        {item.icon && (
-                          <div className={styles.icon}>{item.icon}</div>
-                        )}
-                        <span className={styles.label}>{item.name}</span>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        className={`${styles.item} ${
+                          isParentActive(item) ? styles.active : ""
+                        }`}
+                        onClick={() => handleItemClick(item)}
+                        onKeyDown={(e) => handleKey(e, item)}
+                      >
+                        <div className={styles.labelContainer}>
+                          {item.icon && (
+                            <div className={styles.icon}>{item.icon}</div>
+                          )}
+                          <span className={styles.label}>{item.name}</span>
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))}
+                </div>
+                <motion.div
+                  key={`burger-menu-button-logout`}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1 * 0.05 + 0.1 }}
+                >
+                  <Button
+                    title="Выйти"
+                    className={styles.logout}
+                    leftIcon={<LogOut size={16} />}
+                  />
+                </motion.div>
               </motion.nav>
             </>
           )}

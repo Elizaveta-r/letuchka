@@ -46,6 +46,23 @@
   &:hover {
     opacity: 1;
   }
+
+  @media screen and (max-width: 1023px) {
+    right: 10px;
+    top: 10px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    background: rgba(126, 126, 126, 0.5);
+
+    & svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+  }
 }
 
 @keyframes fadeIn {

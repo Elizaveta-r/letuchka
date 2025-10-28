@@ -10,6 +10,10 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 8px;
+
+  @media screen and (max-width: 320px) {
+    gap: 12px;
+  }
 }
 
 .dateCell {
@@ -17,6 +21,7 @@
   align-items: center;
   justify-content: center;
   height: 40px;
+  width: 40px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
@@ -32,5 +37,11 @@
     background-color: v.$color-primary;
     color: v.$color-white;
     border-color: v.$color-primary;
+  }
+
+  @media screen and (max-width: 320px) {
+    height: 28px;
+    width: 28px;
+    font-size: 12px;
   }
 }

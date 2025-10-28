@@ -339,7 +339,6 @@ export default function EditEmployeeModal({
                     dataTourHeader="modal.employee.role.header"
                     dataTourId="modal.employee.role"
                     placeholder="Выберите роль..."
-                    isSearchable
                   />
                 </div>
               </div>

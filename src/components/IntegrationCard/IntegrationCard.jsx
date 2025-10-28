@@ -9,6 +9,7 @@ import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 import { AnimatePresence, motion } from "motion/react";
 import { copyToClipboard } from "../../utils/methods/copyToClipboard";
 import { toggleIntegration } from "../../store/slices/integrationsSlice";
+import { useMediaQuery } from "react-responsive";
 
 const maskToken = (token) => {
   if (!token || token.length <= 6) return token; // короткие не трогаем
@@ -20,6 +21,10 @@ const maskToken = (token) => {
 
 export const IntegrationCard = ({ integration, onUpdate, onDelete }) => {
   const dispatch = useDispatch();
+
+  const isMobile = useMediaQuery({
+    query: "(max-width: 1100px)",
+  });
 
   const [isIntegrationActive] = useState(integration.is_active);
   const [visibleToken, setVisibleToken] = useState(false);
@@ -52,23 +57,41 @@ export const IntegrationCard = ({ integration, onUpdate, onDelete }) => {
 
   return (
     <div className={styles.card}>
-      {/* <div className={styles.headerAccent} /> */}
-      <div className={styles.cardIcon}>
-        <TelegramIcon size={25} fill={"#27a7e7"} />
-      </div>
+      {isMobile && <div className={styles.headerAccent} />}
+      {isMobile ? (
+        <div className={styles.cardMobile}>
+          <div className={styles.cardIcon}>
+            <TelegramIcon size={25} fill={"#27a7e7"} />
+          </div>
 
-      <div className={styles.cardHeader}>
-        <div className={styles.cardTitle}>
-          <i>
-            <p className={styles.cardName}>{integration.title}</p>
-          </i>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardTitle}>
+              <i>
+                <p className={styles.cardName}>{integration.title}</p>
+              </i>
+            </div>
+          </div>
         </div>
+      ) : (
+        <>
+          <div className={styles.cardIcon}>
+            <TelegramIcon size={25} fill={"#27a7e7"} />
+          </div>
 
-        {/* <StatusPill
+          <div className={styles.cardHeader}>
+            <div className={styles.cardTitle}>
+              <i>
+                <p className={styles.cardName}>{integration.title}</p>
+              </i>
+            </div>
+
+            {/* <StatusPill
           isActive={integration.is_active}
           className={styles.status}
         /> */}
-      </div>
+          </div>
+        </>
+      )}
 
       {/* <p className={styles.description}>
         {integration.description || "Описание отсутствует"}
@@ -76,54 +99,69 @@ export const IntegrationCard = ({ integration, onUpdate, onDelete }) => {
 
       {/* <div className={styles.cardInfo}> */}
       <div className={styles.info}>
-        <HintWithPortal hintContent="Ваш токен бота" isCentered hasIcon={false}>
+        {isMobile ? (
           <p className={styles.token}>
             {visibleToken
               ? integration.perpetual_token
               : maskToken(integration.perpetual_token)}{" "}
           </p>
-        </HintWithPortal>
-        <HintWithPortal
-          hasIcon={false}
-          hintContent={`${visibleToken ? "Скрыть" : "Показать"} токен`}
-        >
-          <div className={styles.toggleToken} onClick={handleToggleToken}>
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                className={styles.icon}
-                key={visibleToken ? "off" : "on"}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.25, ease: "easeInOut" }}
-              >
-                {visibleToken ? <EyeOff size={16} /> : <Eye size={16} />}
-              </motion.div>
-            </AnimatePresence>
-          </div>{" "}
-        </HintWithPortal>
-        <HintWithPortal
-          hasIcon={false}
-          hintContent={`Кликните, чтобы скопировать`}
-        >
-          <div
-            className={styles.toggleToken}
-            onClick={() => handleCopy(integration.perpetual_token)}
+        ) : (
+          <HintWithPortal
+            styleHintWrapper={{ width: "max-content" }}
+            hintContent="Ваш токен бота"
+            isCentered
+            hasIcon={false}
           >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                className={styles.icon}
-                key={isCopying ? "off" : "on"}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.25, ease: "easeInOut" }}
-              >
-                {isCopying ? <Check size={14} /> : <Copy size={14} />}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </HintWithPortal>
+            <p className={styles.token}>
+              {visibleToken
+                ? integration.perpetual_token
+                : maskToken(integration.perpetual_token)}{" "}
+            </p>
+          </HintWithPortal>
+        )}
+        <div className={styles.actions}>
+          <HintWithPortal
+            hasIcon={false}
+            hintContent={`${visibleToken ? "Скрыть" : "Показать"} токен`}
+          >
+            <div className={styles.toggleToken} onClick={handleToggleToken}>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  className={styles.icon}
+                  key={visibleToken ? "off" : "on"}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                >
+                  {visibleToken ? <EyeOff size={16} /> : <Eye size={16} />}
+                </motion.div>
+              </AnimatePresence>
+            </div>{" "}
+          </HintWithPortal>
+          <HintWithPortal
+            hasIcon={false}
+            hintContent={`Кликните, чтобы скопировать`}
+          >
+            <div
+              className={styles.toggleToken}
+              onClick={() => handleCopy(integration.perpetual_token)}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  className={styles.icon}
+                  key={isCopying ? "off" : "on"}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                >
+                  {isCopying ? <Check size={14} /> : <Copy size={14} />}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </HintWithPortal>
+        </div>
       </div>
       {/* <div className={styles.info}>
           <p className={styles.type}>
@@ -135,12 +173,15 @@ export const IntegrationCard = ({ integration, onUpdate, onDelete }) => {
 
       <div className={styles.cardActions}>
         <HintWithPortal
-          hasIcon={false}
-          hintContent={`${
-            isIntegrationActive ? "Выключить" : "Включить"
-          } интеграцию`}
+          hasIcon={isMobile ? true : false}
+          hintContent={
+            isMobile
+              ? `Когда бот выключен — он не получает и не отвечает на сообщения. \n\n Включите его, чтобы снова принимать обращения пользователей.`
+              : `${isIntegrationActive ? "Выключить" : "Включить"} интеграцию`
+          }
         >
           <ToggleSwitch
+            label={isMobile && (isIntegrationActive ? "Включен" : "Выключен")}
             togglePosition="left"
             checked={localActive}
             onChange={handleToggleChange}

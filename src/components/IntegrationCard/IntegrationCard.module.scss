@@ -29,6 +29,27 @@
     background-color: color.adjust(v.$color-bg-light, $lightness: 2%);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
+
+  @media screen and (max-width: 1100px) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    background: v.$color_white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid v.$color-border;
+  }
+}
+
+.cardMobile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .cardIcon {
@@ -102,6 +123,7 @@
 }
 
 .info {
+  margin: 15px 0;
   display: flex;
   justify-content: flex-start;
   // flex-direction: column;
@@ -114,6 +136,17 @@
     // padding-bottom: 12px;
     // border-bottom: 1px solid v.$color-border;
   }
+
+  @media screen and (max-width: 1100px) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .toggleToken {
@@ -142,6 +175,10 @@
       color: v.$color-primary;
     }
   }
+
+  @media screen and (max-width: 1100px) {
+    width: 100%;
+  }
 }
 
 .token {
@@ -165,6 +202,13 @@
   //   border-color: v.$color-primary;
   //   background: rgba(22, 163, 74, 0.05);
   // }
+
+  @media screen and (max-width: 1100px) {
+    word-wrap: break-word;
+    word-break: break-all;
+    font-size: 14px;
+    margin-top: 5px;
+  }
 }
 
 .icon {
@@ -197,6 +241,11 @@
   grid-template-columns: 1fr auto auto;
   gap: 8px;
   align-items: center;
+
+  @media screen and (max-width: 1100px) {
+    grid-template-columns: auto 1fr 1fr;
+    width: 100%;
+  }
 }
 
 .edit,
@@ -211,6 +260,10 @@
   transition: all 0.2s ease;
   border: 1px solid v.$color-border;
   background: v.$color_white;
+
+  @media screen and (max-width: 1100px) {
+    width: 100%;
+  }
 }
 
 .edit {
@@ -221,6 +274,10 @@
     background: v.$linear-edit-gradient;
     border-color: v.$color-info;
     transform: translateY(-1px);
+  }
+
+  @media screen and (max-width: 1100px) {
+    margin-left: 5px;
   }
 }
 

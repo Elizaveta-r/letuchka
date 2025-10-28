@@ -176,11 +176,13 @@ export default function CustomSelect({
                 key={opt.value}
                 className={styles.multiValueTag}
                 onClick={(e) => {
-                  e.stopPropagation(); // Важно!
-                  handleSelect(opt); // Удаляем этот элемент
+                  e.stopPropagation();
+                  handleSelect(opt);
                 }}
               >
-                {opt.label} <span className={styles.removeTag}>&times;</span>
+                {/* ⬇️ новый span для обрезки текста тега */}
+                <span className={styles.tagText}>{opt.label}</span>
+                <span className={styles.removeTag}>&times;</span>
               </span>
             ))}
           </div>
@@ -193,11 +195,13 @@ export default function CustomSelect({
                 : styles.placeholder
             }
           >
-            {isMulti && isValueArray && value.length === 0
-              ? placeholder
-              : value && !isMulti
-              ? value.label
-              : placeholder}
+            <span className={styles.labelText}>
+              {isMulti && isValueArray && value.length === 0
+                ? placeholder
+                : value && !isMulti
+                ? value.label
+                : placeholder}
+            </span>
           </span>
         )}
 

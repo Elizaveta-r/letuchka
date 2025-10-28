@@ -64,7 +64,7 @@ const KpiCardMobile = ({ title, value, icon, colorClass }) => {
     <div className={`${styles.kpiCard} ${styles[colorClass]}`}>
       <div className={styles.contentMobile}>
         <div className={styles.iconWrapper}>
-          <Icon size={30} />
+          <Icon size={20} />
         </div>
 
         <span className={styles.kpiValue}>{value}</span>
@@ -201,18 +201,36 @@ export default function HomePage() {
 
       {/* 1. СВОДКА KPI (ВЕРХНИЙ БЛОК) */}
       <div className={styles.kpiGrid}>
-        <KpiCard
-          title="Задач выполнено"
-          value={done_tasks}
-          icon={CheckCircle}
-          colorClass="green"
-        />
-        <KpiCard
-          title="Задач не выполнено"
-          value={not_done_tasks}
-          icon={Clock}
-          colorClass="red"
-        />
+        {isMobile ? (
+          <KpiCardMobile
+            title="Задач выполнено"
+            value={done_tasks}
+            icon={CheckCircle}
+            colorClass="green"
+          />
+        ) : (
+          <KpiCard
+            title="Задач выполнено"
+            value={done_tasks}
+            icon={CheckCircle}
+            colorClass="green"
+          />
+        )}
+        {isMobile ? (
+          <KpiCardMobile
+            title="Задач не выполнено"
+            value={not_done_tasks}
+            icon={Clock}
+            colorClass="red"
+          />
+        ) : (
+          <KpiCard
+            title="Задач не выполнено"
+            value={not_done_tasks}
+            icon={Clock}
+            colorClass="red"
+          />
+        )}
         {isMobile ? (
           <KpiCardMobile
             title="Успешность AI-проверок"

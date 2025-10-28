@@ -12,8 +12,10 @@ import {
 import styles from "./TaskFilter.module.scss";
 import { SearchInput } from "../../ui/SearchInput/SearchInput";
 import CustomSelect from "../../ui/CustomSelect/CustomSelect";
-import { ArrowDownAZ, Eye, LayoutGrid, LayoutList } from "lucide-react";
+import { ArrowDownAZ, Eye, Filter, LayoutGrid, LayoutList } from "lucide-react";
 import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
+import { useMediaQuery } from "react-responsive";
+import { Button } from "../../ui/Button/Button";
 
 // const sortOptions = [
 //   { value: "name_asc", label: "Название А-Я", key: "name", order: "asc" },
@@ -48,11 +50,33 @@ const viewOptions = [
 export const TaskFilter = () => {
   const dispatch = useDispatch();
 
+  const isBigScreen = useMediaQuery({
+    query: "(min-width: 1331px)",
+  });
+
+  const isTablet = useMediaQuery({
+    query: "(max-width: 767px)",
+  });
+
+  const isSmallDesktop = useMediaQuery({
+    query: "(max-width: 1330px)",
+  });
+
+  const isMobile = useMediaQuery({
+    query: "(max-width: 479px)",
+  });
+
+  const isSmallMobile = useMediaQuery({
+    query: "(max-width: 369px)",
+  });
+
   const { positions } = useSelector((state) => state?.positions);
   const { departments } = useSelector((state) => state?.departments);
   const { taskFilters, viewMode /* sort */ } = useSelector(
     (state) => state?.tasks
   );
+
+  const [visibleAllFilters, setVisibleAllFilters] = useState(false);
 
   const filtersAreActive = useSelector(areTaskFiltersChanged);
 
@@ -106,33 +130,115 @@ export const TaskFilter = () => {
 
   return (
     <div className={styles.filters}>
-      <SearchInput
-        placeholder={"Поиск по задачам..."}
-        value={searchText}
-        onChange={handleSearchChange}
-      />
-      <CustomSelect
-        onChange={(selectedOption) =>
-          handleSelectChange("position_id", selectedOption)
-        }
-        value={position_id}
-        options={positionsOptions}
-        placeholder="Выберите должность"
-      />
-      <CustomSelect
-        options={departmentsOptions}
-        placeholder="Выберите отдел"
-        value={department_id}
-        onChange={(selectedOption) =>
-          handleSelectChange("department_id", selectedOption)
-        }
-      />
+      {isSmallDesktop && !isMobile && !isTablet && (
+        <div className={styles.filtersMobile}>
+          <SearchInput
+            placeholder={"Поиск по задачам..."}
+            value={searchText}
+            onChange={handleSearchChange}
+          />
+          <div className={styles.selects}>
+            <CustomSelect
+              onChange={(selectedOption) =>
+                handleSelectChange("position_id", selectedOption)
+              }
+              value={position_id}
+              options={positionsOptions}
+              placeholder="Выберите должность"
+            />
+            <CustomSelect
+              options={departmentsOptions}
+              placeholder="Выберите отдел"
+              value={department_id}
+              onChange={(selectedOption) =>
+                handleSelectChange("department_id", selectedOption)
+              }
+            />
 
-      <Sorting
-        viewMode={currentOption}
-        options={viewOptions}
-        onChange={handleViewModeChange}
-      />
+            <Sorting
+              viewMode={currentOption}
+              options={viewOptions}
+              onChange={handleViewModeChange}
+            />
+          </div>
+        </div>
+      )}
+
+      {(isMobile || isTablet) && (
+        <div className={styles.filtersMobile}>
+          <div className={styles.inputs}>
+            <SearchInput
+              placeholder={isSmallMobile ? "Поиск..." : "Поиск по задачам..."}
+              value={searchText}
+              onChange={handleSearchChange}
+            />
+            <Sorting
+              viewMode={currentOption}
+              options={viewOptions}
+              onChange={handleViewModeChange}
+            />
+            <Button
+              onClick={() => setVisibleAllFilters(!visibleAllFilters)}
+              leftIcon={<Filter size={16} className={styles.sortIcon} />}
+              className={styles.filtersButton}
+            />
+          </div>
+
+          {visibleAllFilters && (
+            <div className={styles.selects}>
+              <CustomSelect
+                onChange={(selectedOption) =>
+                  handleSelectChange("position_id", selectedOption)
+                }
+                value={position_id}
+                options={positionsOptions}
+                placeholder="Выберите должность"
+              />
+              <CustomSelect
+                options={departmentsOptions}
+                placeholder="Выберите отдел"
+                value={department_id}
+                onChange={(selectedOption) =>
+                  handleSelectChange("department_id", selectedOption)
+                }
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {isBigScreen && (
+        <>
+          <SearchInput
+            placeholder={"Поиск по задачам..."}
+            value={searchText}
+            onChange={handleSearchChange}
+          />
+          <CustomSelect
+            onChange={(selectedOption) =>
+              handleSelectChange("position_id", selectedOption)
+            }
+            value={position_id}
+            options={positionsOptions}
+            placeholder="Выберите должность"
+          />
+          <CustomSelect
+            options={departmentsOptions}
+            placeholder="Выберите отдел"
+            value={department_id}
+            onChange={(selectedOption) =>
+              handleSelectChange("department_id", selectedOption)
+            }
+          />
+
+          <Sorting
+            viewMode={currentOption}
+            options={viewOptions}
+            onChange={handleViewModeChange}
+            isSmallDesktop={isSmallDesktop}
+          />
+        </>
+      )}
 
       {filtersAreActive && (
         <button
@@ -164,7 +270,7 @@ const getSortIcon = (key) => {
       return ArrowDownAZ;
   }
 };
-const Sorting = ({ viewMode, options, onChange }) => {
+const Sorting = ({ viewMode, options, onChange, isSmallDesktop }) => {
   const sortRef = useRef(null);
   const [visibleOptions, setVisibleOptions] = useState(false);
 
@@ -195,7 +301,11 @@ const Sorting = ({ viewMode, options, onChange }) => {
 
   return (
     <div className={styles.sort} ref={sortRef}>
-      <HintWithPortal hasIcon={false} hintContent={"Тип отображения"}>
+      <HintWithPortal
+        hasIcon={false}
+        hintContent={"Тип отображения"}
+        position={isSmallDesktop ? "right" : "top"}
+      >
         <div className={styles.sortHeader} onClick={handleToggle}>
           {/* 💡 Отображаем ТОЛЬКО иконку текущего типа сортировки */}
           <CurrentIcon size={18} className={styles.sortIcon} />

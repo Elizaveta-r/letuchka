@@ -5,28 +5,44 @@
   flex-direction: column;
   gap: 25px;
   padding: 10px;
+
+  @media screen and (max-width: 767px) {
+    padding: 0;
+  }
 }
 
 .formGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
-  overflow: scroll;
+  box-sizing: border-box;
+
   max-height: 60vh;
   padding-right: 15px;
   padding-left: 5px;
   padding-bottom: 5px;
+  overflow: hidden;
+  overflow-y: scroll;
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .formItem {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .formLabel {

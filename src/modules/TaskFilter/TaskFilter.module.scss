@@ -1,9 +1,84 @@
 @use "../../styles/variables" as v;
 
+.filters > *,
+.selects > * {
+  min-width: 0;
+}
+
 .filters {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto auto;
   align-items: center;
+  gap: 10px;
+
+  /* 🔹 важно для обрезки внутри дочерних флексов/гридов */
+  > * {
+    min-width: 0;
+  }
+
+  @media screen and (max-width: 1330px) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    > * {
+      width: 100%;
+      min-width: 0;
+    } /* на колонке — просто на всякий случай */
+  }
+}
+
+.selects {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 10px;
+  width: 100%;
+
+  /* 🔹 тоже добавим */
+  > * {
+    min-width: 0;
+  }
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filtersButton {
+  width: 46px;
+  height: 46px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0;
+  flex-shrink: 0;
+
+  background: v.$color-white;
+  border: 1px solid v.$color-border;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+  box-shadow: none;
+
+  &:hover {
+    border-color: v.$color-primary;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    background-color: v.$color-bg-light;
+  }
+}
+
+.filtersMobile {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
@@ -13,8 +88,8 @@
 }
 
 .sortHeader {
-  width: 50px;
-  height: 50px;
+  width: 46px;
+  height: 46px;
   font-size: 14px;
   font-weight: 500;
   display: flex;
@@ -117,5 +192,15 @@
 
   &:active {
     transform: scale(0.98);
+  }
+
+  @media screen and (max-width: 1330px) {
+    width: 100%;
+  }
+
+  @media screen and (max-width: 767px) {
+    line-height: 100%;
+    padding: 12px 14px;
+    height: auto;
   }
 }

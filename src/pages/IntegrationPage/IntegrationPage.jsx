@@ -13,6 +13,7 @@ import { Trash } from "lucide-react";
 import { OnboardingModal } from "../../modules/OnboardingModal/OnboardingModal";
 import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 import { setEditedIntegration } from "../../store/slices/integrationsSlice";
+import { useMediaQuery } from "react-responsive";
 
 const IntegrationPage = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,10 @@ const IntegrationPage = () => {
   const { integrations, isIntegrationLoading } = useSelector(
     (state) => state?.integrations
   );
+
+  const isMobile = useMediaQuery({
+    query: "(max-width: 1100px)",
+  });
 
   const [visibleModal, setVisibleModal] = useState(false);
   const [isNew, setIsNew] = useState(false);
@@ -117,16 +122,19 @@ const IntegrationPage = () => {
 
       {integrations && (
         <div className={styles.header}>
-          <div className={styles.title}>
-            <div></div>
-            <div>НАЗВАНИЕ</div>
-            <div>ТОКЕН БОТА</div>
-            <HintWithPortal
-              hintContent={`Когда бот выключен — он не получает и не отвечает на сообщения. \n\n Включите его, чтобы снова принимать обращения пользователей.`}
-            >
-              <div>ВЫКЛ/ВКЛ</div>
-            </HintWithPortal>
-          </div>
+          {!isMobile && (
+            <div className={styles.title}>
+              <div></div>
+              <div>НАЗВАНИЕ</div>
+              <div>ТОКЕН БОТА</div>
+              <HintWithPortal
+                styleHintWrapper={{ width: "max-content" }}
+                hintContent={`Когда бот выключен — он не получает и не отвечает на сообщения. \n\n Включите его, чтобы снова принимать обращения пользователей.`}
+              >
+                <div>ВЫКЛ/ВКЛ</div>
+              </HintWithPortal>
+            </div>
+          )}
           <div className={styles.list}>
             {integrations?.map((integration) => {
               return (

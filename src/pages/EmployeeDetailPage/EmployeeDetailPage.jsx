@@ -15,6 +15,8 @@ import { setLoadingGetEmployee } from "../../store/slices/employeesSlice";
 import { getEmployeeWithHistory } from "../../utils/api/actions/employees";
 import { useParams } from "react-router-dom";
 import { RingLoader } from "react-spinners";
+import { useMediaQuery } from "react-responsive";
+import EmployeeHistoryItemMobile from "../../components/EmployeeHistoeyIremMobile/EmployeeHistoryItemMobile";
 
 // const INITIAL_RANGE = {
 //   startDate: addDays(new Date(), -7),
@@ -121,6 +123,12 @@ export default function EmployeeDetailPage() {
   const { employee, loadingGetEmployee } = useSelector(
     (state) => state?.employees
   );
+
+  const isMobile = useMediaQuery({
+    query: "(max-width: 576px)",
+  });
+
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 400px)" });
 
   const history = employee?.history;
 
@@ -250,6 +258,8 @@ export default function EmployeeDetailPage() {
                   >
                     {loadingGetEmployee ? (
                       <RingLoader size={18} />
+                    ) : isSmallScreen ? (
+                      "Сбросить фильтр"
                     ) : (
                       <Trash2 size={18} />
                     )}
@@ -302,14 +312,23 @@ export default function EmployeeDetailPage() {
           </div>
 
           <div className={styles.historyList}>
-            {filteredHistory?.map((item, index) => (
-              <EmployeeHistoryItem
-                key={index}
-                item={item}
-                timezone={employee?.timezone}
-                onPhotoClick={handleOpenPhotoModal}
-              />
-            ))}
+            {filteredHistory?.map((item, index) =>
+              isMobile ? (
+                <EmployeeHistoryItemMobile
+                  key={index}
+                  item={item}
+                  timezone={employee?.timezone}
+                  onPhotoClick={handleOpenPhotoModal}
+                />
+              ) : (
+                <EmployeeHistoryItem
+                  key={index}
+                  item={item}
+                  timezone={employee?.timezone}
+                  onPhotoClick={handleOpenPhotoModal}
+                />
+              )
+            )}
             {filteredHistory?.length === 0 && (
               <p className={styles.noHistory}>
                 Действий сотрудника не найдено в выбранном диапазоне.

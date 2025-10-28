@@ -22,10 +22,21 @@
   @media screen and (max-width: 767px) {
     font-size: var(--font-size-h3);
   }
+
+  @media screen and (max-width: 425px) {
+    font-size: 1.4rem;
+  }
 }
 
 .info {
   font-size: 0.875rem;
   color: v.$color-text-light;
   text-align: left;
+}
+
+.button {
+  @media screen and (max-width: 767px) {
+    font-size: 14px;
+    padding: 8px 14px !important;
+  }
 }

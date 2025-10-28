@@ -23,6 +23,7 @@ import {
   setIsEdit,
 } from "../../store/slices/tasksSlice";
 import { deleteTask, getTaskById } from "../../utils/api/actions/tasks";
+import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 
 const getLabelDoneType = (type) => {
   switch (type) {
@@ -134,7 +135,7 @@ export const TaskCard = ({ task, isFull, isViewShort }) => {
 
             <div className={styles.headerActionsContainer}>
               <div className={styles.headerActions}>
-                <Hint
+                <HintWithPortal
                   hintContent={
                     <>
                       Проверить работу задачи <br />
@@ -150,17 +151,17 @@ export const TaskCard = ({ task, isFull, isViewShort }) => {
                   <div className={styles.edit} onClick={handleUpdate}>
                     <BugPlay size={16} />
                   </div>
-                </Hint>
-                <Hint hintContent="Редактировать" hasIcon={false}>
+                </HintWithPortal>
+                <HintWithPortal hintContent="Редактировать" hasIcon={false}>
                   <div className={styles.edit} onClick={handleUpdate}>
                     <Pencil size={16} />
                   </div>
-                </Hint>
-                <Hint hintContent="Удалить" hasIcon={false}>
+                </HintWithPortal>
+                <HintWithPortal hintContent="Удалить" hasIcon={false}>
                   <div className={styles.trash} onClick={handleDelete}>
                     <Trash size={16} />
                   </div>
-                </Hint>
+                </HintWithPortal>
               </div>
             </div>
           </div>

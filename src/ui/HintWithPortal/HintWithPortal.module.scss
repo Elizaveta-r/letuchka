@@ -43,6 +43,7 @@
 .hintContainer {
   display: inline-flex;
   align-items: center;
+  width: 100%;
 }
 
 .hintTarget {
@@ -50,6 +51,7 @@
   align-items: center;
   position: relative;
   gap: 8px;
+  width: 100%;
 }
 
 .hintTriggerWrapper {

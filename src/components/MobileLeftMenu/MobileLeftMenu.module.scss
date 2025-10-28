@@ -1,4 +1,5 @@
 @use "../../styles/variables" as v;
+@use "sass:color";
 
 /* Десктопное меню */
 .leftMenu {
@@ -55,13 +56,22 @@
   overflow-y: auto;
   padding: 4rem 1rem 1rem;
   display: flex;
+  gap: 20px;
   flex-direction: column;
-  gap: 0.25rem;
+  // gap: 0.25rem;
 
   @media (max-width: 420px) {
     width: 100%;
     left: 0;
   }
+}
+
+.burgerItems {
+  border-bottom: 1px solid v.$color-border;
+  padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 /* Кнопка закрытия */
@@ -219,4 +229,23 @@
   line-height: 1;
   text-align: center;
   transition: font-weight 0.2s ease;
+}
+
+.logout {
+  width: 100%;
+  border-radius: 8px;
+  justify-content: flex-start;
+
+  padding: 8px 24px;
+  background: v.$exit-button;
+  transition: all 0.3s ease-in;
+  font-weight: 400;
+  box-shadow: none;
+  min-width: 123px;
+
+  &:hover {
+    background: color.adjust(v.$exit-button, $lightness: 10%);
+    box-shadow: none;
+    transform: none;
+  }
 }
