@@ -23,7 +23,7 @@ export const Switchers = () => {
   }, [dispatch, done_type.value]);
 
   return (
-    <div className={styles.switchers}>
+    <div className={styles.switchers} data-tour="form.tasks.switchers">
       <HintWithPortal
         hasIcon={false}
         hintContent={

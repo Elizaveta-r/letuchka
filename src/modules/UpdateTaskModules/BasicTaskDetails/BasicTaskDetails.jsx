@@ -90,7 +90,7 @@ export const BasicTaskDetails = () => {
   return (
     <div className={styles.basicTaskDetails}>
       <div className={styles.row}>
-        <div className={styles.section}>
+        <div className={styles.section} data-tour="form.tasks.name">
           <p className={styles.label}>Название задачи</p>
           <CustomInput
             name="title"
@@ -99,7 +99,10 @@ export const BasicTaskDetails = () => {
             onChange={(e) => dispatch(setDraftName(e.target.value))}
           />
         </div>
-        <div className={styles.section}>
+        <div
+          className={styles.section}
+          data-tour="form.tasks.confirmation-type"
+        >
           <HintWithPortal
             hintContent={
               <>
@@ -117,40 +120,14 @@ export const BasicTaskDetails = () => {
             options={confirmationTypes}
             value={done_type}
             onChange={(selectedOption) => dispatch(setDoneType(selectedOption))}
-          />
-        </div>
-      </div>
-
-      <div className={styles.row}>
-        <div className={styles.section}>
-          <p className={styles.label}>Подразделение</p>
-          <CustomSelect
-            placeholder="Выберите подразделение"
-            isSearchable
-            options={departmentOptions}
-            value={department_id}
-            onChange={(selectedOption) =>
-              dispatch(setDepartmentId(selectedOption))
-            }
-          />
-        </div>
-        <div className={styles.section}>
-          <p className={styles.label}>Должности</p>
-          <CustomSelect
-            placeholder="Выберите должности"
-            isSearchable
-            isMulti
-            options={positionOptions}
-            value={position_ids}
-            onChange={(selectedOption) =>
-              dispatch(setPositionIds(selectedOption))
-            }
+            dataTourHeader="form.tasks.confirmation-type.header"
+            dataTourId="form.tasks.confirmation-type"
           />
         </div>
       </div>
 
       {done_type.value === "photo" && (
-        <div className={styles.section}>
+        <div className={styles.section} data-tour="form.tasks.accept-condition">
           <HintWithPortal
             hintContent={
               <>
@@ -173,6 +150,38 @@ export const BasicTaskDetails = () => {
           />
         </div>
       )}
+
+      <div className={styles.row}>
+        <div className={styles.section} data-tour="form.tasks.dep">
+          <p className={styles.label}>Подразделение</p>
+          <CustomSelect
+            placeholder="Выберите подразделение"
+            isSearchable
+            options={departmentOptions}
+            value={department_id}
+            onChange={(selectedOption) =>
+              dispatch(setDepartmentId(selectedOption))
+            }
+            dataTourHeader="form.tasks.dep.header"
+            dataTourId="form.tasks.dep"
+          />
+        </div>
+        <div className={styles.section} data-tour="form.tasks.position">
+          <p className={styles.label}>Должности</p>
+          <CustomSelect
+            placeholder="Выберите должности"
+            isSearchable
+            isMulti
+            options={positionOptions}
+            value={position_ids}
+            onChange={(selectedOption) =>
+              dispatch(setPositionIds(selectedOption))
+            }
+            dataTourHeader="form.tasks.position.header"
+            dataTourId="form.tasks.position"
+          />
+        </div>
+      </div>
     </div>
   );
 };

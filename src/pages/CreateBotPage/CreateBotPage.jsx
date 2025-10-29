@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { createIntegration } from "../../utils/api/actions/integrations";
 import { useNavigate } from "react-router-dom";
 import { RingLoader } from "react-spinners";
-import { ImageModal } from "../../ui/ImageModal/ImageModal";
 
 const stepsCommands = [
   {
@@ -108,7 +107,7 @@ export default function CreateBotPage() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.wrapper}>
       <div className={styles.container}>
         <h1>Создайте Телеграм бота для вашего бизнеса</h1>
         <p className={styles.subtitle}>

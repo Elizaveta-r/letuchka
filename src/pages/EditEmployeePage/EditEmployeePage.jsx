@@ -29,6 +29,7 @@ import {
   createPosition,
   getPositionsList,
 } from "../../utils/api/actions/positions";
+import { useMediaQuery } from "react-responsive";
 
 const roles = [
   { value: "employee", label: "Сотрудник" },
@@ -83,6 +84,10 @@ export default function EditEmployeePage() {
   const skipAutoFillRef = useRef(false);
 
   const defaultDepartment = departments?.filter((d) => d.is_default)[0];
+
+  const isMobile = useMediaQuery({
+    query: "(max-width: 500px)",
+  });
 
   const initializeState = (emp) => {
     if (!emp) {
@@ -293,9 +298,11 @@ export default function EditEmployeePage() {
     dispatch(getPositionsList(1, 200));
   }, [dispatch]);
 
+  const isStartTour = sessionStorage.getItem("start_tour");
+
   useEffect(() => {
     const titleElement = document.querySelector(`.${styles.page} `);
-    if (titleElement) {
+    if (!isStartTour && !isMobile && titleElement) {
       // небольшой таймаут, чтобы DOM успел прогрузиться
       setTimeout(() => {
         window.scrollTo({
@@ -304,7 +311,7 @@ export default function EditEmployeePage() {
         });
       }, 100);
     }
-  }, []);
+  }, [isMobile, isStartTour]);
 
   useEffect(() => {
     lastSelectedPositionsRef.current = position;

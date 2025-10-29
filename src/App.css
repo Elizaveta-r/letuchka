@@ -46,6 +46,15 @@
   word-wrap: break-word;
 }
 
+@media screen and (max-width: 500px) {
+  .driver-popover.driverjs-theme-dark
+    .driver-popover-title[style*="block"]
+    + .driver-popover-description {
+    height: 14vh;
+    font-size: 16px;
+  }
+}
+
 /* Footer */
 .driver-popover.driverjs-theme-dark .driver-popover-footer {
   flex-direction: column;
@@ -57,6 +66,7 @@
 .driver-popover.driverjs-theme-dark .driver-popover-navigation-btns {
   gap: 8px;
   justify-content: flex-start;
+  flex-wrap: wrap;
   width: 100%;
 }
 
@@ -73,6 +83,17 @@
   font-weight: 500;
   transition: all 0.2s ease;
   margin: 0;
+}
+
+@media screen and (max-width: 500px) {
+  .driver-popover.driverjs-theme-dark .driver-popover-navigation-btns {
+    gap: 5px;
+  }
+
+  .driver-popover.driverjs-theme-dark button,
+  .driver-skip-btn {
+    padding: 10px 12.78px;
+  }
 }
 
 /* Hover и focus */
@@ -163,7 +184,7 @@
 
 @media screen and (max-width: 420px) {
   .driver-popover.driverjs-theme-dark {
-    max-width: 290px;
+    max-width: 94% !important;
   }
 }
 

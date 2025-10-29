@@ -18,10 +18,5 @@ export const BaseLayout = ({ children }) => {
   //   return <Navigate to="/create-bot" replace />;
   // }
 
-  return (
-    <div className={styles.layout}>
-      {/* {isLoggedIn && !isSuccessReg && <AppTours />} */}
-      {children}{" "}
-    </div>
-  );
+  return <div className={styles.layout}>{children}</div>;
 };

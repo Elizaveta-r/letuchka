@@ -83,6 +83,8 @@ export default function UpdateTaskPage() {
       disposableDateString = isoString.split("T")[0];
     }
 
+    window.dispatchEvent(new CustomEvent("tour:tasks:submit:clicked"));
+
     const taskDataToSend = {
       ...draftTask,
       task_type: draftTask?.task_type.value,
@@ -111,11 +113,18 @@ export default function UpdateTaskPage() {
         }
       });
     } else {
-      dispatch(createTask(taskDataToSend)).then((res) => {
-        if (res.status === 200) {
-          handleCancel();
-        }
-      });
+      dispatch(createTask(taskDataToSend))
+        .then((res) => {
+          if (res.status === 200) {
+            window.dispatchEvent(new CustomEvent("tour:tasks:submit:success"));
+            handleCancel();
+          } else {
+            window.dispatchEvent(new CustomEvent("tour:tasks:submit:fail"));
+          }
+        })
+        .catch(() => {
+          window.dispatchEvent(new CustomEvent("tour:tasks:submit:fail"));
+        });
     }
   };
 
@@ -133,6 +142,7 @@ export default function UpdateTaskPage() {
           secondary
           onClick={handleConfirm}
           title={isEdit ? "Сохранить" : "Добавить"}
+          dataTour="form.tasks.submit"
         />
       </div>
     </div>

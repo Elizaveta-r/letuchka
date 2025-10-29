@@ -180,37 +180,48 @@ export default function CreateDepartmentModal({
             </div>
 
             {/* 4. Время Check-in и Check-out */}
-            <div className={styles.timeGrid}>
-              <div className={styles.section} data-tour="modal.check-in-time">
-                <HintWithPortal hintContent={<HintCheckIn />}>
-                  <label className={styles.label} htmlFor="checkInTime">
-                    Чекин (в)
-                  </label>
-                </HintWithPortal>
+            <div className={styles.timeWrapper}>
+              <div className={styles.timeGrid}>
+                <div className={styles.section} data-tour="modal.check-in-time">
+                  <HintWithPortal hintContent={<HintCheckIn />}>
+                    <label className={styles.label} htmlFor="checkInTime">
+                      Чекин (в)
+                    </label>
+                  </HintWithPortal>
 
-                <CustomInput
-                  id="checkInTime"
-                  name="checkInTime"
-                  type="time"
-                  value={formData.checkInTime}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className={styles.section} data-tour="modal.check-out-time">
-                <HintWithPortal hintContent={<HintCheckOut />}>
-                  <label className={styles.label} htmlFor="checkOutTime">
-                    Чекаут (с)
-                  </label>
-                </HintWithPortal>
+                  <CustomInput
+                    id="checkInTime"
+                    name="checkInTime"
+                    type="time"
+                    value={formData.checkInTime}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div
+                  className={styles.section}
+                  data-tour="modal.check-out-time"
+                >
+                  <HintWithPortal hintContent={<HintCheckOut />}>
+                    <label className={styles.label} htmlFor="checkOutTime">
+                      Чекаут (с)
+                    </label>
+                  </HintWithPortal>
 
-                <CustomInput
-                  id="checkOutTime"
-                  name="checkOutTime"
-                  type="time"
-                  value={formData.checkOutTime}
-                  onChange={handleInputChange}
-                />
+                  <CustomInput
+                    id="checkOutTime"
+                    name="checkOutTime"
+                    type="time"
+                    value={formData.checkOutTime}
+                    onChange={handleInputChange}
+                  />
+                </div>
               </div>
+              {!isNew && (
+                <p className={styles.warning}>
+                  ⚠️ При изменении временных настроек, они будут изменены у всех
+                  сотрудников автоматически
+                </p>
+              )}
             </div>
           </div>
 

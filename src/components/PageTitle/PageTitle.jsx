@@ -6,6 +6,7 @@ import { CustomCheckbox } from "../../ui/CustomCheckbox/CustomCheckbox";
 
 export default function PageTitle({
   dataTour,
+  dataTourMobile,
   id,
   btnId,
   title,
@@ -24,7 +25,7 @@ export default function PageTitle({
   });
   return (
     <div className={styles.container}>
-      <div className={styles.title} id={id}>
+      <div className={styles.title} id={id} data-tour={dataTourMobile}>
         {title}
         {hint && <p className={styles.info}>{hint}</p>}
       </div>

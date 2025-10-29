@@ -93,6 +93,7 @@ export default function EmployeePage() {
         title="Ваши сотрудники"
         hasButton
         dataTour="employees.add"
+        dataTourMobile={"menu.employees"}
         onClick={handleOpenNewEmployeeModal}
       />
 

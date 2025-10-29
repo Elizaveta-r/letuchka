@@ -235,7 +235,7 @@ export default function CustomSelect({
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
                   className={styles.searchInput}
-                  autoFocus // Удобство: фокус при открытии
+                  // autoFocus // Удобство: фокус при открытии
                 />
               </div>
             )}

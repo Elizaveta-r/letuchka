@@ -39,7 +39,7 @@ export const FrequencySelector = () => {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.section}>
+      <div className={styles.section} data-tour="form.tasks.frequency">
         <HintWithPortal hintContent="Установите, как часто должна повторяться задача: каждый день, по определенным дням недели, раз в месяц или единоразово">
           <p className={styles.label}>Периодичность</p>
         </HintWithPortal>
@@ -48,10 +48,15 @@ export const FrequencySelector = () => {
           value={task_type}
           onChange={(selectedOption) => dispatch(setTimeType(selectedOption))}
           placeholder="Выберите периодичность"
+          dataTourHeader="form.tasks.frequency.header"
+          dataTourId="form.tasks.frequency"
         />
       </div>
 
-      <div className={styles.timeSection}>
+      <div
+        className={styles.timeSection}
+        data-tour="form.tasks.frequency-selectors"
+      >
         {task_type.value === "weekly" && (
           <div className={styles.section}>
             <p className={styles.label}>Выберите дни недели</p>

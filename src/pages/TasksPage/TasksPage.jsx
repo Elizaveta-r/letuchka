@@ -99,7 +99,13 @@ export default function TasksPage() {
 
   return (
     <div className={styles.container}>
-      <PageTitle title={"Задачи"} hasButton onClick={handleGoToNewTask} />
+      <PageTitle
+        title={"Задачи"}
+        hasButton
+        onClick={handleGoToNewTask}
+        dataTour={"tasks.add"}
+        dataTourMobile={"menu.tasks"}
+      />
       {tasks && <TaskFilter />}
       {tasks ? (
         <div

@@ -104,6 +104,7 @@ export default function PositionsPage() {
         hasButton
         onClick={handleOpenCreateModal}
         dataTour="positions.add"
+        dataTourMobile={"menu.positions"}
       />
       {isMobile ? (
         positions ? (

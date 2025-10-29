@@ -1,7 +1,7 @@
 // toursRegistry.js
 import { driver } from "driver.js";
 
-export const TOUR_ORDER = ["departments", "positions", "employees"]; // добавляй новые id сюда
+export const TOUR_ORDER = ["departments", "positions", "employees", "tasks"]; // добавляй новые id сюда
 
 const handlePopoverRender = (drv, popover, skipType) => {
   const skip = document.createElement("button");
@@ -97,11 +97,47 @@ function waitForMenuAndGo(options, dataTour, moveStep, cfg) {
   );
 }
 
+// function closeDropdownAndGo(
+//   headerSelector,
+//   menuSelector,
+//   options,
+//   { maxWait = 600, afterCloseDelay = 40 } = {}
+// ) {
+//   const header = document.querySelector(headerSelector);
+//   const wasOpen = !!document.querySelector(menuSelector);
+
+//   if (wasOpen && header) {
+//     header.click(); // инициируем закрытие
+//   }
+
+//   const t0 = performance.now();
+
+//   const waitClosed = () => {
+//     const stillOpen = !!document.querySelector(menuSelector);
+//     const elapsed = performance.now() - t0;
+
+//     if (!stillOpen) {
+//       setTimeout(() => options.driver.moveNext(), afterCloseDelay);
+//       return;
+//     }
+//     if (elapsed > maxWait) {
+//       // фоллбэк: если вдруг меню не закрылось — идём дальше
+//       options.driver.moveNext();
+//       return;
+//     }
+//     requestAnimationFrame(waitClosed);
+//   };
+
+//   waitClosed();
+// }
+
+// ✅ универсально для single и multi
+
 function closeDropdownAndGo(
   headerSelector,
   menuSelector,
   options,
-  { maxWait = 600, afterCloseDelay = 40 } = {}
+  { maxWait = 600, afterCloseDelay = 40, afterClose } = {}
 ) {
   const header = document.querySelector(headerSelector);
   const wasOpen = !!document.querySelector(menuSelector);
@@ -117,12 +153,22 @@ function closeDropdownAndGo(
     const elapsed = performance.now() - t0;
 
     if (!stillOpen) {
-      setTimeout(() => options.driver.moveNext(), afterCloseDelay);
+      setTimeout(() => {
+        if (typeof afterClose === "function") {
+          afterClose();
+        } else {
+          options.driver.moveNext();
+        }
+      }, afterCloseDelay);
       return;
     }
     if (elapsed > maxWait) {
       // фоллбэк: если вдруг меню не закрылось — идём дальше
-      options.driver.moveNext();
+      if (typeof afterClose === "function") {
+        afterClose();
+      } else {
+        options.driver.moveNext();
+      }
       return;
     }
     requestAnimationFrame(waitClosed);
@@ -131,7 +177,6 @@ function closeDropdownAndGo(
   waitClosed();
 }
 
-// ✅ универсально для single и multi
 const requireOptionSelected = (
   selector,
   regex,
@@ -185,6 +230,83 @@ const requireOptionSelected = (
   return true; // разрешаем дефолтный Next
 };
 
+const isMobile = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(max-width: 500px)").matches;
+
+// --- Хелперы для динамического описания частоты
+function getFrequencyDescription(selectedText = "") {
+  const t = selectedText.toLowerCase();
+
+  if (/ежедневн/.test(t)) {
+    return `Эта задача выполняется <b>каждый день</b>.\n
+Укажите время, когда она должна появляться у сотрудников.`;
+  }
+  if (/еженедел/.test(t)) {
+    return `Эта задача выполняется <b>раз в неделю</b>.\n
+Выберите дни недели, когда она должна приходить.`;
+  }
+  if (/ежемесяч/.test(t)) {
+    return `Эта задача выполняется <b>в определённые дни месяца</b>.\n
+Укажите даты (например, 1 и 15 числа) и время.`;
+  }
+  if (/разово|один раз|единожды|once|single/.test(t)) {
+    return `Эта задача выполняется <b>один раз</b>.\n
+Укажите точную дату и время выполнения.`;
+  }
+  // дефолт
+  return `Уточните параметры расписания для выбранной периодичности.`;
+}
+
+function setNextFrequencyStepDesc(options, selectedText) {
+  const steps = options?.config?.steps || [];
+  const nextStep = steps.find(
+    (s) => s.element === '[data-tour="form.tasks.frequency-selectors"]'
+  );
+  if (nextStep?.popover) {
+    nextStep.popover.description = getFrequencyDescription(selectedText);
+  }
+}
+
+// --- Хелперы для динамического описания тогглов
+function getSwitchersDesc(selectedType = "") {
+  const t = (selectedType || "").toLowerCase();
+
+  if (/фото/.test(t)) {
+    return `Здесь вы настраиваете <b>поведение задачи</b>:\n
+      <ul>
+        <li><b>Уведомить о просрочке</b> — руководитель получит уведомление, если задача не выполнена вовремя</li>
+        <li><b>Требуется фото</b> — сотрудник должен приложить снимок при выполнении задачи</li>
+        <li><b>Фото обязательно</b> — без фото задача не будет считаться выполненной</li>
+        <li><b>В итоговый отчёт</b> — задача попадёт в Телеграм-отчёт для руководителя по завершению дня</li>
+      </ul>`;
+  }
+
+  return `Здесь вы можете <b>гибко настроить поведение задачи</b>:\n
+      <ul>
+        <li><b>Уведомить о просрочке</b> — руководитель получит уведомление, если задача не выполнена вовремя</li>
+        <li><b>В итоговый отчёт</b> — задача попадёт в Телеграм-отчёт для руководителя по завершению дня</li>
+      </ul>`;
+}
+
+function setSwitchersStepDesc(options, selectedType) {
+  const steps = options?.config?.steps || [];
+  const switchersStep = steps.find(
+    (s) => s.element === '[data-tour="form.tasks.switchers"]'
+  );
+  if (switchersStep?.popover) {
+    switchersStep.popover.description = getSwitchersDesc(selectedType);
+  }
+}
+
+const goToStepByElement = (options, elementSelector) => {
+  const i = options?.config?.steps?.findIndex(
+    (s) => s.element === elementSelector
+  );
+  if (i >= 0) options.driver.moveTo(i);
+  else options.driver.movePrev?.();
+};
+
 export const ToursRegistry = {
   departments: {
     id: "departments",
@@ -215,14 +337,18 @@ export const ToursRegistry = {
             element: '[data-tour="menu.departments"]',
             popover: {
               title: `Раздел "Подразделения"`,
-              description: `В этом разделе вы создаёте подразделения — например, разные пункты выдачи, магазины или команды.
-                Это помогает распределять сотрудников по местам работы и задавать каждому подразделению своё расписание.
+              description: `В этом разделе вы создаёте подразделения — например, разные пункты выдачи, магазины или команды.\n
+                    Это помогает распределять сотрудников по местам работы и задавать каждому подразделению своё расписание.
 
-                Даже если у вас всего одна точка, подразделение всё равно нужно — в нём указываются <b>часовой пояс</b>, <b>время начала</b> и <b>окончания рабочего дня</b>, чтобы система знала, когда отправлять уведомления и задачи сотрудникам.
-                Без этого приложение не сможет корректно работать.
+                    Даже если у вас всего одна точка, подразделение всё равно нужно — в нём указываются <b>часовой пояс</b>, <b>время начала</b> и <b>окончания рабочего дня</b>, чтобы система знала, когда отправлять уведомления и задачи сотрудникам.
+                    Без этого приложение не сможет корректно работать.
 
-                Нажмите <b>“Подразделения”</b> в левом меню, чтобы открыть этот раздел.`,
-              nextBtnText: "К созданию",
+                    ${
+                      isMobile()
+                        ? ""
+                        : `Нажмите <b>“Подразделения”</b> в левом меню, чтобы открыть этот раздел.`
+                    }`,
+              nextBtnText: isMobile() ? "Дальше" : "К созданию",
               onNextClick: (element, step, options) => {
                 options.driver.drive(1);
                 //   navigate("/departments");
@@ -279,7 +405,7 @@ export const ToursRegistry = {
               title: "Укажите часовой пояс",
               description: `Если ваши подразделения находятся в <b>разных городах</b> — выберите <b>правильный</b> часовой пояс. \n
                 Так уведомления <small>(например, о начале смены)</small> будут приходить в <b>правильное локальное время</b>.`,
-              nextBtnText: "Показать опции",
+              nextBtnText: isMobile() ? "Дальше" : "Показать опции",
               onNextClick: (element, _step, options) => {
                 // 1) запускаем «ждуна» только по кнопке "Дальше"
                 attachWaitCleanup(
@@ -534,7 +660,11 @@ export const ToursRegistry = {
               title: "Что такое должности",
               description: `Здесь вы создаёте <b>должности сотрудников</b> — например, <i>менеджер</i>, <i>курьер</i> или <i>оператор пункта выдачи</i>.\n
                 Должности помогают систематизировать сотрудников и в будущем назначать им подходящие задачи.\n
-                Нажмите <b>“Должности”</b> в левом меню, чтобы открыть этот раздел.`,
+                ${
+                  isMobile()
+                    ? ""
+                    : `Нажмите <b>“Должности”</b> в левом меню, чтобы открыть этот раздел.`
+                }`,
             },
             onHighlighted: (element, step, options) => {
               element?.addEventListener("click", () => {
@@ -699,7 +829,11 @@ export const ToursRegistry = {
             popover: {
               title: `Раздел “Сотрудники”`,
               description: `Здесь вы управляете сотрудниками компании — добавляете новых, назначаете им подразделения и настраиваете график работы.\n
-                Нажмите <b>“Сотрудники”</b> в левом меню, чтобы открыть этот раздел.`,
+               ${
+                 isMobile()
+                   ? ""
+                   : ` Нажмите <b>“Сотрудники”</b> в левом меню, чтобы открыть этот раздел.`
+               }`,
               nextBtnText: "К созданию",
               onNextClick: (element, step, options) => {
                 options.driver.moveTo(1);
@@ -743,14 +877,14 @@ export const ToursRegistry = {
                 // Разбиваем по пробелам и фильтруем пустые элементы
                 const words = value.split(/\s+/).filter(Boolean);
 
-                // Проверяем, что хотя бы 3 слова
-                if (words.length < 3) {
+                // Проверяем, что хотя бы 2 слова
+                if (words.length < 2) {
                   input.classList.add("input-error");
                   input.focus();
 
                   import("sonner").then(({ toast }) => {
                     toast.error(
-                      "Введите фамилию, имя и отчество полностью, чтобы продолжить"
+                      "Введите как минимум фамилию и имя, чтобы продолжить"
                     );
                   });
 
@@ -1187,9 +1321,11 @@ export const ToursRegistry = {
             popover: {
               title: "Телеграм ID сотрудника",
               description: `Введите уникальный ID сотрудника из Телеграм.\n
-Найти его можно так:
-<ol>
-<li>`,
+                Найти его можно так:
+                <ol>
+                  <li>Попросите сотрудника открыть бота <b>@userinfobot</b> в Telegram и отправить ему любое сообщение — бот покажет его ID (обычно это число, например <code>543219876</code>).</li>
+                  <li>Либо на десктопе: откройте настройки Telegram → «Расширенные настройки» → включите «Показывать ID чатов». После этого откройте профиль сотрудника — ID отобразится в виде <b>PEER ID</b>.</li>
+                </ol>`,
               onNextClick: (element, step, options) => {
                 return errorEmptyInput(
                   element,
@@ -1202,28 +1338,19 @@ export const ToursRegistry = {
           {
             element: '[data-tour="form.employee.telegram-name"]',
             popover: {
-              title: "Имя пользователя",
-              description: `Это подразделение сейчас отмечено как <b>по умолчанию</b>. \n
-                Все новые сотрудники, которые добавляются через <b>Телеграм-бота</b>, будут автоматически прикрепляться именно сюда.
-
-                В системе всегда должно быть <b>одно подразделение по умолчанию</b>, чтобы система точно знала, куда прикреплять новых сотрудников.
-
-                Если вы снимете отметку и не выберете другое подразделение, появится уведомление с просьбой назначить подразделение по умолчанию, и часть функций <small>(например, добавление сотрудников через бота)</small> работать не будет.`,
-              onNextClick: (element, step, options) => {
-                return errorEmptyInput(
-                  element,
-                  options,
-                  "Введите имя пользователя, чтобы продолжить"
-                );
-              },
+              title: "Имя пользователя Телеграм",
+              description: `Укажите <b>username</b> сотрудника в Телеграм — он нужен, чтобы бот мог отправлять задачи и уведомления.\n
+                Username начинается с <code>@</code> и выглядит, например, как <b>@ivan_petrov</b>.\n
+                Сотрудник должен включить его в настройках Телеграм, если он скрыт.`,
             },
           },
           {
             element: '[data-tour="form.employee.submit"]',
             popover: {
               title: "Сохраняем сотрудника",
-              description: `Отлично! Теперь нажмите <b>"Создать подразделение"</b>, чтобы сохранить изменения. \n
-                Оно появится в общем списке, и вы сможете назначать для него задачи и сотрудников.`,
+              description: `<b>Отлично!</b> 🎯\n
+                Нажмите <b>“Создать”</b>, чтобы добавить сотрудника в систему.
+                После этого он появится в общем списке, и вы сможете назначать ему задачи.`,
               onNextClick: () => {
                 const btn = document.querySelector(
                   '[data-tour="form.employee.submit"]'
@@ -1275,15 +1402,773 @@ export const ToursRegistry = {
           },
           {
             popover: {
-              title: "Подразделение создано!",
-              description: `Поздравляем! 🎉 \n
-                Следующий шаг — перейти к разделу <b>“Должности”</b>, где вы узнаете, как создавать должности, чтобы в будущем выбирать их при назначении задач.\n
-                Нажмите <b>“К должностям”</b>, чтобы продолжить обучение.`,
-              nextBtnText: "К должностям",
+              title: "Сотрудник создан!",
+              description: `Вы успешно добавили сотрудника в систему.
+                Теперь можно перейти к следующему этапу — <b>разделу «Задачи»</b>.\n
+                Там вы узнаете, как создавать повторяющиеся задачи, задавать расписание и назначать их сотрудникам, чтобы они получали уведомления в Телеграм-боте.\n
+                Нажмите <b>«К задачам»</b>, чтобы продолжить обучение.`,
+              nextBtnText: "К задачам",
               onNextClick: (element, step, options) => {
                 options.driver.destroy();
-                //   navigate("/employees");
               },
+            },
+          },
+        ],
+      };
+      drv = driver(config);
+      return drv;
+    },
+  },
+
+  tasks: {
+    id: "tasks",
+    route: "/tasks",
+    readySelectors: ['[data-tour="menu.tasks"]'],
+    create: (ctx) => {
+      let drv; // замыкание нужно, чтобы из onPopoverRender можно было вызвать destroy()
+      const config = {
+        showProgress: true,
+        smoothScroll: true,
+        allowClose: false,
+        popoverClass: "driverjs-theme-dark",
+        progressText: "Шаг {{current}} из {{total}}",
+        nextBtnText: "Дальше",
+        prevBtnText: "Назад",
+
+        onDestroyed: () => {
+          // завершение (нормальное или по Skip)
+          ctx.complete();
+        },
+
+        onPopoverRender: (popover) => {
+          // было: "сотрудникам"
+          handlePopoverRender(drv, popover, "задачам");
+        },
+
+        steps: [
+          {
+            element: '[data-tour="menu.tasks"]',
+            popover: {
+              title: "Раздел «Задачи»",
+              description: `Здесь вы создаёте и управляете задачами для сотрудников.\n
+                Задачи помогают автоматизировать рабочие процессы — например, <b>назначать поручения, контролировать выполнение и получать отчёты</b> прямо в системе.\n
+                ${
+                  isMobile()
+                    ? ""
+                    : "Нажмите <b>«Задачи»</b> в левом меню, чтобы открыть этот раздел."
+                }`,
+              nextBtnText: "К созданию",
+              onNextClick: (_el, _step, options) => {
+                options.driver.moveTo(1);
+              },
+            },
+            onHighlighted: (element, _step, options) => {
+              element?.addEventListener("click", () => {
+                options.driver.moveTo(1);
+              });
+            },
+          },
+          {
+            element: '[data-tour="tasks.add"]',
+            popover: {
+              title: "Добавляем новую задачу",
+              description: `Нажмите <b>${
+                isMobile() ? "+" : `“Добавить”`
+              }</b>, чтобы открыть форму создания задачи.\n
+                В ней вы сможете указать, <b>что нужно сделать</b>, <b>кому назначить</b> и <b>когда выполнять</b>.`,
+              onNextClick: (element, _step, options) => {
+                element?.click();
+                options.driver.moveTo(2);
+              },
+            },
+            onHighlighted: (element, _step, options) => {
+              element?.addEventListener("click", () => {
+                setTimeout(() => {
+                  options.driver.moveTo(2);
+                }, 100);
+              });
+            },
+          },
+          {
+            element: '[data-tour="form.tasks.name"]',
+            popover: {
+              title: "Название задачи",
+              description: `Введите понятное название задачи — коротко и по сути.\n
+                <small>Например: <b>«Открыть пункт выдачи»</b>, <b>«Проверить кассу»</b> или <b>«Сделать фото витрины»</b></small>.\n
+                Название помогает быстро отличать задачи друг от друга в списке.`,
+              onNextClick: (element, _step, options) => {
+                return errorEmptyInput(
+                  element,
+                  options,
+                  "Введите название задачи"
+                );
+              },
+            },
+          },
+          {
+            element: '[data-tour="form.tasks.confirmation-type"]',
+            popover: {
+              title: "Тип подтверждения",
+              description: `Выберите, <b>каким способом сотрудник будет подтверждать выполнение задачи</b>.\n
+                Нажмите на поле, чтобы открыть список вариантов.`,
+              nextBtnText: "Показать опции",
+              onNextClick: (element, _step, options) => {
+                attachWaitCleanup(
+                  element,
+                  // меню — это ШАГ 4
+                  waitForMenuAndGo(
+                    options,
+                    "form.tasks.confirmation-type.menu",
+                    4
+                  )
+                );
+                element
+                  .querySelector(
+                    '[data-tour="form.tasks.confirmation-type.header"]'
+                  )
+                  ?.click();
+                return false;
+              },
+            },
+            onHighlighted: (element, _step, options) => {
+              const header =
+                element.querySelector(
+                  '[data-tour="form.tasks.confirmation-type.header"]'
+                ) ||
+                document.querySelector(
+                  '[data-tour="form.tasks.confirmation-type.header"]'
+                );
+
+              const onHeaderClick = () => {
+                attachWaitCleanup(
+                  element,
+                  waitForMenuAndGo(
+                    options,
+                    "form.tasks.confirmation-type.menu",
+                    4
+                  )
+                );
+              };
+
+              if (header) {
+                element._tzHeaderOff?.();
+                header.addEventListener("click", onHeaderClick);
+                element._tzHeaderOff = () =>
+                  header.removeEventListener("click", onHeaderClick);
+              }
+            },
+            onDeselected: (element) => {
+              clearWaitCleanup(element);
+              element._tzHeaderOff?.();
+              delete element._tzHeaderOff;
+            },
+          },
+          {
+            element: '[data-tour="form.tasks.confirmation-type.menu"]',
+            popover: {
+              title: "Опции типа подтверждения",
+              description: `Выберите нужный тип, чтобы перейти к следующему шагу:\n
+                 <ul>
+                  <li><b>Фото</b> — сотрудник прикрепит снимок (например, фото отчёта, витрины или документа).</li>
+                  <li><b>Текст</b> — сотрудник напишет комментарий или отчёт о выполнении задачи.</li>
+                  <li><b>Чекбокс</b> — простая отметка о выполнении без вложений.</li>
+                </ul>
+                Нажмите на вариант, который подходит под задачу.`,
+              onNextClick: (_el, _step, options) => {
+                const headerSel =
+                  '[data-tour="form.tasks.confirmation-type.header"]';
+                const menuSel =
+                  '[data-tour="form.tasks.confirmation-type.menu"]';
+
+                const ok = requireOptionSelected(
+                  headerSel,
+                  /выберите\s+тип\s+подтверждения/i,
+                  "Пожалуйста, выберите тип подтверждения"
+                );
+                if (!ok) return false;
+
+                // читаем выбранный тип из хедера
+                const header = document.querySelector(headerSel);
+                const labelText = (
+                  header?.querySelector("span")?.textContent ||
+                  header?.textContent ||
+                  ""
+                ).trim();
+
+                // сохраняем и обновляем описание у «Дополнительные настройки»
+                window.__tourDoneType = labelText;
+                setSwitchersStepDesc(options, labelText);
+
+                const isPhoto = /фото/i.test(labelText);
+
+                closeDropdownAndGo(headerSel, menuSel, options, {
+                  afterCloseDelay: 80,
+                  afterClose: () => {
+                    const acceptStep = options.config.steps.find(
+                      (s) =>
+                        s.element ===
+                        '[data-tour="form.tasks.accept-condition"]'
+                    );
+                    if (acceptStep) {
+                      if (isPhoto) {
+                        delete acceptStep.skip;
+                        options.driver.moveTo(5);
+                      } else {
+                        acceptStep.skip = true;
+                        options.driver.moveTo(6);
+                      }
+                    } else {
+                      options.driver.moveNext();
+                    }
+                  },
+                });
+
+                return false;
+              },
+            },
+            onHighlighted: (element, _step, options) => {
+              const headerSel =
+                '[data-tour="form.tasks.confirmation-type.header"]';
+              const menuSel = '[data-tour="form.tasks.confirmation-type.menu"]';
+              const itemSelector =
+                '[role="option"], [class*="option"], li, button, [data-option]';
+
+              const onPick = (e) => {
+                const item = e.target.closest(itemSelector);
+                if (!item) return;
+
+                const selectedText = (item.textContent || "").trim();
+                if (selectedText) {
+                  // сохраняем и сразу обновляем описание «Дополнительные настройки»
+                  window.__tourDoneType = selectedText;
+                  setSwitchersStepDesc(options, selectedText);
+                }
+
+                // даём UI дорисовать выбранное значение
+                setTimeout(() => {
+                  const ok = requireOptionSelected(
+                    headerSel,
+                    /выберите\s+тип\s+подтверждения/i,
+                    "Пожалуйста, выберите тип подтверждения"
+                  );
+                  if (!ok) return;
+
+                  // закрытие меню и переход с учётом «Фото»
+                  const isPhoto = /фото/i.test(selectedText);
+
+                  element.removeEventListener("click", onPick);
+
+                  closeDropdownAndGo(headerSel, menuSel, options, {
+                    afterCloseDelay: 80,
+                    afterClose: () => {
+                      const acceptStep = options.config.steps.find(
+                        (s) =>
+                          s.element ===
+                          '[data-tour="form.tasks.accept-condition"]'
+                      );
+                      if (acceptStep) {
+                        if (isPhoto) {
+                          delete acceptStep.skip;
+                          options.driver.moveTo(5);
+                        } else {
+                          acceptStep.skip = true;
+                          options.driver.moveTo(6);
+                        }
+                      } else {
+                        options.driver.moveNext();
+                      }
+                    },
+                  });
+                }, 10);
+              };
+
+              element.addEventListener("click", onPick);
+              attachWaitCleanup(element, () => {
+                element.removeEventListener("click", onPick);
+              });
+            },
+            onDeselected: (element) => {
+              clearWaitCleanup(element);
+              const header = document.querySelector(
+                '[data-tour="form.tasks.confirmation-type.header"]'
+              );
+              const isOpen = !!document.querySelector(
+                '[data-tour="form.tasks.confirmation-type.menu"]'
+              );
+              if (isOpen && header) header.click();
+            },
+          },
+
+          {
+            element: '[data-tour="form.tasks.accept-condition"]',
+            popover: {
+              title: "Критерий приёмки",
+              description: `Укажите, <b>по каким признакам система должна принять фото как корректное</b>.\n
+                Этот текст используется искусственным интеллектом для проверки снимка.\n
+                Например: “На фото должен быть кассовый отчёт и экран с суммой за день” или “Фото витрины с товарами и сегодняшней газетой”.\n
+                <small>💡 Это <b>промпт для ИИ</b> — описание того, каким должно быть фото. Если вы не уверены, как правильно его составить, можно обратиться к <b>ChatGPT</b> и попросить помочь сформулировать критерии, чтобы фото успешно проходило проверку.</small>`,
+              onPrevClick: (_element, _step, options) => {
+                options.driver.moveTo(3);
+              },
+            },
+            skip: true, // показывается только если выбран тип «Фото»
+          },
+
+          {
+            element: '[data-tour="form.tasks.dep"]',
+            popover: {
+              title: "Назначаем подразделение",
+              description: `Выберите, <b>в каком подразделении будет выполняться эта задача</b>.\n
+                По умолчанию выбрано подразделение, отмеченное как <b>используемое по умолчанию</b>. Если задача относится к другой локации — выберите её из списка.\n
+                Задачи назначаются <b>по подразделениям</b>, поэтому для одной и той же должности можно задать <b>разные задачи</b> в разных местах.\n
+                Нажмите на поле, чтобы открыть список подразделений.`,
+              nextBtnText: "Показать опции",
+              onNextClick: (element, _step, options) => {
+                attachWaitCleanup(
+                  element,
+                  // меню — ШАГ 7 (исправлено)
+                  waitForMenuAndGo(options, "form.tasks.dep.menu", 7)
+                );
+                element
+                  .querySelector('[data-tour="form.tasks.dep.header"]')
+                  ?.click();
+                return false;
+              },
+              onPrevClick: (_element, _step, options) => {
+                options.driver.moveTo(3);
+              },
+            },
+            onHighlighted: (element, _step, options) => {
+              const header =
+                element.querySelector('[data-tour="form.tasks.dep.header"]') ||
+                document.querySelector('[data-tour="form.tasks.dep.header"]');
+
+              const onHeaderClick = () => {
+                attachWaitCleanup(
+                  element,
+                  waitForMenuAndGo(options, "form.tasks.dep.menu", 7) // исправлено
+                );
+              };
+
+              if (header) {
+                element._tzHeaderOff?.();
+                header.addEventListener("click", onHeaderClick);
+                element._tzHeaderOff = () =>
+                  header.removeEventListener("click", onHeaderClick);
+              }
+            },
+            onDeselected: (element) => {
+              clearWaitCleanup(element);
+              element._tzHeaderOff?.();
+              delete element._tzHeaderOff;
+            },
+          },
+          {
+            element: '[data-tour="form.tasks.dep.menu"]',
+            popover: {
+              title: "Выбор подразделения",
+              description: ` подразделение, <b>для которого создаётся задача</b>.\n
+                Помните, что задачи назначаются <b>по подразделениям</b> — для одинаковых должностей в разных локациях можно задать разные задачи.`,
+              onNextClick: (_el, _step, options) => {
+                const headerSel = '[data-tour="form.tasks.dep.header"]';
+                const menuSel = '[data-tour="form.tasks.dep.menu"]';
+
+                const ok = requireOptionSelected(
+                  headerSel,
+                  /выберите\s+подразделение/i,
+                  "Пожалуйста, выберите подразделение"
+                );
+                if (!ok) return false;
+
+                closeDropdownAndGo(headerSel, menuSel, options);
+                return false;
+              },
+            },
+            onHighlighted: (element, _step, options) => {
+              const headerSel = '[data-tour="form.tasks.dep.header"]';
+              const menuSel = '[data-tour="form.tasks.dep.menu"]';
+              const itemSelector =
+                '[role="option"], [class*="option"], li, button, [data-option]';
+
+              const onPick = (e) => {
+                const item = e.target.closest(itemSelector);
+                if (!item) return;
+
+                setTimeout(() => {
+                  const ok = requireOptionSelected(
+                    headerSel,
+                    /выберите\s+подразделение/i,
+                    ""
+                  );
+                  if (ok) {
+                    closeDropdownAndGo(headerSel, menuSel, options);
+                  }
+                }, 10);
+              };
+
+              element._menuOff?.();
+              element.addEventListener("click", onPick);
+              element._menuOff = () =>
+                element.removeEventListener("click", onPick);
+            },
+            onDeselected: (element) => {
+              clearWaitCleanup(element);
+              const header = document.querySelector(
+                '[data-tour="form.tasks.dep.header"]'
+              );
+              const isOpen = !!document.querySelector(
+                '[data-tour="form.tasks.dep.menu"]'
+              );
+              if (isOpen && header) header.click();
+            },
+          },
+
+          {
+            element: '[data-tour="form.tasks.position"]',
+            popover: {
+              title: "Указываем должность",
+              description: `Выберите, <b>на какие должности</b> распространяется эта задача.\n
+                Можно выбрать <b>несколько</b> — например, если за одно действие отвечают и администратор, и курьер.\n
+                Задачи назначаются <b>по должностям внутри выбранного подразделения</b>, поэтому одна и та же должность может иметь разные задачи в разных местах.`,
+              nextBtnText: "Показать опции",
+              onNextClick: (element, _step, options) => {
+                attachWaitCleanup(
+                  element,
+                  // меню — ШАГ 9 (исправлено)
+                  waitForMenuAndGo(options, "form.tasks.position.menu", 9)
+                );
+                element
+                  .querySelector('[data-tour="form.tasks.position.header"]')
+                  ?.click();
+                return false;
+              },
+              onPrevClick: (_element, _step, options) => {
+                // было 5 — неверно; корректно возвращаться к блоку подразделений
+                options.driver.moveTo(6);
+              },
+            },
+            onHighlighted: (element, _step, options) => {
+              const header =
+                element.querySelector(
+                  '[data-tour="form.tasks.position.header"]'
+                ) ||
+                document.querySelector(
+                  '[data-tour="form.tasks.position.header"]'
+                );
+
+              const onHeaderClick = () => {
+                attachWaitCleanup(
+                  element,
+                  waitForMenuAndGo(options, "form.tasks.position.menu", 9) // исправлено
+                );
+              };
+
+              if (header) {
+                element._tzHeaderOff?.();
+                header.addEventListener("click", onHeaderClick);
+                element._tzHeaderOff = () =>
+                  header.removeEventListener("click", onHeaderClick);
+              }
+            },
+            onDeselected: (element) => {
+              clearWaitCleanup(element);
+              element._tzHeaderOff?.();
+              delete element._tzHeaderOff;
+            },
+          },
+          {
+            element: '[data-tour="form.tasks.position.menu"]',
+            popover: {
+              title: "Выбор должности",
+              description: `Отметьте <b>одну или несколько должностей</b>, которым будет назначена эта задача.`,
+              onNextClick: (_el, _step, options) => {
+                const headerSel = '[data-tour="form.tasks.position.header"]';
+                const menuSel = '[data-tour="form.tasks.position.menu"]';
+
+                const ok = requireOptionSelected(
+                  headerSel,
+                  /выберите\s+должность/i,
+                  "Пожалуйста, выберите должность",
+                  { isMulti: true }
+                );
+                if (!ok) return false;
+
+                closeDropdownAndGo(headerSel, menuSel, options);
+                return false;
+              },
+            },
+            onHighlighted: (element, _step, options) => {
+              const headerSel = '[data-tour="form.tasks.position.header"]';
+              const menuSel = '[data-tour="form.tasks.position.menu"]';
+              const itemSelector =
+                '[role="option"], [class*="option"], li, button, [data-option]';
+
+              const onPick = (e) => {
+                const item = e.target.closest(itemSelector);
+                if (!item) return;
+
+                setTimeout(() => {
+                  const ok = requireOptionSelected(
+                    headerSel,
+                    /выберите\s+должность/i,
+                    "",
+                    { isMulti: true }
+                  );
+                  if (ok) {
+                    closeDropdownAndGo(headerSel, menuSel, options);
+                  }
+                }, 10);
+              };
+
+              element._menuOff?.();
+              element.addEventListener("click", onPick);
+              element._menuOff = () =>
+                element.removeEventListener("click", onPick);
+            },
+            onDeselected: (element) => {
+              clearWaitCleanup(element);
+              const header = document.querySelector(
+                '[data-tour="form.tasks.position.header"]'
+              );
+              const isOpen = !!document.querySelector(
+                '[data-tour="form.tasks.position.menu"]'
+              );
+              if (isOpen && header) header.click();
+            },
+          },
+
+          {
+            element: '[data-tour="form.tasks.frequency"]',
+            popover: {
+              title: "Указываем периодичность",
+              description: `Определите, <b>как часто должна выполняться эта задача</b>.<br><br>
+                Доступные варианты:<br>
+                <ul>
+                  <li><b>Ежедневно</b> — выполняется каждый день.</li>
+                  <li><b>Еженедельно</b> — в определённые дни недели.</li>
+                  <li><b>Ежемесячно</b> — в выбранные даты месяца.</li>
+                  <li><b>Единоразово</b> — только один раз, без повторения.</li>
+                </ul>
+                Нажмите на поле, чтобы выбрать нужный вариант.`,
+              nextBtnText: "Показать опции",
+              onNextClick: (element, _step, options) => {
+                attachWaitCleanup(
+                  element,
+                  // меню — ШАГ 11 (исправлено)
+                  waitForMenuAndGo(options, "form.tasks.frequency.menu", 11)
+                );
+                element
+                  .querySelector('[data-tour="form.tasks.frequency.header"]')
+                  ?.click();
+                return false;
+              },
+              onPrevClick: (_element, _step, options) => {
+                // закрыть вдруг открытое меню предыдущего шага (на всякий случай)
+                const prevHeader = '[data-tour="form.tasks.position.header"]';
+                const prevMenu = '[data-tour="form.tasks.position.menu"]';
+                if (document.querySelector(prevMenu)) {
+                  document.querySelector(prevHeader)?.click();
+                }
+                goToStepByElement(options, '[data-tour="form.tasks.position"]'); // идём на хедер, а не на меню
+              },
+            },
+            onHighlighted: (element, _step, options) => {
+              const header =
+                element.querySelector(
+                  '[data-tour="form.tasks.frequency.header"]'
+                ) ||
+                document.querySelector(
+                  '[data-tour="form.tasks.frequency.header"]'
+                );
+
+              const onHeaderClick = () => {
+                attachWaitCleanup(
+                  element,
+                  waitForMenuAndGo(options, "form.tasks.frequency.menu", 11)
+                );
+              };
+
+              if (header) {
+                element._tzHeaderOff?.();
+                header.addEventListener("click", onHeaderClick);
+                element._tzHeaderOff = () =>
+                  header.removeEventListener("click", onHeaderClick);
+              }
+            },
+            onDeselected: (element) => {
+              clearWaitCleanup(element);
+              element._tzHeaderOff?.();
+              delete element._tzHeaderOff;
+            },
+          },
+          {
+            element: '[data-tour="form.tasks.frequency.menu"]',
+            popover: {
+              title: "Выбор периодичности",
+              description: `Выберите подходящую периодичность.`,
+              onNextClick: (_el, _step, options) => {
+                const headerSel = '[data-tour="form.tasks.frequency.header"]';
+                const menuSel = '[data-tour="form.tasks.frequency.menu"]';
+
+                const ok = requireOptionSelected(
+                  headerSel,
+                  /выберите\s+периодичность/i,
+                  "Пожалуйста, выберите периодичность"
+                );
+                if (!ok) return false;
+
+                // читаем выбранную метку из хедера и обновляем следующий шаг
+                const header = document.querySelector(headerSel);
+                const selectedText = (
+                  header?.querySelector("span")?.textContent ||
+                  header?.textContent ||
+                  ""
+                ).trim();
+
+                setNextFrequencyStepDesc(options, selectedText);
+
+                closeDropdownAndGo(headerSel, menuSel, options);
+                return false;
+              },
+            },
+            onHighlighted: (element, _step, options) => {
+              const headerSel = '[data-tour="form.tasks.frequency.header"]';
+              const menuSel = '[data-tour="form.tasks.frequency.menu"]';
+              const itemSelector =
+                '[role="option"], [class*="option"], li, button, [data-option]';
+
+              const onPick = (e) => {
+                const item = e.target.closest(itemSelector);
+                if (!item) return;
+
+                const selectedText = item.textContent?.trim() || "";
+                if (selectedText) {
+                  // сразу меняем описание следующего шага
+                  setNextFrequencyStepDesc(options, selectedText);
+                }
+
+                // стандартный сценарий: закрыть меню → перейти дальше
+                setTimeout(() => {
+                  const ok = requireOptionSelected(
+                    headerSel,
+                    /выберите\s+периодичность/i,
+                    ""
+                  );
+                  if (ok) {
+                    closeDropdownAndGo(headerSel, menuSel, options);
+                  }
+                }, 10);
+              };
+
+              // откроем меню, если вдруг закрыто
+              const header = document.querySelector(headerSel);
+              const isMenuOpen = !!document.querySelector(menuSel);
+              if (!isMenuOpen && header) header.click();
+
+              element._menuOff?.();
+              element.addEventListener("click", onPick);
+              element._menuOff = () =>
+                element.removeEventListener("click", onPick);
+            },
+            onDeselected: (element) => {
+              clearWaitCleanup(element);
+              const header = document.querySelector(
+                '[data-tour="form.tasks.frequency.header"]'
+              );
+              const isOpen = !!document.querySelector(
+                '[data-tour="form.tasks.frequency.menu"]'
+              );
+              if (isOpen && header) header.click();
+            },
+          },
+
+          {
+            element: '[data-tour="form.tasks.frequency-selectors"]',
+            popover: {
+              title: "Настраиваем расписание",
+              description: "",
+              onPrevClick: (_element, _step, options) => {
+                // логично вернуться к заголовку выбора периодичности
+                options.driver.moveTo(10);
+              },
+            },
+          },
+
+          {
+            element: '[data-tour="form.tasks.switchers"]',
+            popover: {
+              title: "Дополнительные настройки",
+              description: "", // будет поставлено динамически
+            },
+            onHighlighted: (_element, _step, options) => {
+              // при входе на шаг подставим описание в зависимости от текущего выбора
+              setSwitchersStepDesc(options, window.__tourDoneType || "");
+              // и на всякий случай перерисуем поповер (если библиотека это поддерживает)
+              options.driver.refresh?.();
+            },
+          },
+          {
+            element: '[data-tour="form.tasks.submit"]',
+            popover: {
+              title: "Сохраняем задачу",
+              description: `Нажмите <b>"Добавить"</b>, чтобы сохранить изменения. Задача появится в общем списке.`,
+              onNextClick: () => {
+                const btn = document.querySelector(
+                  '[data-tour="form.tasks.submit"]'
+                );
+                btn?.click();
+              },
+            },
+            onHighlighted: (element, _step, options) => {
+              const onBtnClick = () => {
+                requestAnimationFrame(() => options.driver.refresh());
+              };
+              element.removeEventListener("click", onBtnClick);
+              element.addEventListener("click", onBtnClick);
+
+              const onSuccess = () => {
+                setTimeout(() => {
+                  // было 16 — неверно (последний шаг имеет индекс 15)
+                  options.driver.moveTo(15);
+                }, 150);
+              };
+
+              const onFail = () => {
+                requestAnimationFrame(() => options.driver.refresh());
+              };
+
+              window.addEventListener("tour:tasks:submit:success", onSuccess, {
+                once: true,
+              });
+              window.addEventListener("tour:tasks:submit:fail", onFail, {
+                once: true,
+              });
+
+              element._tourCleanup = () => {
+                element.removeEventListener("click", onBtnClick);
+                window.removeEventListener(
+                  "tour:tasks:submit:success",
+                  onSuccess
+                );
+                window.removeEventListener("tour:tasks:submit:fail", onFail);
+              };
+            },
+            onDeselected: (element) => {
+              element?._tourCleanup?.();
+              delete element?._tourCleanup;
+            },
+          },
+          {
+            popover: {
+              title: "Обучение завершено! 🎉",
+              description: `Поздравляем! \n
+              Вы прошли обучение и узнали, как создавать <b>подразделения</b>, <b>должности</b>, <b>сотрудников</b> и <b>задачи</b>.\n
+              Теперь вы готовы использовать систему для автоматизации работы вашей команды.`,
+              onNextClick: () => {
+                drv.destroy();
+                sessionStorage.removeItem("start_tour");
+              },
+              nextBtnText: "Завершить",
             },
           },
         ],

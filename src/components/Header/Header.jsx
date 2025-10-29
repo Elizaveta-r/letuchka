@@ -34,6 +34,7 @@ export const Header = () => {
       console.warn("Сессия уже завершена или не найдена:", error);
     } finally {
       localStorage.clear();
+      sessionStorage.clear();
       dispatch(logout());
       navigate("/auth", { replace: true });
     }

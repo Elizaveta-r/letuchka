@@ -8,7 +8,6 @@ import {
   Briefcase,
   Building2,
   Cable,
-  CreditCard,
   FileBarChart,
   Home,
   IdCardLanyard,
@@ -18,6 +17,9 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "../../ui/Button/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { revokeSession } from "../../utils/api/actions/sessions";
+import { logout } from "../../store/slices/userSlice";
 
 const mainMenuItems = [
   { name: "Задачи", path: "/tasks", icon: <AlarmClockCheck size={18} /> },
@@ -63,9 +65,16 @@ const allMenuItems = [
 ];
 
 export const MobileLeftMenu = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const userData = useSelector((state) => state?.user?.data);
+
+  const sessionId = userData?.session?.id;
+
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const isParentActive = (item) =>
     location.pathname === item.path ||
@@ -85,6 +94,19 @@ export const MobileLeftMenu = () => {
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(revokeSession(sessionId, setLoading));
+    } catch (error) {
+      console.warn("Сессия уже завершена или не найдена:", error);
+    } finally {
+      localStorage.clear();
+      sessionStorage.clear();
+      dispatch(logout());
+      navigate("/auth", { replace: true });
+    }
   };
 
   // Закрытие меню при изменении размера окна
@@ -210,6 +232,8 @@ export const MobileLeftMenu = () => {
                     title="Выйти"
                     className={styles.logout}
                     leftIcon={<LogOut size={16} />}
+                    onClick={handleLogout}
+                    loading={loading}
                   />
                 </motion.div>
               </motion.nav>

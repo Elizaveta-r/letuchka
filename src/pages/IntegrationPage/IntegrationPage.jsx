@@ -14,9 +14,11 @@ import { OnboardingModal } from "../../modules/OnboardingModal/OnboardingModal";
 import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
 import { setEditedIntegration } from "../../store/slices/integrationsSlice";
 import { useMediaQuery } from "react-responsive";
+import { useNavigate } from "react-router-dom";
 
 const IntegrationPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { integrations, isIntegrationLoading } = useSelector(
     (state) => state?.integrations
@@ -60,6 +62,12 @@ const IntegrationPage = () => {
     dispatch(setEditedIntegration(integration));
     setVisibleModal(true);
     setIsNew(false);
+  };
+
+  const handleStartTour = () => {
+    sessionStorage.setItem("start_tour", "true");
+    navigate("/departments");
+    setVisibleOnboardingModal(false);
   };
 
   useEffect(() => {
@@ -112,6 +120,7 @@ const IntegrationPage = () => {
           setVisibleOnboardingModal(false);
           sessionStorage.removeItem("success_create_bot");
         }}
+        onConfirm={handleStartTour}
       />
       {!integrations && (
         <div className={styles.empty}>

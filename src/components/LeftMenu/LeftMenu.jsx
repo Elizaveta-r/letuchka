@@ -16,7 +16,12 @@ const renderItemsData = [
   { name: "Отчеты", path: "/reports", icon: <FileBarChart size={18} /> },
   // { name: "Биллинг", path: "/billing", icon: <CreditCard size={18} /> },
 
-  { name: "Задачи", path: "/tasks", icon: <AlarmClockCheck size={18} /> },
+  {
+    name: "Задачи",
+    path: "/tasks",
+    icon: <AlarmClockCheck size={18} />,
+    dataTour: "menu.tasks",
+  },
   {
     name: "Должности",
     path: "/positions",

@@ -168,6 +168,7 @@ export default function DepartmentsPage() {
         hasButton
         onClick={handleOpenCreateModal}
         dataTour={"departments.add"}
+        dataTourMobile={"menu.departments"}
       />
       <DeleteConfirmationModal
         isOpen={openConfirmationModal}
