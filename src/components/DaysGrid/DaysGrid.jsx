@@ -22,7 +22,10 @@ const DaysGrid = () => {
   const dates = Array.from({ length: 31 }, (_, i) => i + 1);
 
   return (
-    <div className={styles.calendar}>
+    <div
+      className={styles.calendar}
+      data-selected={month_days?.length > 0 ? "true" : "false"}
+    >
       <div className={styles.calendarGrid}>
         {dates?.map((date) => (
           <div

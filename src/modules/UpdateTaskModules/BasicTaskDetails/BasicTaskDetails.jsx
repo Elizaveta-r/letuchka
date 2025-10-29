@@ -14,6 +14,7 @@ import {
 import Hint from "../../../ui/Hint/Hint";
 import { useEffect } from "react";
 import { HintWithPortal } from "../../../ui/HintWithPortal/HintWithPortal";
+import { createPosition } from "../../../utils/api/actions/positions";
 
 const confirmationTypes = [
   { value: "photo", label: "Фото" },
@@ -40,6 +41,28 @@ export const BasicTaskDetails = () => {
     value: pos.id,
     label: pos.title,
   }));
+
+  const addPositionToValue = (createdOpt) => {
+    const prev = Array.isArray(position_ids) ? position_ids.slice() : [];
+    const exists = prev.some(
+      (p) => (p.value ?? p) === createdOpt.value || p.label === createdOpt.label
+    );
+    if (!exists) dispatch(setPositionIds([...prev, createdOpt]));
+  };
+
+  const handleCreatePosition = async (optFromSelect) => {
+    const payload = { title: optFromSelect.value, description: "" };
+    const res = await dispatch(createPosition(payload));
+    // Пытаемся достать созданную сущность (зависит от твоего thunk)
+    const created = res?.payload?.data ?? res?.payload ?? null;
+    const createdOpt = created?.id
+      ? { value: created.id, label: created.title }
+      : { value: optFromSelect.value, label: optFromSelect.value };
+
+    addPositionToValue(createdOpt); // ✅ не сбрасываем старые, просто добавляем
+    window.dispatchEvent(new Event("tour:task:position:create:success")); // ✅ дёргаем тур
+    return res;
+  };
 
   useEffect(() => {
     if (!isEdit) {
@@ -177,6 +200,8 @@ export const BasicTaskDetails = () => {
             onChange={(selectedOption) =>
               dispatch(setPositionIds(selectedOption))
             }
+            isCreatable
+            onCreate={handleCreatePosition}
             dataTourHeader="form.tasks.position.header"
             dataTourId="form.tasks.position"
           />

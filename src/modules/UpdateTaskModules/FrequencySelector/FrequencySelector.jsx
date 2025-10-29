@@ -58,7 +58,11 @@ export const FrequencySelector = () => {
         data-tour="form.tasks.frequency-selectors"
       >
         {task_type.value === "weekly" && (
-          <div className={styles.section}>
+          <div
+            className={styles.section}
+            data-tour="form.tasks.weekdays"
+            data-selected={week_days?.length > 0 ? "true" : "false"}
+          >
             <p className={styles.label}>Выберите дни недели</p>
             <div className={styles.weekDays}>
               {weekDays?.map((day) => (
@@ -68,12 +72,24 @@ export const FrequencySelector = () => {
                       ? styles.selected
                       : ""
                   }`}
+                  data-selected={
+                    week_days.some((d) => d.value === day.value)
+                      ? "true"
+                      : "false"
+                  }
                   key={day.value}
                   onClick={() => {
-                    if (week_days?.includes(day)) {
-                      dispatch(setWeekDays(week_days.filter((d) => d !== day)));
+                    const exists = week_days?.some(
+                      (d) => d.value === day.value
+                    );
+                    if (exists) {
+                      dispatch(
+                        setWeekDays(
+                          week_days.filter((d) => d.value !== day.value)
+                        )
+                      );
                     } else {
-                      dispatch(setWeekDays([...week_days, day]));
+                      dispatch(setWeekDays([...(week_days || []), day]));
                     }
                   }}
                 >
@@ -85,14 +101,18 @@ export const FrequencySelector = () => {
         )}
 
         {task_type.value === "monthly" && (
-          <div className={styles.section}>
+          <div className={styles.section} data-tour="form.tasks.monthdays">
             <p className={styles.label}>Выберите дни месяца</p>
             <DaysGrid />
           </div>
         )}
 
         {task_type.value === "onetime" && (
-          <div className={styles.section}>
+          <div
+            className={styles.section}
+            data-tour="form.tasks.onetime.calendar"
+            data-has-value={onetime_date ? "true" : "false"}
+          >
             <p className={styles.label}>Выберите дату выполнения</p>
             <Calendar
               date={onetime_date}
@@ -109,7 +129,7 @@ export const FrequencySelector = () => {
             />
           </div>
         )}
-        <div className={styles.section}>
+        <div className={styles.section} data-tour="form.tasks.start-time">
           <p className={styles.label}>Время начала задачи</p>
           <CustomInput
             type="time"
@@ -120,7 +140,7 @@ export const FrequencySelector = () => {
           />
         </div>
 
-        <div className={styles.section}>
+        <div className={styles.section} data-tour="form.tasks.deadline-time">
           <HintWithPortal hintContent="Время, до которого должна быть выполнена задача">
             <p className={styles.label}>Дедлайн задачи</p>
           </HintWithPortal>
