@@ -49,7 +49,7 @@ export default function EmployeeRow({
   );
 
   const fullName = `${surname} ${firstname} ${patronymic}`;
-  const initials = getInitials(fullName);
+  const initials = getInitials(surname, firstname);
 
   return (
     <div className={styles.dataItem}>

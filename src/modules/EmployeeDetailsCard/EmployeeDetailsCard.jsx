@@ -47,7 +47,11 @@ export default function EmployeeDetailsCard({ employee }) {
 
   const fullName = `${employee?.surname} ${employee?.firstname} ${employee?.patronymic}`;
 
-  const initials = getInitials(fullName);
+  const initials = getInitials(
+    employee?.surname,
+    employee?.firstname,
+    employee?.patronymic
+  );
   const statusText = employee?.checked_in ? "На работе" : "Нет на работе";
   const positions = employee?.positions?.map((position) => position.title);
   const departments = employee?.departments?.map(

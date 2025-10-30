@@ -49,7 +49,7 @@ export const EmployeeCard = ({
   );
 
   const fullName = `${surname} ${firstname} ${patronymic}`;
-  const initials = getInitials(fullName);
+  const initials = getInitials(surname, firstname, patronymic);
 
   return (
     <div className={styles.dataItem}>

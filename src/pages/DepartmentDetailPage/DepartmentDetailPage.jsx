@@ -229,6 +229,8 @@ export default function DepartmentDetailPage() {
                   <EmployeeRowMobile
                     key={emp.id}
                     name={`${emp.surname} ${emp.firstname} ${emp.patronymic}`}
+                    surname={emp.surname}
+                    firstname={emp.firstname}
                     post={emp.positions}
                     id={emp.id}
                     loadingGetEmployee={loadingGetEmployee}
@@ -240,6 +242,8 @@ export default function DepartmentDetailPage() {
                   <EmployeeRow
                     key={emp.id}
                     name={`${emp.surname} ${emp.firstname} ${emp.patronymic}`}
+                    surname={emp.surname}
+                    firstname={emp.firstname}
                     post={emp.positions}
                     id={emp.id}
                     loadingGetEmployee={loadingGetEmployee}
@@ -261,6 +265,8 @@ export default function DepartmentDetailPage() {
 
 const EmployeeRow = ({
   name,
+  surname,
+  firstname,
   post,
   onEdit,
   onShowContacts,
@@ -268,7 +274,7 @@ const EmployeeRow = ({
   id,
   loadingGetEmployee,
 }) => {
-  const initials = getInitials(name);
+  const initials = getInitials(surname, firstname);
   const positionNames = post?.map((pos) => pos.title);
   const positionsString = positionNames?.join(", ");
   return (
@@ -308,6 +314,8 @@ const EmployeeRow = ({
 
 const EmployeeRowMobile = ({
   name,
+  surname,
+  firstname,
   post,
   onEdit,
   onShowContacts,
@@ -315,8 +323,7 @@ const EmployeeRowMobile = ({
   id,
   loadingGetEmployee,
 }) => {
-  console.log("post, post", post);
-  const initials = getInitials(name);
+  const initials = getInitials(surname, firstname);
   const positionNames = post?.map((pos) => pos.title);
   const positionsString = positionNames?.join(", ");
   return (
