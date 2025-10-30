@@ -3,6 +3,7 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
+  MessageCircleMore,
   TriangleAlert,
   Zap,
 } from "lucide-react";
@@ -135,7 +136,7 @@ export default function EmployeeHistoryItem({ timezone, item, onPhotoClick }) {
 
             {item.comment && (
               <p className={styles.comment}>
-                <Zap size={14} className={styles.iconTiny} />
+                <MessageCircleMore size={14} className={styles.iconTiny} />
                 Комментарий: {item.comment}
               </p>
             )}

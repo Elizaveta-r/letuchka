@@ -137,7 +137,7 @@ export default function EmployeeHistoryItemMobile({
 
               {item.comment && (
                 <div className={styles.comment}>
-                  <Zap size={16} className={styles.iconTiny} />
+                  <MessageCircleMore size={16} className={styles.iconTiny} />
                   Комментарий: {item.comment}
                 </div>
               )}

@@ -59,12 +59,44 @@ export const PageLayout = ({ children }) => {
   }, [navigate]);
 
   useEffect(() => {
+    const onAllFinished = () => setStartTour(false);
+
+    // на всякий случай синхронизируемся с текущим значением в storage
+    onAllFinished();
+
+    window.addEventListener("tour:all:finished", onAllFinished);
+
+    return () => {
+      window.removeEventListener("tour:all:finished", onAllFinished);
+    };
+  }, []);
+
+  useEffect(() => {
+    const off = () => setStartTour(false);
+    window.addEventListener("tour:all:finished", off);
+    return () => window.removeEventListener("tour:all:finished", off);
+  }, []);
+
+  useEffect(() => {
     if (isLoggedIn) {
       dispatch(getEmployeesList(1, 1000));
       dispatch(getDepartmentsList(1, 1000));
       dispatch(getPositionsList(1, 1000));
     }
   }, [dispatch, isLoggedIn]);
+
+  const raw = localStorage.getItem("tours_state_v1");
+  let allCompleted = false;
+  try {
+    const st = JSON.parse(raw || "null");
+    allCompleted =
+      !!st?.completed &&
+      ["departments", "positions", "tasks", "employees"].every(
+        (k) => st.completed[k]
+      );
+  } catch {
+    //
+  }
 
   return (
     <BaseLayout>
@@ -73,7 +105,7 @@ export const PageLayout = ({ children }) => {
         className={styles.layout}
         style={{ paddingBottom: isMobile && "75px" }}
       >
-        {startTour && <AppTours />}
+        {startTour && !allCompleted && <AppTours />}
         <div className={styles.leftMenu}>{!isMobile && <LeftMenu />}</div>
         <div className={`${styles.children} `}>
           {children ? children : <Outlet />}

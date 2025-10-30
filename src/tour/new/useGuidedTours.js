@@ -71,6 +71,16 @@ export function useGuidedTours(registry, order) {
   const isUnmountingRef = useRef(false); // защита от StrictMode двойного mount/unmount
   const stateRef = useRef(readState()); // локальный кэш состояния
 
+  const isPrimary = useRef(false);
+  useEffect(() => {
+    if (window.__TOURS_PRIMARY__) return; // уже есть «главный»
+    window.__TOURS_PRIMARY__ = true;
+    isPrimary.current = true;
+    return () => {
+      if (isPrimary.current) delete window.__TOURS_PRIMARY__;
+    };
+  }, []);
+
   const save = (patch) => {
     stateRef.current = { ...stateRef.current, ...patch };
     writeState(stateRef.current);
@@ -102,8 +112,15 @@ export function useGuidedTours(registry, order) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
+  const allDone =
+    order.length > 0 && order.every((id) => !!stateRef.current.completed[id]);
+  if (allDone) {
+    save({ current: null }); /* и просто выходим */
+  }
+
   // запуск/перезапуск соответствующего тура при смене route или currentId
   useEffect(() => {
+    if (!isPrimary.current) return;
     if (!currentId) return; // всё пройдено
     const def = registry[currentId];
     if (!def) return;
@@ -127,6 +144,24 @@ export function useGuidedTours(registry, order) {
         // создаём driver один раз и переиспользуем
         let drv = driversRef.current[currentId];
         if (!drv) {
+          const raw = localStorage.getItem(LS_KEY);
+          const snap = raw ? JSON.parse(raw) : null;
+
+          // Позволяем форс-старт (флажок или query-параметр)
+          const force =
+            localStorage.getItem("start_tour") === "true" ||
+            new URLSearchParams(location.search).get("tour") === "on";
+
+          // ВАЖНО: учитываем пустой order
+          const allDoneLS =
+            Array.isArray(order) &&
+            order.length > 0 &&
+            order.every((id) => !!snap?.completed?.[id]);
+
+          if (allDoneLS && !force) return;
+          // если форс-стартовали — почистим флаг, чтобы не зациклиться
+          if (force) localStorage.removeItem("start_tour");
+
           // создаём через фабрику и пробрасываем контекст
           drv = def.create({
             complete: () => completeTour(currentId),

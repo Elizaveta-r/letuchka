@@ -21,7 +21,9 @@ export default function UpdateTaskPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isEdit, draftTask } = useSelector((state) => state?.tasks);
+  const { isEdit, draftTask, loadingTask } = useSelector(
+    (state) => state?.tasks
+  );
   const { departments } = useSelector((state) => state?.departments);
 
   const serverDepartmentId = isEdit
@@ -143,6 +145,7 @@ export default function UpdateTaskPage() {
           onClick={handleConfirm}
           title={isEdit ? "Сохранить" : "Добавить"}
           dataTour="form.tasks.submit"
+          loading={loadingTask}
         />
       </div>
     </div>

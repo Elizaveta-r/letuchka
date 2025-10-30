@@ -23,9 +23,70 @@ async function createDepartmentOnSkip() {
 
   return res;
 }
+function purgeAllTourFlags() {
+  try {
+    // 1) подчистить мусор/устаревшие ключи (как у тебя и было)
+    const KEYS = [
+      "start_tour",
+      "tours_state_v1",
+      "tours_state",
+      "tour_state_v1",
+      "tour_state",
+      "tour:last",
+      "tour:step",
+      "tour:state",
+      "departments",
+      "positions",
+      "tasks",
+      "employees",
+    ];
+    for (const k of KEYS) {
+      sessionStorage.removeItem(k);
+      localStorage.removeItem(k);
+    }
+    const wipe = (storage) => {
+      const toDel = [];
+      for (let i = 0; i < storage.length; i++) {
+        const key = storage.key(i);
+        if (
+          /^(driver|tour:|tours?_state)/i.test(key) ||
+          /^tour(s)?_/i.test(key)
+        ) {
+          toDel.push(key);
+        }
+      }
+      toDel.forEach((k) => storage.removeItem(k));
+    };
+    wipe(sessionStorage);
+    wipe(localStorage);
 
+    // 2) А теперь — зафиксировать, что все туры пройдены
+    const completed = Object.fromEntries(TOUR_ORDER.map((id) => [id, true]));
+    localStorage.setItem(
+      "tours_state_v1",
+      JSON.stringify({ version: 1, current: null, completed })
+    );
+
+    window.location.reload();
+  } catch {
+    // ничего
+  }
+
+  // 3) Сообщить приложению (текущему табу), что всё завершено
+  // Зафиксируем, что ВСЁ завершено
+  const completed = Object.fromEntries(TOUR_ORDER.map((id) => [id, true]));
+  localStorage.setItem(
+    "tours_state_v1",
+    JSON.stringify({ version: 1, current: null, completed })
+  );
+  // Сообщаем приложению (этот же таб)
+  window.dispatchEvent(new CustomEvent("tour:all:finished"));
+}
 // ➜ 2) ПРАВИМ handlePopoverRender: вызывать API при Skip в "подразделениях"
+
 const handlePopoverRender = (drv, popover, skipType) => {
+  if (document.body.dataset.tourNoSkip === "1") return; // не показываем "Пропустить" на финальных шагах
+
   const skip = document.createElement("button");
   skip.innerText = "Пропустить";
   skip.classList.add("driver-skip-btn");
@@ -43,8 +104,9 @@ const handlePopoverRender = (drv, popover, skipType) => {
     const ok = confirm(
       `Пропустить обучение по ${skipType}?\n\n${
         String(skipType).toLowerCase() === "подразделениям" &&
-        hasDepartment === null &&
-        "После пропуска обучения, подразделение будет создано автоматически"
+        hasDepartment === null
+          ? "После пропуска обучения, подразделение будет создано автоматически"
+          : "Рекомендуем продолжить обучение — так вы лучше поймёте последовательность действий."
       }`
     );
     if (!ok) return;
@@ -180,42 +242,6 @@ function waitForMenuAndGo(options, dataTour, moveStep, cfg) {
     cfg
   );
 }
-
-// function closeDropdownAndGo(
-//   headerSelector,
-//   menuSelector,
-//   options,
-//   { maxWait = 600, afterCloseDelay = 40 } = {}
-// ) {
-//   const header = document.querySelector(headerSelector);
-//   const wasOpen = !!document.querySelector(menuSelector);
-
-//   if (wasOpen && header) {
-//     header.click(); // инициируем закрытие
-//   }
-
-//   const t0 = performance.now();
-
-//   const waitClosed = () => {
-//     const stillOpen = !!document.querySelector(menuSelector);
-//     const elapsed = performance.now() - t0;
-
-//     if (!stillOpen) {
-//       setTimeout(() => options.driver.moveNext(), afterCloseDelay);
-//       return;
-//     }
-//     if (elapsed > maxWait) {
-//       // фоллбэк: если вдруг меню не закрылось — идём дальше
-//       options.driver.moveNext();
-//       return;
-//     }
-//     requestAnimationFrame(waitClosed);
-//   };
-
-//   waitClosed();
-// }
-
-// ✅ универсально для single и multi
 
 function closeDropdownAndGo(
   headerSelector,
@@ -500,6 +526,14 @@ function isPhotoTypeSelected() {
   return /фото/.test(txt);
 }
 
+function tourDisableSkip() {
+  document.body.dataset.tourNoSkip = "1";
+  document.querySelector(".driver-skip-btn")?.remove();
+}
+function tourEnableSkip() {
+  delete document.body.dataset.tourNoSkip;
+}
+
 export const ToursRegistry = {
   departments: {
     id: "departments",
@@ -767,6 +801,10 @@ export const ToursRegistry = {
                 );
                 btn?.click();
               },
+              onPrevClick: (element, _step, options) => {
+                options.driver.movePrevious();
+                tourEnableSkip();
+              },
             },
             onHighlighted: (element, _step, options) => {
               const onBtnClick = () => {
@@ -797,6 +835,7 @@ export const ToursRegistry = {
                 window.removeEventListener("tour:submit:success", onSuccess);
                 window.removeEventListener("tour:submit:fail", onFail);
               };
+              tourDisableSkip();
             },
             onDeselected: (element) => {
               element?._tourCleanup?.();
@@ -813,6 +852,9 @@ export const ToursRegistry = {
               onNextClick: (element, step, options) => {
                 options.driver.destroy();
               },
+            },
+            onDeselected: () => {
+              tourEnableSkip();
             },
           },
         ],
@@ -846,7 +888,6 @@ export const ToursRegistry = {
         },
 
         steps: [
-          // ---- ВСТАВЬ СВОИ ШАГИ ДЛЯ СОТРУДНИКОВ ----
           {
             element: '[data-tour="menu.positions"]',
             popover: {
@@ -928,6 +969,10 @@ export const ToursRegistry = {
                 );
                 btn?.click();
               },
+              onPrevClick: (element, _step, options) => {
+                options.driver.movePrevious();
+                tourEnableSkip();
+              },
             },
 
             onHighlighted: (element, _step, options) => {
@@ -966,6 +1011,7 @@ export const ToursRegistry = {
                 );
                 window.removeEventListener("tour:position:submit:fail", onFail);
               };
+              tourDisableSkip();
             },
             onDeselected: (element) => {
               element?._tourCleanup?.();
@@ -975,14 +1021,17 @@ export const ToursRegistry = {
           {
             popover: {
               title: "Готово! 🎉",
-              description: `Вы создали свою первую <b>должность</b>.\n
-                Теперь вы можете добавлять <b>сотрудников</b> и назначать им подходящие должности — это поможет системе правильно распределять задачи.\n
-                Следующий шаг — перейти к разделу <b>“Сотрудники”</b>, где вы создадите карточки сотрудников и настроите их график работы.\n
-                Нажмите <b>“К сотрудникам”</b>, чтобы продолжить обучение.`,
-              nextBtnText: "К сотрудникам",
+              description: `Вы создали первую <b>должность</b>.\n
+                Теперь можно переходить к <b>задачам</b>: создавайте задачи и назначайте их на нужные должности и подразделения — так система корректно распределит работу.\n
+                Следующий шаг — открыть раздел <b>“Задачи”</b>, где вы зададите название, периодичность и сроки выполнения.\n
+                Нажмите <b>“К задачам”</b>, чтобы продолжить обучение.`,
+              nextBtnText: "К задачам",
               onNextClick: (element, step, options) => {
                 options.driver.destroy();
               },
+            },
+            onDeselected: () => {
+              tourEnableSkip();
             },
           },
         ],
@@ -1491,14 +1540,27 @@ export const ToursRegistry = {
               const itemSelector =
                 '[role="option"], [class*="option"], li, button, [data-option]';
 
-              const onCreated = () => {
-                // закрываем меню и идём дальше
-                closeDropdownAndGo(
-                  '[data-tour="form.tasks.position.header"]',
-                  '[data-tour="form.tasks.position.menu"]',
-                  options
-                );
+              // единая функция "закрыть меню → перейти к блоку периодичности"
+              const advanceToFrequency = () => {
+                if (element._tourAdvancing) return; // гард от двойного перехода
+                element._tourAdvancing = true;
+                // закрываем меню и идём именно к следующему нужному шагу, а не просто moveNext
+                closeDropdownAndGo(headerSel, menuSel, options, {
+                  afterClose: () => {
+                    options.driver.refresh?.();
+                    goToStepByElement(
+                      options,
+                      '[data-tour="form.tasks.frequency"]'
+                    );
+                    element._tourAdvancing = false;
+                  },
+                });
               };
+
+              const onCreated = () => {
+                advanceToFrequency();
+              };
+
               window.addEventListener(
                 "tour:task:position:create:success",
                 onCreated,
@@ -1548,8 +1610,8 @@ export const ToursRegistry = {
             element: '[data-tour="form.tasks.frequency"]',
             popover: {
               title: "Указываем периодичность",
-              description: `Определите, <b>как часто должна выполняться эта задача</b>.<br><br>
-                Доступные варианты:<br>
+              description: `Определите, <b>как часто должна выполняться эта задача</b>.\n
+                Доступные варианты:
                 <ul>
                   <li><b>Ежедневно</b> — выполняется каждый день.</li>
                   <li><b>Еженедельно</b> — в определённые дни недели.</li>
@@ -1764,9 +1826,7 @@ export const ToursRegistry = {
             popover: {
               title: "Выбираем дни месяца",
               description: `Укажите, <b>в какие даты</b> каждого месяца должна выполняться эта задача.\n
-                Например, можно выбрать <b>1 и 15 число</b>, если отчёт делается дважды в месяц,\n
-                или <b>последний день</b>, если задача связана с закрытием периода.\n
-                \n
+                Например, можно выбрать <b>1 и 15 число</b>, если отчёт делается дважды в месяц, или <b>последний день</b>, если задача связана с закрытием периода. \n
                 <small>Выберите хотя бы одну дату, чтобы продолжить.</small>`,
               onNextClick: (_el, _step, options) => {
                 const ok = hasSelectedInside(
@@ -1823,7 +1883,7 @@ export const ToursRegistry = {
           {
             element: '[data-tour="form.tasks.start-time"]',
             popover: {
-              title: "Когда показывать задачу",
+              title: "Когда выполнять задачу",
               description: `Укажите, <b>во сколько</b> задача должна быть доступна сотруднику.\n
               Задачи отправляются <b>сразу после чекина</b> — то есть, когда сотрудник отмечается на рабочем месте.\n
               Поле времени помогает задать <b>ориентир</b> — например, если вы хотите, чтобы сотрудник знал, что задание нужно выполнить к определённому часу.`,
@@ -1915,6 +1975,10 @@ export const ToursRegistry = {
                 );
                 btn?.click();
               },
+              onPrevClick: (element, _step, options) => {
+                options.driver.movePrevious();
+                tourEnableSkip();
+              },
             },
             onHighlighted: (element, _step, options) => {
               const onBtnClick = () => {
@@ -1925,8 +1989,7 @@ export const ToursRegistry = {
 
               const onSuccess = () => {
                 setTimeout(() => {
-                  // было 16 — неверно (последний шаг имеет индекс 15)
-                  options.driver.moveTo(15);
+                  options.driver.moveTo(19);
                 }, 150);
               };
 
@@ -1949,6 +2012,8 @@ export const ToursRegistry = {
                 );
                 window.removeEventListener("tour:tasks:submit:fail", onFail);
               };
+
+              tourDisableSkip();
             },
             onDeselected: (element) => {
               element?._tourCleanup?.();
@@ -1958,14 +2023,19 @@ export const ToursRegistry = {
           {
             popover: {
               title: "Обучение завершено! 🎉",
-              description: `Поздравляем! \n
-              Вы прошли обучение и узнали, как создавать <b>подразделения</b>, <b>должности</b>, <b>сотрудников</b> и <b>задачи</b>.\n
-              Теперь вы готовы использовать систему для автоматизации работы вашей команды.`,
+              description: `Основное обучение пройдено. \n
+                Далее будет предложено создать сотрудников — вы можете <b>пропустить</b> этот шаг, если не хотите проходить его.\n
+                Сотрудники добавляются <b>автоматически через бота <small>(команда "/start")</small></b>, после чего их останется лишь <b>отредактировать</b> — указать должность и имя.`,
               onNextClick: () => {
                 drv.destroy();
-                sessionStorage.removeItem("start_tour");
               },
               nextBtnText: "Завершить",
+            },
+            onHighlighted: () => {
+              tourDisableSkip();
+            },
+            onDeselected: () => {
+              tourEnableSkip();
             },
           },
         ],
@@ -1992,6 +2062,7 @@ export const ToursRegistry = {
 
         onDestroyed: () => {
           // завершение (нормальное или по Skip)
+          purgeAllTourFlags();
           ctx.complete();
         },
 
@@ -2290,7 +2361,7 @@ export const ToursRegistry = {
             element: '[data-tour="form.employee.position"]',
             popover: {
               title: "Указываем должность",
-              description: `По умолчанию часовой пояс подставляется из подразделения, но если сотрудник живёт или работает в другом регионе — нажмите на поле, чтобы выбрать другой вариант.`,
+              description: `Выберите одну или несколько должностей, которые занимает сотрудник.`,
               nextBtnText: "Показать опции",
               onNextClick: (element, _step, options) => {
                 console.log(element);
@@ -2342,8 +2413,7 @@ export const ToursRegistry = {
             element: '[data-tour="form.employee.position.menu"]',
             popover: {
               title: "Выбор должности",
-              description: `Выберите часовой пояс, в котором находится сотрудник. \n
-                Это важно, чтобы уведомления приходили в нужное локальное время.`,
+              description: `Вы можете <b>создать новую</b> должность, если нужной <b>нет в списке</b> — просто начните ввод и нажмите <b>"Создать"</b>.`,
               onNextClick: (_el, _step, options) => {
                 const headerSel = '[data-tour="form.employee.position.header"]';
                 const menuSel = '[data-tour="form.employee.position.menu"]';
@@ -2366,25 +2436,30 @@ export const ToursRegistry = {
               const itemSelector =
                 '[role="option"], [class*="option"], li, button, [data-option]';
 
+              const advanceToFrequency = () => {
+                if (element._tourAdvancing) return; // гард от двойного перехода
+                element._tourAdvancing = true;
+                // закрываем меню и идём именно к следующему нужному шагу, а не просто moveNext
+                closeDropdownAndGo(headerSel, menuSel, options, {
+                  afterClose: () => {
+                    options.driver.refresh?.();
+                    goToStepByElement(
+                      options,
+                      '[data-tour="form.tasks.frequency"]'
+                    );
+                    element._tourAdvancing = false;
+                  },
+                });
+              };
+
               const onCreated = () => {
-                // закрываем меню и идём дальше
-                closeDropdownAndGo(
-                  '[data-tour="form.employee.position.header"]',
-                  '[data-tour="form.employee.position.menu"]',
-                  options
-                );
+                advanceToFrequency();
               };
               window.addEventListener(
                 "tour:employee:position:create:success",
                 onCreated,
                 { once: true }
               );
-              element._menuOff?.();
-              element._menuOff = () =>
-                window.removeEventListener(
-                  "tour:employee:position:create:success",
-                  onCreated
-                );
 
               const onPick = (e) => {
                 const item = e.target.closest(itemSelector);
@@ -2407,8 +2482,14 @@ export const ToursRegistry = {
               // убираем старый обработчик, если был
               element._menuOff?.();
               element.addEventListener("click", onPick);
-              element._menuOff = () =>
+              element._menuOff = () => {
                 element.removeEventListener("click", onPick);
+                window.removeEventListener(
+                  "tour:task:position:create:success",
+                  onCreated
+                );
+                element._tourAdvancing = false;
+              };
 
               // авто-открывать меню здесь не нужно — оно уже открыто на этом шаге
             },
@@ -2563,6 +2644,10 @@ export const ToursRegistry = {
                 );
                 btn?.click();
               },
+              onPrevClick: (element, step, options) => {
+                options.driver.movePrevious();
+                tourEnableSkip();
+              },
             },
             onHighlighted: (element, _step, options) => {
               const onBtnClick = () => {
@@ -2600,23 +2685,25 @@ export const ToursRegistry = {
                 );
                 window.removeEventListener("tour:employee:submit:fail", onFail);
               };
+              tourDisableSkip();
             },
             onDeselected: (element) => {
               element?._tourCleanup?.();
               delete element?._tourCleanup;
+              tourEnableSkip();
             },
           },
           {
             popover: {
-              title: "Сотрудник создан!",
-              description: `Вы успешно добавили сотрудника в систему.
-                Теперь можно перейти к следующему этапу — <b>разделу «Задачи»</b>.\n
-                Там вы узнаете, как создавать повторяющиеся задачи, задавать расписание и назначать их сотрудникам, чтобы они получали уведомления в Телеграм-боте.\n
-                Нажмите <b>«К задачам»</b>, чтобы продолжить обучение.`,
-              nextBtnText: "К задачам",
-              onNextClick: (element, step, options) => {
-                options.driver.destroy();
+              title: "Сотрудник создан! 🎉",
+              description: `Вы успешно добавили сотрудника в систему и завершили обучение`,
+              nextBtnText: "Закрыть",
+              onNextClick: () => {
+                drv.destroy(); // вызовет onDestroyed -> purgeAllTourFlags()
               },
+            },
+            onHighlighted: () => {
+              tourDisableSkip();
             },
           },
         ],

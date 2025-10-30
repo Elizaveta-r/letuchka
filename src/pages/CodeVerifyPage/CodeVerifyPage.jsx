@@ -70,32 +70,48 @@ export const CodeVerifyPage = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.titleContainer}>
-        <h3 className={styles.title}>Подтвердите почту</h3>
-        <p className={styles.desc}>Введите код, полученный в письме</p>
-      </div>
-
-      <CodeInput
-        length={6}
-        value={code}
-        onComplete={handleCodeComplete}
-        onChange={handleCodeChange}
-        loading={loadingCode}
-      />
-
-      <div className={styles.resendRow}>
-        <span className={styles.resendHint}>Не пришёл код?</span>
-        <div
-          onClick={handleResend}
-          className={`${styles.resendButton} ${
-            cooldown > 0 || loadingCode ? styles.disabled : ""
-          }`}
-        >
-          {cooldown > 0
-            ? `Отправить ещё раз (${cooldown} c)`
-            : "Отправить код ещё раз"}
+      {!success && (
+        <div className={styles.titleContainer}>
+          <h3 className={styles.title}>Подтвердите почту</h3>
+          <p className={styles.desc}>Введите код, полученный в письме</p>
         </div>
-      </div>
+      )}
+
+      {!success && (
+        <CodeInput
+          length={6}
+          value={code}
+          onComplete={handleCodeComplete}
+          onChange={handleCodeChange}
+          loading={loadingCode}
+        />
+      )}
+
+      {!success && (
+        <div className={styles.resendRow}>
+          <span className={styles.resendHint}>Не пришёл код?</span>
+          <div
+            onClick={handleResend}
+            className={`${styles.resendButton} ${
+              cooldown > 0 || loadingCode ? styles.disabled : ""
+            }`}
+          >
+            {cooldown > 0
+              ? `Отправить ещё раз (${cooldown} c)`
+              : "Отправить код ещё раз"}
+          </div>
+        </div>
+      )}
+
+      {success && (
+        <div className={styles.successMessage}>
+          <p className={styles.successTitle}>Код подтверждён!</p>
+          <p className={styles.successText}>
+            Теперь вы можете нажать на кнопку ниже и авторизоваться, повторно
+            введя пароль.
+          </p>
+        </div>
+      )}
 
       {success && (
         <Button

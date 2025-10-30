@@ -22,6 +22,7 @@
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    // grid-template-columns: 1fr;
     text-align: center;
     gap: 20px;
   }
@@ -43,7 +44,8 @@
 
   @media (max-width: 768px) {
     width: 100%;
-    height: 210px;
+    height: 400px;
+    // height: 210px;
   }
 }
 

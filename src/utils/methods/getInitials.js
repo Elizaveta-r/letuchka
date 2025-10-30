@@ -3,8 +3,6 @@ export const getInitials = (surname, firstname) => {
     (part) => part && part.trim().length > 0
   );
 
-  console.log(parts);
-
   if (parts.length >= 2) {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   }

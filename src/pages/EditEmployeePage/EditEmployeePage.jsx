@@ -83,6 +83,7 @@ export default function EditEmployeePage() {
 
   const lastSelectedPositionsRef = useRef([]);
   const skipAutoFillRef = useRef(false);
+  const didInitRef = useRef(false);
 
   const defaultDepartment = departments?.filter((d) => d.is_default)[0];
 
@@ -255,11 +256,13 @@ export default function EditEmployeePage() {
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      initializeState(isNew ? null : editedEmployee);
-    }
+    if (!isOpen) return;
+    if (didInitRef.current) return;
+    initializeState(isNew ? null : editedEmployee);
+    didInitRef.current = true;
+    // только на открытие и смену id редактируемого сотрудника
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, editedEmployee, isNew, departmentsOptions, positionsOptions]);
+  }, [isOpen, editedEmployee?.id]);
 
   useEffect(() => {
     // определяем ID активного подразделения
@@ -311,6 +314,7 @@ export default function EditEmployeePage() {
   useEffect(() => {
     const titleElement = document.querySelector(`.${styles.page} `);
     if (!isStartTour && !isMobile && titleElement) {
+      console.log("isStartTour", isStartTour);
       // небольшой таймаут, чтобы DOM успел прогрузиться
       setTimeout(() => {
         window.scrollTo({
