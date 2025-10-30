@@ -47,6 +47,7 @@ export default function EditEmployeePage() {
   );
 
   const isNew = !editedEmployee;
+  const isStartTour = sessionStorage.getItem("start_tour");
 
   // ✅ мемоизируем, чтобы не менять ссылки на каждом рендере
   const departmentsOptions = useMemo(
@@ -78,9 +79,9 @@ export default function EditEmployeePage() {
   const [position, setPosition] = useState([]);
   const [department, setDepartment] = useState(null);
   const [timeZone, setTimeZone] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const lastSelectedPositionsRef = useRef([]);
-
   const skipAutoFillRef = useRef(false);
 
   const defaultDepartment = departments?.filter((d) => d.is_default)[0];
@@ -155,12 +156,6 @@ export default function EditEmployeePage() {
 
     skipAutoFillRef.current = true;
   };
-
-  useEffect(() => {
-    initializeState(isNew ? null : editedEmployee);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNew, departmentsOptions, positionsOptions]);
 
   const handleChangeInput = (e) => {
     setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -252,6 +247,21 @@ export default function EditEmployeePage() {
   };
 
   useEffect(() => {
+    setIsOpen(true);
+
+    return () => {
+      setIsOpen(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      initializeState(isNew ? null : editedEmployee);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, editedEmployee, isNew, departmentsOptions, positionsOptions]);
+
+  useEffect(() => {
     // определяем ID активного подразделения
     let activeDepartmentId = null;
 
@@ -297,8 +307,6 @@ export default function EditEmployeePage() {
   useEffect(() => {
     dispatch(getPositionsList(1, 200));
   }, [dispatch]);
-
-  const isStartTour = sessionStorage.getItem("start_tour");
 
   useEffect(() => {
     const titleElement = document.querySelector(`.${styles.page} `);

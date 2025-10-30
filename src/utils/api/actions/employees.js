@@ -59,7 +59,7 @@ export const createEmployee = (data) => {
     try {
       const res = await $authHost.post(`/organization/employee`, data);
       if (res.status === 200) {
-        dispatch(getEmployeesList(1, 10));
+        dispatch(getEmployeesList(1, 1000));
         toast.success("Сотрудник успешно создан!");
       }
       return res;
@@ -78,7 +78,7 @@ export const updateEmployee = (data) => {
     try {
       const res = await $authHost.put(`/organization/employee`, data);
       if (res.status === 200) {
-        dispatch(getEmployeesList(1, 10));
+        dispatch(getEmployeesList(1, 1000));
         dispatch(getEmployeeWithHistory(data.employee_id, 1, 1000));
         toast.success("Сотрудник успешно обновлен!");
       }
@@ -167,7 +167,7 @@ export const deleteEmployee = (id) => {
         `/organization/employee?employee_id=${id}`
       );
       if (res.status === 200) {
-        dispatch(getEmployeesList(1, 10));
+        dispatch(getEmployeesList(1, 1000));
         toast.success("Сотрудник успешно удален!");
       }
       return res;

@@ -84,7 +84,7 @@ export default function EmployeePage() {
   };
 
   useEffect(() => {
-    dispatch(getEmployeesList(1, 10));
+    dispatch(getEmployeesList(1, 1000));
   }, [dispatch]);
 
   return (

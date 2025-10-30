@@ -31,7 +31,7 @@ export const createTask = (data) => {
     try {
       const res = await $authHost.post(`/organization/task`, data);
       if (res.status === 200) {
-        dispatch(getTasksList(1, 10));
+        dispatch(getTasksList(1, 1000));
         toast.success("Задача успешно создана!");
       }
       return res;
@@ -51,8 +51,7 @@ export const updateTask = (data) => {
       const res = await $authHost.put(`/organization/task`, data);
       if (res.status === 200) {
         console.log("updateTask", res.data);
-        dispatch(getTasksList(1, 10));
-        // dispatch(getEmployeesList(1, 10));
+        dispatch(getTasksList(1, 1000));
         toast.success("Задача успешно обновлена!");
       }
       return res;
@@ -86,7 +85,7 @@ export const deleteTask = (id) => {
     try {
       const res = await $authHost.delete(`/organization/task?task_id=${id}`);
       if (res.status === 200) {
-        dispatch(getTasksList(1, 10));
+        dispatch(getTasksList(1, 1000));
         toast.success("Задача успешно удалена!");
       }
       return res;

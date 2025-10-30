@@ -8,7 +8,6 @@ import { Button } from "../../ui/Button/Button";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { timeZoneOptions } from "../../utils/methods/generateTimeZoneOptions";
-import Hint from "../../ui/Hint/Hint";
 import {
   formatDataForSelect,
   mapSelectOptionsToIds,
