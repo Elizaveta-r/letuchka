@@ -1,7 +1,7 @@
 import styles from "./DepartmentsPage.module.scss";
 import DepartmentCard from "../../components/DepartmentCard/DepartmentCard";
 import PageTitle from "../../components/PageTitle/PageTitle";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import CreateDepartmentModal from "../../modules/CreateDepartmentModal/CreateDepartmentModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,6 +27,8 @@ export default function DepartmentsPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { departments, department, loading } = useSelector(
     (state) => state?.departments
   );
@@ -40,6 +42,10 @@ export default function DepartmentsPage() {
 
   const [hasCheckedDefault, setHasCheckedDefault] = useState(false);
   const timerRef = useRef(null);
+
+  const action = searchParams.get("create");
+
+  console.log(action);
 
   const handleDetails = (id) => {
     dispatch(setLoadingGetDetails(id));
@@ -107,6 +113,7 @@ export default function DepartmentsPage() {
 
   const handleCreateClose = () => {
     setVisibleCreateModal(false);
+    setSearchParams({});
   };
 
   const handleUpdateClose = () => {
@@ -117,6 +124,12 @@ export default function DepartmentsPage() {
   useEffect(() => {
     dispatch(getDepartmentsList(1, 10));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (action === "true") {
+      handleOpenCreateModal();
+    }
+  }, [action]);
 
   useEffect(() => {
     if (timerRef.current) {

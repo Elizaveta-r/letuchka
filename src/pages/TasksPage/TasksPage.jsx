@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { resetDraftTask, setIsEdit } from "../../store/slices/tasksSlice";
 import { TaskFilter } from "../../modules/TaskFilter/TaskFilter";
+import { toast } from "sonner";
 
 export default function TasksPage() {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ export default function TasksPage() {
     // sort,
     viewMode,
   } = useSelector((state) => state?.tasks);
+  const { departments } = useSelector((state) => state?.departments);
 
   const { searchText, department_id, position_id } = taskFilters;
 
@@ -90,7 +92,19 @@ export default function TasksPage() {
   const handleGoToNewTask = () => {
     dispatch(setIsEdit(false));
     dispatch(resetDraftTask());
-    navigate("/tasks/new");
+    if (!departments) {
+      toast("Подразделение не найдено", {
+        description:
+          "Для того чтобы продолжить, создайте хотя бы 1 подразделение.",
+        action: {
+          label: "Создать",
+          onClick: () => navigate("/departments?create=true"),
+        },
+        style: { textAlign: "left" },
+      });
+    } else {
+      navigate("/tasks/new");
+    }
   };
 
   useEffect(() => {

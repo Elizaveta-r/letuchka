@@ -15,6 +15,7 @@ import Hint from "../../../ui/Hint/Hint";
 import { useEffect } from "react";
 import { HintWithPortal } from "../../../ui/HintWithPortal/HintWithPortal";
 import { createPosition } from "../../../utils/api/actions/positions";
+import { toast } from "sonner";
 
 const confirmationTypes = [
   { value: "photo", label: "Фото" },
@@ -64,6 +65,8 @@ export const BasicTaskDetails = () => {
     return res;
   };
 
+  console.log(!departmentOptions);
+
   useEffect(() => {
     if (!isEdit) {
       dispatch(setDepartmentId(departmentOptions[0]));
@@ -109,6 +112,11 @@ export const BasicTaskDetails = () => {
       dispatch(setPositionIds(mapped));
     }
   }, [position_ids, positionOptions, dispatch]);
+
+  if (!departmentOptions) {
+    toast.error("Создайте хотя бы 1 подразделение");
+    return;
+  }
 
   return (
     <div className={styles.basicTaskDetails}>
