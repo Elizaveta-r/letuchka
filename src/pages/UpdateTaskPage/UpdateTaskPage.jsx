@@ -97,6 +97,12 @@ export default function UpdateTaskPage() {
       position_ids: draftTask?.position_ids?.map((p) => p.value),
     };
 
+    // Если не фото — убираем поля
+    // if (draftTask.done_type.value !== "photo") {
+    //   delete taskDataToSend.photo_need;
+    //   delete taskDataToSend.photo_required;
+    // }
+
     const taskDataToEdit = {
       ...draftTask,
       task_id: draftTask?.id,
@@ -107,6 +113,11 @@ export default function UpdateTaskPage() {
       onetime_date: disposableDateString,
       position_ids: draftTask?.position_ids?.map((p) => p.value),
     };
+
+    if (draftTask.done_type.value !== "photo") {
+      delete taskDataToEdit.photo_need;
+      delete taskDataToEdit.photo_required;
+    }
 
     if (isEdit) {
       dispatch(updateTask(taskDataToEdit)).then((res) => {

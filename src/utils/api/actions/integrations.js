@@ -64,7 +64,7 @@ export const toggleIntegrationStatus = (integration_id, status) => {
       }
       return false;
     } catch (error) {
-      logPostError(error);
+      logPostError("toggleIntegrationStatus", error);
       // toast.error("Не удалось сохранить изменения");
       return false;
     } finally {
@@ -93,7 +93,7 @@ export const updateIntegration = (data) => {
       }
       return res;
     } catch (error) {
-      logPostError(error);
+      logPostError("updateIntegration", error);
       throw error;
     } finally {
       dispatch(setIsIntegrationLoading(false));
@@ -126,7 +126,7 @@ export const deleteIntegration = (id) => {
       }
       return res;
     } catch (error) {
-      logPostError(error);
+      logPostError("deleteIntegration", error);
       throw error;
     } finally {
       dispatch(setIsIntegrationLoading(false));

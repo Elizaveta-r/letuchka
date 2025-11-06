@@ -74,6 +74,13 @@ const tasksSlice = createSlice({
     resetTaskFilters(state) {
       state.taskFilters = initialTaskFilters;
     },
+    resetPhotoToggles: (state) => {
+      if (state.draftTask) {
+        state.draftTask.photo_need = false;
+        state.draftTask.photo_required = false;
+        state.draftTask.ai_prompt = "";
+      }
+    },
     // setSort(state, action) {
     //   const { key, order } = action.payload;
     //   state.sort.key = key;
@@ -266,6 +273,7 @@ export const {
   setStartTime,
   setDeadlineTime,
   setDisposableDate,
+  resetPhotoToggles,
   setNeedPhoto,
   setPhotoRequired,
   setExpiredNotify,

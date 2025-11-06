@@ -36,7 +36,7 @@ export const createTask = (data) => {
       }
       return res;
     } catch (error) {
-      logPostError(error);
+      logPostError("createTask", error);
       throw error;
     } finally {
       dispatch(setLoadingTask(false));
@@ -56,7 +56,7 @@ export const updateTask = (data) => {
       }
       return res;
     } catch (error) {
-      logPostError(error);
+      logPostError("updateTask", error);
       throw error;
     } finally {
       dispatch(setLoadingTask(false));
@@ -90,7 +90,7 @@ export const deleteTask = (id) => {
       }
       return res;
     } catch (error) {
-      logPostError(error);
+      logPostError("deleteTask", error);
       throw error;
     } finally {
       dispatch(setLoadingTask(false));

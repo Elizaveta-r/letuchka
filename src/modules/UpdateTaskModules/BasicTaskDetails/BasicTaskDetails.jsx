@@ -5,6 +5,7 @@ import CustomTextArea from "../../../ui/CustomTextArea/CustomTextArea";
 import styles from "./BasicTaskDetails.module.scss";
 
 import {
+  resetPhotoToggles,
   setAcceptCondition,
   setDepartmentId,
   setDoneType,
@@ -150,7 +151,12 @@ export const BasicTaskDetails = () => {
             placeholder="Выберите тип подтверждения"
             options={confirmationTypes}
             value={done_type}
-            onChange={(selectedOption) => dispatch(setDoneType(selectedOption))}
+            onChange={(selectedOption) => {
+              if (selectedOption.value !== "photo") {
+                dispatch(resetPhotoToggles());
+              }
+              dispatch(setDoneType(selectedOption));
+            }}
             dataTourHeader="form.tasks.confirmation-type.header"
             dataTourId="form.tasks.confirmation-type"
           />

@@ -172,14 +172,18 @@ export default function EditEmployeePage() {
       : [];
     const departmentIds = mapSelectOptionsToIds(departmentsArray);
 
+    const contacts = [
+      { type: "telegram_id", value: input.telegramId },
+      ...(input.telegramName
+        ? [{ type: "telegram_username", value: input.telegramName }]
+        : []),
+    ];
+
     const base = {
       surname,
       firstname,
       patronymic,
-      contacts: [
-        { type: "telegram_id", value: input.telegramId },
-        { type: "telegram_username", value: input.telegramName },
-      ],
+      contacts,
       role: role.value,
       positions: positionIds,
       departments: departmentIds,
@@ -196,9 +200,17 @@ export default function EditEmployeePage() {
       toast.error("Пожалуйста, заполните ФИО сотрудника.");
       return false;
     }
-    const { surname, firstname } = parseFullName(input.name);
-    if (!surname || !firstname) {
-      toast.error("Пожалуйста, введите как минимум фамилию и имя.");
+    const { surname } = parseFullName(input.name);
+    if (!surname) {
+      toast.error("Пожалуйста, введите как минимум фамилию");
+      return false;
+    }
+    return true;
+  };
+
+  const validateTelegramId = (id) => {
+    if (!id) {
+      toast.error("Пожалуйста, введите Telegram ID.");
       return false;
     }
     return true;
@@ -206,6 +218,7 @@ export default function EditEmployeePage() {
 
   const handleConfirm = () => {
     if (!validateName()) return;
+    if (!validateTelegramId(input.telegramId)) return;
     window.dispatchEvent(new CustomEvent("tour:employee:submit:clicked"));
     dispatch(createEmployee(buildPayload(false)))
       .then((res) => {

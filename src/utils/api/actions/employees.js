@@ -84,7 +84,7 @@ export const updateEmployee = (data) => {
       }
       return res;
     } catch (error) {
-      logPostError(error);
+      logPostError("updateEmployee", error);
       throw error;
     } finally {
       dispatch(setEmployeesLoading(false));
