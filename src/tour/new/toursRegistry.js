@@ -1,4 +1,6 @@
 // toursRegistry.js
+import "simplebar-react/dist/simplebar.min.css";
+
 import { driver } from "driver.js";
 import { $authHost } from "../../utils/api/http";
 
@@ -23,6 +25,7 @@ async function createDepartmentOnSkip() {
 
   return res;
 }
+
 function purgeAllTourFlags() {
   try {
     // 1) подчистить мусор/устаревшие ключи (как у тебя и было)
@@ -82,7 +85,83 @@ function purgeAllTourFlags() {
   // Сообщаем приложению (этот же таб)
   window.dispatchEvent(new CustomEvent("tour:all:finished"));
 }
-// ➜ 2) ПРАВИМ handlePopoverRender: вызывать API при Skip в "подразделениях"
+
+// хэлперы если все таки нужно оставить шаг обучения для описания (будь оно неладно)
+// ===================================================================================== //
+// function setupKeyboardWatcher(driver) {
+//   if (!isMobile() || !window.visualViewport) return;
+
+//   const vp = window.visualViewport;
+//   let lastHeight = vp.height;
+//   let keyboardVisible = false;
+//   let timeout;
+
+//   const onResize = () => {
+//     clearTimeout(timeout);
+//     timeout = setTimeout(() => {
+//       const diff = lastHeight - vp.height;
+
+//       // клавиатура открылась
+//       if (diff > 150 && !keyboardVisible) {
+//         keyboardVisible = true;
+//         hidePopover(driver);
+//       }
+
+//       // клавиатура закрылась
+//       if (diff < -150 && keyboardVisible) {
+//         keyboardVisible = false;
+//         showPopover(driver);
+//       }
+
+//       lastHeight = vp.height;
+//     }, 100);
+//   };
+
+//   vp.addEventListener("resize", onResize);
+
+//   return () => vp.removeEventListener("resize", onResize);
+// }
+
+// function hidePopover(driver) {
+//   const popover = document.querySelector(".driver-popover");
+//   if (!popover) return;
+
+//   popover.classList.add("driver-popover--hidden");
+//   driver.overlay?.setAttribute("style", "opacity: 0.3; pointer-events: none;"); // затемнение оставить
+// }
+
+// function showPopover(driver) {
+//   const popover = document.querySelector(".driver-popover");
+//   if (!popover) return;
+
+//   popover.classList.remove("driver-popover--hidden");
+//   driver.refresh?.();
+//   driver.overlay?.removeAttribute("style");
+// }
+
+// function setupKeyboardInputHandlers(driver) {
+//   if (!isMobile()) return;
+
+//   document.addEventListener("focusin", (e) => {
+//     if (e.target.matches("input, textarea")) {
+//       driver.overlay?.classList.add("driver--hidden");
+//       driver.popover?.classList.add("driver--hidden");
+//       setTimeout(() => {
+//         console.log("refresh");
+//         driver.refresh?.();
+//       }, 250);
+//     }
+//   });
+
+//   document.addEventListener("focusout", (e) => {
+//     if (e.target.matches("input, textarea")) {
+//       driver.overlay?.classList.remove("driver--hidden");
+//       driver.popover?.classList.remove("driver--hidden");
+//       setTimeout(() => driver.refresh?.(), 250);
+//     }
+//   });
+// }
+// ===================================================================================== //
 
 const handlePopoverRender = (drv, popover, skipType) => {
   if (document.body.dataset.tourNoSkip === "1") return; // не показываем "Пропустить" на финальных шагах
@@ -90,6 +169,27 @@ const handlePopoverRender = (drv, popover, skipType) => {
   const skip = document.createElement("button");
   skip.innerText = "Пропустить";
   skip.classList.add("driver-skip-btn");
+
+  const desc = popover.description;
+
+  desc.classList.remove("scrollable", "has-scroll-hint");
+  const hint = desc.querySelector(".scroll-hint");
+  if (hint) hint.remove();
+
+  // Проверим, есть ли переполнение
+  const overflow = desc.scrollHeight > desc.clientHeight + 5;
+  if (overflow) {
+    desc.classList.add("scrollable", "has-scroll-hint");
+
+    // Визуальная подсказка
+    const hintEl = document.createElement("div");
+    hintEl.className = "scroll-hint";
+    hintEl.innerHTML = "⬇️ Пролистайте вниз";
+    desc.appendChild(hintEl);
+
+    // Убираем подсказку через 4 секунды
+    setTimeout(() => hintEl.remove(), 4000);
+  }
 
   // защита от дабл-кликов
   let busy = false;
@@ -541,6 +641,7 @@ export const ToursRegistry = {
     readySelectors: ['[data-tour="menu.departments"]'],
     create: (ctx) => {
       let drv; // замыкание нужно, чтобы из onPopoverRender можно было вызвать destroy()
+
       const config = {
         showProgress: true,
         smoothScroll: true,
@@ -860,6 +961,7 @@ export const ToursRegistry = {
         ],
       };
       drv = driver(config);
+
       return drv;
     },
   },
@@ -1037,6 +1139,7 @@ export const ToursRegistry = {
         ],
       };
       drv = driver(config);
+
       return drv;
     },
   },

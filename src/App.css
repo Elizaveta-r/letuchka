@@ -7,6 +7,72 @@
   align-items: center;
 }
 
+.driver-popover.driverjs-theme-dark .driver-popover-description {
+  position: relative;
+  max-height: 25vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  padding-right: 0 6px; /* чтобы не резало текст полосой */
+}
+
+.driver-popover.driverjs-theme-dark.driver-popover--hidden {
+  display: none;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* лёгкая тень внизу */
+.driver-popover.driverjs-theme-dark
+  .driver-popover-description.scrollable::after {
+  /* content: "";
+  position: sticky;
+  bottom: 0;
+  display: block;
+  height: 24px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3));
+  pointer-events: none; */
+
+  content: "";
+  position: sticky;
+  bottom: 0;
+  height: 24px;
+  display: block;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+  /* border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px; */
+}
+
+/* подсказка */
+.scroll-hint {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #ccc;
+  animation: scrollHint 1.2s ease-in-out infinite;
+  background: #1e231d;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+@keyframes scrollHint {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-50%, 6px);
+    opacity: 1;
+  }
+}
+
 .driver-popover.driverjs-theme-dark:not(body):has(> .driver-active-element) {
   overflow: visible !important;
 }
