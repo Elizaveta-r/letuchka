@@ -19,13 +19,13 @@
 }
 
 /* Мобильная обертка */
-.mobileMenuWrapper {
-  display: none;
+// .mobileMenuWrapper {
+//   display: none;
 
-  @media (max-width: 1023px) {
-    display: block;
-  }
-}
+//   @media (max-width: 1023px) {
+//     display: block;
+//   }
+// }
 
 /* Оверлей */
 .overlay {
@@ -217,8 +217,11 @@
 }
 
 .bottomIcon {
+  width: 24px;
+  height: 24px;
+
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   color: inherit;
   transition: color 0.2s ease;
@@ -248,4 +251,34 @@
     box-shadow: none;
     transform: none;
   }
+}
+
+.supportButton {
+  width: 100% !important;
+  background: v.$gradient-primary;
+  color: v.$color_white;
+  font-weight: 500;
+  border: none;
+  box-shadow: v.$color-shadow-primary;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  white-space: nowrap;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: v.$color-shadow-primary-hover;
+  }
+
+  svg {
+    stroke: v.$color_white;
+  }
+}
+
+.logoutContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }

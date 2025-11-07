@@ -7,6 +7,10 @@
   justify-content: space-between;
   padding: 15px 20px;
   user-select: none;
+
+  &.mobile {
+    justify-content: space-between;
+  }
 }
 
 .logo {
@@ -59,5 +63,54 @@
   & .supportButton {
     width: max-content;
     padding: 8px 24px;
+  }
+}
+
+.supportButton {
+  background: v.$gradient-primary;
+  color: v.$color_white;
+  font-weight: 500;
+  border: none;
+  box-shadow: v.$color-shadow-primary;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: v.$color-shadow-primary-hover;
+  }
+
+  svg {
+    stroke: v.$color_white;
+  }
+
+  @media screen and (max-width: 1023px) {
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+  }
+}
+
+.menu {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: v.$color-text-dark;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: v.$color-bg-light;
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 }

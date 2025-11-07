@@ -44,27 +44,7 @@ const burgerMenuItems = [
   },
 ];
 
-const allMenuItems = [
-  { name: "Обзор", path: "/", icon: <Home size={18} /> },
-  // { name: "Биллинг", path: "/billing", icon: <CreditCard size={18} /> },
-  { name: "Отчеты", path: "/reports", icon: <FileBarChart size={18} /> },
-  { name: "Задачи", path: "/tasks", icon: <AlarmClockCheck size={18} /> },
-  { name: "Должности", path: "/positions", icon: <Briefcase size={18} /> },
-  { name: "Сотрудники", path: "/employees", icon: <IdCardLanyard size={18} /> },
-  { name: "Интеграции", path: "/integrations", icon: <Cable size={18} /> },
-  {
-    name: "Подразделения",
-    path: "/departments",
-    icon: <Building2 size={18} />,
-  },
-  {
-    name: "Настройки",
-    path: "/settings",
-    icon: <Settings size={18} />,
-  },
-];
-
-export const MobileLeftMenu = () => {
+export const MobileLeftMenu = ({ isOpen, setIsOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,7 +53,7 @@ export const MobileLeftMenu = () => {
 
   const sessionId = userData?.session?.id;
 
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const isParentActive = (item) =>
@@ -119,6 +99,7 @@ export const MobileLeftMenu = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Блокировка скролла при открытом меню
@@ -136,32 +117,6 @@ export const MobileLeftMenu = () => {
 
   return (
     <>
-      {/* Десктопное меню */}
-      <nav className={styles.leftMenu} aria-label="Главное меню">
-        {allMenuItems?.map((item, index) => {
-          return (
-            <div key={`left-menu-${item.name}-${index}`}>
-              <div
-                role="button"
-                tabIndex={0}
-                className={`${styles.item} ${
-                  isParentActive(item) ? styles.active : ""
-                }`}
-                onClick={() => handleItemClick(item)}
-                onKeyDown={(e) => handleKey(e, item)}
-              >
-                <div className={styles.labelContainer}>
-                  {item.icon && <div className={styles.icon}>{item.icon}</div>}
-                  <span className={styles.label}>{item.name}</span>
-                </div>
-              </div>
-              {item.name === "Биллинг" && <div className={styles.line} />}
-              {item.name === "Статистика" && <div className={styles.line} />}
-            </div>
-          );
-        })}
-      </nav>
-
       {/* Мобильное меню */}
       <div className={styles.mobileMenuWrapper}>
         <AnimatePresence>
@@ -227,6 +182,7 @@ export const MobileLeftMenu = () => {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 1 * 0.05 + 0.1 }}
+                  className={styles.logoutContainer}
                 >
                   <Button
                     title="Выйти"

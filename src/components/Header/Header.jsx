@@ -11,6 +11,7 @@ import Logo from "../Logo/Logo";
 import { revokeSession } from "../../utils/api/actions/sessions";
 import { logout } from "../../store/slices/userSlice";
 import { MobileLeftMenu } from "../MobileLeftMenu/MobileLeftMenu";
+import { SupportModal } from "../../modules/SupportModal/SupportModal";
 
 export const Header = () => {
   const isMobile = useMediaQuery({
@@ -25,6 +26,7 @@ export const Header = () => {
   const sessionId = userData?.session?.id;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [visibleSupportModal, setVisibleSupportModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleLogOut = async () => {
@@ -46,25 +48,43 @@ export const Header = () => {
 
   const handleGoHome = () => navigate("/");
   const handleGoToSettings = () => navigate("/settings");
+  const handleOpenHelp = () => {
+    setIsMenuOpen(false);
+    setVisibleSupportModal(true);
+  };
+
+  const handleCloseSupportModal = () => {
+    setVisibleSupportModal(false);
+  };
 
   return (
-    <div className={styles.header}>
+    <div className={`${styles.header} ${isMobile ? styles.mobile : ""}`}>
       <div className={styles.logo} onClick={handleGoHome}>
         <Logo />
       </div>
 
-      {isMenuOpen && (
-        <div className={styles.menu}>
-          <div onClick={() => setIsMenuOpen(false)}>
-            <Menu />
-          </div>
-        </div>
-      )}
+      <SupportModal
+        isOpen={visibleSupportModal}
+        onClose={handleCloseSupportModal}
+      />
 
       {isMobile ? (
-        <MobileLeftMenu />
+        <MobileLeftMenu
+          isOpen={isMenuOpen}
+          setIsOpen={setIsMenuOpen}
+          handleOpenHelp={handleOpenHelp}
+        />
       ) : (
         <div className={styles.block}>
+          {!isMobile && (
+            <Button
+              leftIcon={<Headset size={16} strokeWidth={1.7} />}
+              title={"Помогите настроить"}
+              className={`${styles.supportButton}`}
+              onClick={handleOpenHelp}
+              secondary={true}
+            />
+          )}
           <div className={styles.buttons}>
             <div className={styles.settings} onClick={handleGoToSettings}>
               <Settings size={24} strokeWidth={1.5} />
@@ -79,6 +99,16 @@ export const Header = () => {
             onClick={userData ? handleLogOut : handleSignIn}
           />
         </div>
+      )}
+
+      {isMobile && (
+        <Button
+          leftIcon={<Headset size={16} strokeWidth={1.7} />}
+          title={"Помощь"}
+          className={`${styles.supportButton}`}
+          onClick={handleOpenHelp}
+          secondary={true}
+        />
       )}
     </div>
   );
