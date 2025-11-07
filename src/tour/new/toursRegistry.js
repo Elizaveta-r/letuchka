@@ -1,5 +1,4 @@
 // toursRegistry.js
-import "simplebar-react/dist/simplebar.min.css";
 
 import { driver } from "driver.js";
 import { $authHost } from "../../utils/api/http";
