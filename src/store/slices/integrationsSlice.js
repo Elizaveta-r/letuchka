@@ -25,6 +25,10 @@ const initialState = {
   editedIntegration: null,
   isIntegrationLoading: false,
   error: null,
+
+  dismissedBotBanners: sessionStorage.getItem("dismissedBotBanners")
+    ? JSON.parse(sessionStorage.getItem("dismissedBotBanners"))
+    : [],
 };
 
 const integrationsSlice = createSlice({
@@ -48,6 +52,16 @@ const integrationsSlice = createSlice({
     },
     setIsIntegrationLoading(state, action) {
       state.isIntegrationLoading = action.payload;
+    },
+    dismissBotBanner(state, action) {
+      const id = action.payload;
+      if (!state.dismissedBotBanners.includes(id)) {
+        state.dismissedBotBanners.push(id);
+        sessionStorage.setItem(
+          "dismissedBotBanners",
+          JSON.stringify(state.dismissedBotBanners)
+        );
+      }
     },
   },
   extraReducers: (builder) => {
@@ -74,5 +88,6 @@ export const {
   setIntegrationStatus,
   setEditedIntegration,
   setIsIntegrationLoading,
+  dismissBotBanner,
 } = integrationsSlice.actions;
 export default integrationsSlice.reducer;

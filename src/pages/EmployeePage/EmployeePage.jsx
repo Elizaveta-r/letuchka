@@ -15,6 +15,7 @@ import {
 import { setEditedEmployee } from "../../store/slices/employeesSlice";
 import { useMediaQuery } from "react-responsive";
 import { EmployeeCard } from "../../components/EmployeeCard/EmployeeCard";
+import { InfoBanner } from "../../ui/InfoBanner/InfoBanner";
 
 export default function EmployeePage() {
   const navigate = useNavigate();
@@ -96,6 +97,11 @@ export default function EmployeePage() {
         dataTourMobile={"menu.employees"}
         onClick={handleOpenNewEmployeeModal}
       />
+
+      <InfoBanner>
+        Сотрудники добавляются автоматически, когда они нажимают{" "}
+        <strong>«/start»</strong> в Телеграм-боте.
+      </InfoBanner>
 
       <DeleteConfirmationModal
         isOpen={visibleConfirmDeleteModal}

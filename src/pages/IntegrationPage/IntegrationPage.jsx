@@ -12,17 +12,20 @@ import DeleteConfirmationModal from "../../modules/DeleteConfirmationModal/Delet
 import { Trash } from "lucide-react";
 import { OnboardingModal } from "../../modules/OnboardingModal/OnboardingModal";
 import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
-import { setEditedIntegration } from "../../store/slices/integrationsSlice";
+import {
+  dismissBotBanner,
+  setEditedIntegration,
+} from "../../store/slices/integrationsSlice";
 import { useMediaQuery } from "react-responsive";
 import { useNavigate } from "react-router-dom";
+import { BotInviteBanner } from "../../components/BotInviteBanner/BotInviteBanner";
 
 const IntegrationPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { integrations, isIntegrationLoading } = useSelector(
-    (state) => state?.integrations
-  );
+  const { integrations, isIntegrationLoading, dismissedBotBanners } =
+    useSelector((state) => state?.integrations);
 
   const isMobile = useMediaQuery({
     query: "(max-width: 1100px)",
@@ -100,6 +103,24 @@ const IntegrationPage = () => {
         onClick={handleOpenCreateModal}
         dataTour="integration.add"
       />
+
+      {integrations && (
+        <div className={styles.integrationBanners}>
+          {integrations.map((integration) => {
+            const dismissed = dismissedBotBanners?.includes(integration.id);
+            if (!dismissed) {
+              return (
+                <BotInviteBanner
+                  key={`banner-${integration.id}`}
+                  integration={integration}
+                  onClose={() => dispatch(dismissBotBanner(integration.id))}
+                />
+              );
+            }
+            return null;
+          })}
+        </div>
+      )}
       <UpdateIntegrationModal
         isNew={isNew}
         isOpen={visibleModal}
