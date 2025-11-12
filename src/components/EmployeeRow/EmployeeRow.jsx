@@ -121,11 +121,11 @@ export default function EmployeeRow({
             <Contact size={16} />
           </div>
         </HintWithPortal>
-        <HintWithPortal hintContent="Переместить сотрудника" hasIcon={false}>
+        {/* <HintWithPortal hintContent="Переместить сотрудника" hasIcon={false}>
           <div className={styles.move} onClick={onMove}>
             <Shuffle size={16} />
           </div>
-        </HintWithPortal>
+        </HintWithPortal> */}
         <HintWithPortal hintContent="Редактировать" hasIcon={false} isMaxWidth>
           <div className={styles.edit} onClick={onEdit}>
             <Pencil size={16} />

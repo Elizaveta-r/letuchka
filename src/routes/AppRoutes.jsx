@@ -23,6 +23,7 @@ import IntegrationPage from "../pages/IntegrationPage/IntegrationPage";
 import CreateBotPage from "../pages/CreateBotPage/CreateBotPage";
 import { BaseLayout } from "../layout/BaseLayout/BaseLayout";
 import EditEmployeePage from "../pages/EditEmployeePage/EditEmployeePage";
+import StaffingTablePage from "../pages/StaffingTablePage/StaffingTablePage";
 
 export default function AppRoutes() {
   const location = useLocation();
@@ -171,6 +172,14 @@ export default function AppRoutes() {
       handle: {
         title: "Отчеты | Летучка", // 👈 Заголовок
       },
+    },
+    {
+      path: "/staffing-table",
+      element: (
+        <PageLayout>
+          <StaffingTablePage />
+        </PageLayout>
+      ),
     },
     {
       path: "/settings",

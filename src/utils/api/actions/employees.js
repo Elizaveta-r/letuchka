@@ -36,7 +36,7 @@ export const getEmployeesByDepartmentAndRole = (departmentId, role) => {
   return async (dispatch) => {
     try {
       const res = await $authHost.get(
-        `/organization/employee/list?page=1&page_size=200&department=${departmentId}&role=${role}`
+        `/organization/employee/list?page=1&page_size=200&departments=${departmentId}&role=${role}`
       );
       if (res.status === 200) {
         if (role === "head") {

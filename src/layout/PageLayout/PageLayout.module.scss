@@ -1,3 +1,26 @@
+// .layout {
+//   background: var(--color-bg);
+//   box-sizing: border-box;
+//   min-height: calc(100vh - 80px);
+//   display: grid;
+//   grid-template-columns: auto 1fr;
+//   grid-template-rows: auto 1fr;
+//   grid-template-areas:
+//     "header header"
+//     "leftMenu children";
+//   margin: 0 10px 10px 10px;
+
+//   border-radius: 8px;
+//   border: 1px solid var(--borer-color);
+
+//   @media screen and (max-width: 1023px) {
+//     grid-template-columns: 1fr;
+//     grid-template-areas:
+//       "header"
+//       "children";
+//   }
+// }
+
 .layout {
   background: var(--color-bg);
   box-sizing: border-box;
@@ -9,9 +32,13 @@
     "header header"
     "leftMenu children";
   margin: 0 10px 10px 10px;
-
   border-radius: 8px;
   border: 1px solid var(--borer-color);
+
+  // Убрать width: 100vw и добавить:
+  width: calc(100vw - 20px); // вычитаем левый и правый margin по 10px
+  max-width: 100%;
+  overflow: hidden; // предотвращаем выход контента за границы
 
   @media screen and (max-width: 1023px) {
     grid-template-columns: 1fr;
@@ -26,6 +53,7 @@
   padding: 0 10px;
   border-right: 1px solid var(--borer-color);
   position: relative;
+  min-width: 200px; // добавить минимальную ширину
 
   @media screen and (max-width: 1023px) {
     display: none;
@@ -34,9 +62,10 @@
 
 .children {
   grid-area: children;
-  flex-shrink: 0;
   padding: 50px 4em;
   height: 100%;
+  overflow: auto; // добавить возможность скролла внутри
+  min-width: 0; // важно для корректной работы grid с overflow
 
   &.apiKeys {
     padding: 24px;
@@ -54,3 +83,37 @@
     padding: 12px;
   }
 }
+
+.leftMenu {
+  grid-area: leftMenu;
+  padding: 0 10px;
+  border-right: 1px solid var(--borer-color);
+  position: relative;
+
+  @media screen and (max-width: 1023px) {
+    display: none;
+  }
+}
+
+// .children {
+//   grid-area: children;
+//   flex-shrink: 0;
+//   padding: 50px 4em;
+//   height: 100%;
+
+//   &.apiKeys {
+//     padding: 24px;
+
+//     @media screen and (max-width: 1023px) {
+//       padding: 12px;
+//     }
+//   }
+
+//   @media screen and (max-width: 1439px) {
+//     padding: 24px;
+//   }
+
+//   @media screen and (max-width: 767px) {
+//     padding: 12px;
+//   }
+// }
