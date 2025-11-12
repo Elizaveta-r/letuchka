@@ -28,6 +28,7 @@ export const Button = ({
       <AnimatePresence mode="wait" initial={false}>
         {loading ? (
           <motion.div
+            className={styles.content}
             key="loader"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -35,6 +36,7 @@ export const Button = ({
             transition={{ duration: 0.2 }}
           >
             <RingLoader size={18} color="#fff" />
+            <p>Подождите</p>
           </motion.div>
         ) : (
           <motion.div

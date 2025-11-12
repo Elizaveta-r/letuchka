@@ -11,6 +11,10 @@
     outline: 2px solid v.$color-primary;
     outline-offset: 2px;
   }
+
+  @media screen and (max-width: 380px) {
+    align-items: flex-start;
+  }
 }
 
 .customCheckbox {
@@ -43,6 +47,8 @@
   font-size: 14px;
   color: v.$color-text-main;
   line-height: 1.2;
+  line-height: 100%;
+  text-align: left;
 }
 
 .disabled {

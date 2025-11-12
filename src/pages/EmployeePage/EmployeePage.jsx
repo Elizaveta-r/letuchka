@@ -16,6 +16,7 @@ import { setEditedEmployee } from "../../store/slices/employeesSlice";
 import { useMediaQuery } from "react-responsive";
 import { EmployeeCard } from "../../components/EmployeeCard/EmployeeCard";
 import { InfoBanner } from "../../ui/InfoBanner/InfoBanner";
+import { ModalMoveEmployee } from "../../modules/ModalMoveEmployee/ModalMoveEmployee";
 
 export default function EmployeePage() {
   const navigate = useNavigate();
@@ -32,6 +33,8 @@ export default function EmployeePage() {
   const [visibleConfirmDeleteModal, setVisibleConfirmDeleteModal] =
     useState(false);
   const [visibleContactModal, setVisibleContactModal] = useState(false);
+  const [visibleMoveEmployeeModal, setVisibleMoveEmployeeModal] =
+    useState(false);
 
   const fullName = `${editedEmployee?.surname} ${editedEmployee?.firstname} ${editedEmployee?.patronymic}`;
 
@@ -69,11 +72,6 @@ export default function EmployeePage() {
         navigate(`${id}`);
       }
     });
-    // dispatch(getEmployeeById(id, 1, 1000)).then((res) => {
-    //   if (res.status === 200) {
-    //     navigate(`${id}`);
-    //   }
-    // });
   };
 
   const handleDeleteEmployee = () => {
@@ -82,6 +80,16 @@ export default function EmployeePage() {
         setVisibleConfirmDeleteModal(false);
       }
     });
+  };
+
+  const handleOpenMoveEmployeeModal = (employee) => {
+    setVisibleMoveEmployeeModal(true);
+    dispatch(setEditedEmployee(employee));
+  };
+
+  const handleCloseMoveEmployeeModal = () => {
+    setVisibleMoveEmployeeModal(false);
+    dispatch(setEditedEmployee(null));
   };
 
   useEffect(() => {
@@ -110,6 +118,11 @@ export default function EmployeePage() {
         message={<MessageDelete employeeName={fullName} />}
       />
 
+      <ModalMoveEmployee
+        isOpen={visibleMoveEmployeeModal}
+        handleClose={handleCloseMoveEmployeeModal}
+      />
+
       <EmployeeContactModal
         isOpen={visibleContactModal}
         onClose={handleCloseContactModal}
@@ -131,6 +144,7 @@ export default function EmployeePage() {
                 onShowContacts={() => handleOpenContactModal(employee)}
                 onEdit={() => handleOpenEmployeeModal(employee)}
                 onDelete={() => handleOpenConfirmDeleteModal(employee)}
+                onMove={() => handleOpenMoveEmployeeModal(employee)}
               />
             ))
           ) : (
@@ -152,6 +166,7 @@ export default function EmployeePage() {
                   onShowContacts={() => handleOpenContactModal(employee)}
                   onEdit={() => handleOpenEmployeeModal(employee)}
                   onDelete={() => handleOpenConfirmDeleteModal(employee)}
+                  onMove={() => handleOpenMoveEmployeeModal(employee)}
                 />
               ))}
             </div>

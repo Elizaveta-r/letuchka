@@ -5,7 +5,8 @@ $grid-template-cols: 2fr 1fr 130px 1fr 80px auto;
 .dataItem {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  // gap: 10px;
+  justify-content: space-between;
   align-items: flex-start;
   background-color: v.$color-white;
   border-radius: 8px;
@@ -93,6 +94,12 @@ $grid-template-cols: 2fr 1fr 130px 1fr 80px auto;
   }
 }
 
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .positions,
 .role,
 .departments {
@@ -157,14 +164,15 @@ $grid-template-cols: 2fr 1fr 130px 1fr 80px auto;
 .actions {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-top: 10px;
 }
 
 .contact,
 .edit,
-.trash {
+.trash,
+.move {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -227,4 +235,17 @@ $grid-template-cols: 2fr 1fr 130px 1fr 80px auto;
 .trash svg,
 .edit svg {
   stroke-width: 2;
+}
+
+.move {
+  color: v.$color-info;
+
+  &:hover {
+    background: v.$linear-badge-primary;
+    border-color: v.$color-accent-end;
+    transform: translateY(-1px);
+    svg {
+      transform: scale(1.1) rotate(-10deg);
+    }
+  }
 }

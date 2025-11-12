@@ -1,4 +1,4 @@
-import { Contact, Pencil, Trash } from "lucide-react";
+import { Contact, Pencil, Shuffle, Trash } from "lucide-react";
 import styles from "./EmployeeRow.module.scss";
 import { getInitials } from "../../utils/methods/getInitials";
 import { useSelector } from "react-redux";
@@ -19,6 +19,7 @@ export default function EmployeeRow({
   onShowContacts,
   onDelete,
   onEdit,
+  onMove,
 }) {
   const allDepartments = useSelector(
     (state) => state?.departments?.departments
@@ -118,6 +119,11 @@ export default function EmployeeRow({
         >
           <div className={styles.contact} onClick={onShowContacts}>
             <Contact size={16} />
+          </div>
+        </HintWithPortal>
+        <HintWithPortal hintContent="Переместить сотрудника" hasIcon={false}>
+          <div className={styles.move} onClick={onMove}>
+            <Shuffle size={16} />
           </div>
         </HintWithPortal>
         <HintWithPortal hintContent="Редактировать" hasIcon={false} isMaxWidth>

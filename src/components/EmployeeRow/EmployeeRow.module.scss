@@ -147,7 +147,8 @@ $grid-template-cols: 2fr 1fr 130px 1fr 80px auto;
 
 .contact,
 .edit,
-.trash {
+.trash,
+.move {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -209,4 +210,17 @@ $grid-template-cols: 2fr 1fr 130px 1fr 80px auto;
 .trash svg,
 .edit svg {
   stroke-width: 2;
+}
+
+.move {
+  color: v.$color-info;
+
+  &:hover {
+    background: v.$linear-badge-primary;
+    border-color: v.$color-accent-end;
+    transform: translateY(-1px);
+    svg {
+      transform: scale(1.1) rotate(-10deg);
+    }
+  }
 }

@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { getInitials } from "../../utils/methods/getInitials";
 import styles from "./EmployeeCard.module.scss";
 import { HintWithPortal } from "../../ui/HintWithPortal/HintWithPortal";
-import { Contact, Pencil, Trash } from "lucide-react";
+import { Contact, Pencil, Shuffle, Trash } from "lucide-react";
 import { RingLoader } from "react-spinners";
 
 export const EmployeeCard = ({
@@ -19,6 +19,7 @@ export const EmployeeCard = ({
   onShowContacts,
   onDelete,
   onEdit,
+  onMove,
 }) => {
   const allDepartments = useSelector(
     (state) => state?.departments?.departments
@@ -73,36 +74,38 @@ export const EmployeeCard = ({
         </div>
       </div>
 
-      <div className={styles.positions}>
-        <p className={styles.positionsTitle}>
-          {`Должност${positionsForEmployee?.length > 1 ? "и" : "ь"}`}:
-        </p>
-        <div className={styles.positionCol}>
-          {positionsForEmployee?.length > 0
-            ? positionsForEmployee.map((pos, i) => (
-                <span key={i}>
-                  {pos?.title || "Должность не назначена"}
-                  {i !== positionsForEmployee.length - 1 && ", "}
-                </span>
-              ))
-            : "Должность не назначена"}
+      <div className={styles.info}>
+        <div className={styles.positions}>
+          <p className={styles.positionsTitle}>
+            {`Должност${positionsForEmployee?.length > 1 ? "и" : "ь"}`}:
+          </p>
+          <div className={styles.positionCol}>
+            {positionsForEmployee?.length > 0
+              ? positionsForEmployee.map((pos, i) => (
+                  <span key={i}>
+                    {pos?.title || "Должность не назначена"}
+                    {i !== positionsForEmployee.length - 1 && ", "}
+                  </span>
+                ))
+              : "Должность не назначена"}
+          </div>
         </div>
-      </div>
 
-      <div className={styles.role}>
-        <p className={styles.roleTitle}>Роль:</p>
-        <p className={styles.roleCol}>{getRoleName()}</p>
-      </div>
+        <div className={styles.role}>
+          <p className={styles.roleTitle}>Роль:</p>
+          <p className={styles.roleCol}>{getRoleName()}</p>
+        </div>
 
-      <div className={styles.departments}>
-        <p className={styles.departmentsTitle}>{`Подразделени${
-          departmentsForEmployee?.length > 1 ? "я" : "е"
-        }:`}</p>
-        <p className={styles.department}>
-          {departmentsForEmployee?.length > 0
-            ? departmentsForEmployee.map((dep) => dep?.title).join(", ")
-            : "Отдел не назначен"}
-        </p>
+        <div className={styles.departments}>
+          <p className={styles.departmentsTitle}>{`Подразделени${
+            departmentsForEmployee?.length > 1 ? "я" : "е"
+          }:`}</p>
+          <p className={styles.department}>
+            {departmentsForEmployee?.length > 0
+              ? departmentsForEmployee.map((dep) => dep?.title).join(", ")
+              : "Отдел не назначен"}
+          </p>
+        </div>
       </div>
 
       <div className={styles.actions}>
@@ -113,6 +116,11 @@ export const EmployeeCard = ({
         >
           <div className={styles.contact} onClick={onShowContacts}>
             <Contact size={16} />
+          </div>
+        </HintWithPortal>
+        <HintWithPortal hintContent="Переместить сотрудника" hasIcon={false}>
+          <div className={styles.move} onClick={onMove}>
+            <Shuffle size={16} />
           </div>
         </HintWithPortal>
         <HintWithPortal hintContent="Редактировать" hasIcon={false} isMaxWidth>

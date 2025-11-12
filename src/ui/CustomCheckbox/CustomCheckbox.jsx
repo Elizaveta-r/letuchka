@@ -1,12 +1,15 @@
 import React from "react";
 import { Check } from "lucide-react";
 import styles from "./CustomCheckbox.module.scss";
+import { HintWithPortal } from "../HintWithPortal/HintWithPortal";
 
 export const CustomCheckbox = ({
   checked,
   onChange,
   label,
   className,
+  labelClassName,
+  labelHint,
   disabled = false,
 }) => {
   const handleToggle = (e) => {
@@ -39,7 +42,18 @@ export const CustomCheckbox = ({
         {checked && <Check size={14} className={styles.icon} />}
       </div>
 
-      {label && <span className={styles.label}>{label}</span>}
+      {label && !labelHint && (
+        <span className={`${styles.label} ${labelClassName || ""}`}>
+          {label}
+        </span>
+      )}
+      {label && labelHint && (
+        <HintWithPortal hintContent={labelHint}>
+          <span className={`${styles.label} ${labelClassName || ""}`}>
+            {label}
+          </span>
+        </HintWithPortal>
+      )}
     </div>
   );
 };
