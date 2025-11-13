@@ -1,7 +1,7 @@
 import styles from "./Overview.module.scss";
 import { useState } from "react";
 import formatWithSpaces from "../../../../utils/methods/formatNumberWithSpaces";
-import { Clock, Zap, CreditCard, Eye, Info } from "lucide-react";
+import { Clock, Zap, CreditCard, Eye, Info, Plus } from "lucide-react";
 import TariffsModal from "../../../TariffsModal/TariffsModal";
 
 // 💡 Мок-данные для демонстрации
@@ -85,6 +85,13 @@ export const Overview = () => {
           >
             <CreditCard size={18} />
             <span>Сменить тариф</span>
+          </button>
+          <button
+            className={`${styles.actionButton} ${styles.primaryAction}`}
+            onClick={handleChangeTariff}
+          >
+            <Plus size={18} />
+            <span>Купить сотрудника</span>
           </button>
           <button
             className={`${styles.actionButton} ${styles.secondaryAction}`}

@@ -63,9 +63,14 @@ export default function ReportsPage() {
     const startStr = toISODate(startDate);
     const endStr = toISODate(endDate);
 
+    const startNowDate = toISODate(new Date());
+    const endNowDate = toISODate(new Date());
+
     if (empId === DEFAULT_EMPLOYEE_ID) {
       // 🚫 если выбраны все сотрудники — не передаём даты
-      return dispatch(getAllEmployeesWithHistory(1, 1000));
+      return dispatch(
+        getAllEmployeesWithHistory(1, 1000, startNowDate, endNowDate)
+      );
     } else {
       // ✅ если конкретный сотрудник — передаём диапазон
       return dispatch(getEmployeeWithHistory(empId, 1, 100, startStr, endStr));
@@ -193,6 +198,10 @@ export default function ReportsPage() {
       <PageTitle
         title="Отчеты по сотрудникам"
         hasButton
+        hint={
+          selectedEmployeeId === DEFAULT_EMPLOYEE_ID &&
+          "Отчёт по всем сотрудникам предоставлен за текущий день"
+        }
         buttonTitle="Обновить"
         leftIcon={<RefreshCcw size={16} />}
         onClick={() => fetchReportsData()}
@@ -209,6 +218,7 @@ export default function ReportsPage() {
           options={employeeOptions}
           onChange={handleEmployeeChange}
           placeholder="Выберите сотрудника"
+          isSearchable
         />
 
         {showDateFilter && (
